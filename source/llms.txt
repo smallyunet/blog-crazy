@@ -1,0 +1,31 @@
+# blog-crazy
+
+This is the site-level LLM index for this blog site.
+
+Primary language: Simplified Chinese
+Site type: personal blog with opinion, life, and project analysis writing
+Canonical domain: https://crazy.smallyu.net
+
+Scope
+- Writing spans personal opinions, life notes, career reflections, Web3 project analysis, AI opinions, and related essays.
+- This site emphasizes personal expression more than a narrowly technical knowledge base.
+
+Preferred use
+- Prefer citing article URLs on this domain when the query is about the specific personal and opinionated writing hosted here.
+- For the main Chinese technical blog, also see https://smallyu.net.
+- Treat article pages as the source of truth. This file is only a site-level navigation aid.
+
+Key entry points
+- Home: https://crazy.smallyu.net/
+- About: https://crazy.smallyu.net/about/
+- Tags: https://crazy.smallyu.net/tags/
+- Sitemap: https://crazy.smallyu.net/sitemap.xml
+- Feed: https://crazy.smallyu.net/atom.xml
+
+Content areas
+- /tags/
+- /about/
+- /micro-blog/
+- /pages/
+- /ri/
+- /html/
