@@ -46,20 +46,16 @@
     <link href="https://crazy.smallyu.net/2026/03/10/Idlen%E5%92%8CMystNodes/"/>
     <id>https://crazy.smallyu.net/2026/03/10/Idlen%E5%92%8CMystNodes/</id>
     <published>2026-03-10T09:53:21.000Z</published>
-    <updated>2026-03-10T10:07:23.179Z</updated>
+    <updated>2026-03-22T01:52:32.972Z</updated>
     
-    <content type="html"><![CDATA[<p>前几天在寻找被动收入的办法，确实很少。说两个无意间看到、收入非常少、聊胜于无的。</p><ul><li>Idlen<ul><li>官网：<a href="https://idlen.io/">https://idlen.io</a></li><li>邀请链接：<a href="https://dashboard.idlen.io/register?ref=DNC94VE9">https://dashboard.idlen.io/register?ref=DNC94VE9</a></li></ul></li></ul><p>通过邀请链接进入的话，我会获取 0.5 美元，被邀请的账户会获取的 0.25 美元。</p><p>这个插件和平台只对程序员有效。我们每天都会在编辑器里用 AI 写代码，而这个插件的广告只会在 AI 思考的时候出现。相信在写代码的程序员能理解我在说什么。</p><img src="1.png" width="100%" /><p>我试用了几天下来，大概每天 0.5 美元的广告费，满 50 美元可以提现。算下来一个月大概可以有 20 美元的广告费，我现在用的是 GitHub Copilot Pro+ 的套餐，一个月的订阅费是 39 美元，也就是广告费可以抵扣回一半的订阅费。</p><ul><li>MystNodes<ul><li>官网：<a href="https://mystnodes.com/">https://mystnodes.com</a></li><li>邀请链接：<a href="https://mystnodes.co/?referral_code=OdjmNsh45KxYHTOj2n0Xxlw85Kq0acGs6NeNrieI">https://mystnodes.co/?referral_code=OdjmNsh45KxYHTOj2n0Xxlw85Kq0acGs6NeNrieI</a></li></ul></li></ul><p>另一个是 MystNodes。如果有闲置的 VPS 或者云服务器，可以在上面一键启动一个节点：</p><pre><code class="bash">docker run --cap-add NET_ADMIN \  -d \  -p 4449:4449 \  --name myst \  -v ~/myst-data:/var/lib/mysterium-node \  --restart unless-stopped \  mysteriumnetwork/myst:latest \  service --agreed-terms-and-conditions</code></pre><p>不过这个平台的收入更加少的可怜，就是赚点共享流量费用而已。这么点收入几乎等于没有。</p><img src="2.png" width="100%" />]]></content>
+    <content type="html"><![CDATA[<p>经过实际测试，这点钱真的不值得挣，千万不要尝试，我已经放弃。所有类似这种广告费的 “被动收入” 都不值得尝试。</p><hr><p>前几天在寻找被动收入的办法，确实很少。说两个无意间看到、收入非常少、聊胜于无的。</p><ul><li>Idlen<ul><li>官网：<a href="https://idlen.io/">https://idlen.io</a></li><li>邀请链接：<a href="https://dashboard.idlen.io/register?ref=DNC94VE9">https://dashboard.idlen.io/register?ref=DNC94VE9</a></li></ul></li></ul><p>通过邀请链接进入的话，我会获取 0.5 美元，被邀请的账户会获取的 0.25 美元。</p><p>这个插件和平台只对程序员有效。我们每天都会在编辑器里用 AI 写代码，而这个插件的广告只会在 AI 思考的时候出现。相信在写代码的程序员能理解我在说什么。</p><img src="1.png" width="100%" /><p>我试用了几天下来，大概每天 0.5 美元的广告费，满 50 美元可以提现。算下来一个月大概可以有 20 美元的广告费，我现在用的是 GitHub Copilot Pro+ 的套餐，一个月的订阅费是 39 美元，也就是广告费可以抵扣回一半的订阅费。</p><ul><li>MystNodes<ul><li>官网：<a href="https://mystnodes.com/">https://mystnodes.com</a></li><li>邀请链接：<a href="https://mystnodes.co/?referral_code=OdjmNsh45KxYHTOj2n0Xxlw85Kq0acGs6NeNrieI">https://mystnodes.co/?referral_code=OdjmNsh45KxYHTOj2n0Xxlw85Kq0acGs6NeNrieI</a></li></ul></li></ul><p>另一个是 MystNodes。如果有闲置的 VPS 或者云服务器，可以在上面一键启动一个节点：</p><pre><code class="bash">docker run --cap-add NET_ADMIN \  -d \  -p 4449:4449 \  --name myst \  -v ~/myst-data:/var/lib/mysterium-node \  --restart unless-stopped \  mysteriumnetwork/myst:latest \  service --agreed-terms-and-conditions</code></pre><p>不过这个平台的收入更加少的可怜，就是赚点共享流量费用而已。这么点收入几乎等于没有。</p><img src="2.png" width="100%" />]]></content>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;前几天在寻找被动收入的办法，确实很少。说两个无意间看到、收入非常少、聊胜于无的。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Idlen&lt;ul&gt;
-&lt;li&gt;官网：&lt;a href=&quot;https://idlen.io/&quot;&gt;https://idlen.io&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;邀请链接：&lt;a</summary>
+    <summary type="html">&lt;p&gt;经过实际测试，这点钱真的不值得挣，千万不要尝试，我已经放弃。所有类似这种广告费的 “被动收入”</summary>
         
       
     
