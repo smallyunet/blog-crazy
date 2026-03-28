@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="zh-cn"><head><title>不要用 Claude 的 AI 模型编程</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=0.5"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/css/highlight/xcode.min.css"><link rel="stylesheet" href="/css/bootstrap/bootstrap-tooltips.css"><link rel="stylesheet" href="/css/post.css"><script src="/js/jquery.min.js"></script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客（疯狂版）" type="application/atom+xml">
+</head><body><script>if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) {
+  document.body.classList.add('mobile')
+  var navbar = document.querySelector('nav.navbar');
+  if (navbar) {
+    navbar.classList.remove('navbar-fixed-top');
+  }
+}
+</script><div><div class="inner"><h1>不要用 Claude 的 AI 模型编程</h1><div class="time">2026-03-28</div><ul class="tags"><li><span>#</span><a href="/tags/AI/">AI</a></li></ul><h3 id="2026-03-28"><a href="#2026-03-28" class="headerlink" title="2026.03.28"></a>2026.03.28</h3><p>我对 LLM 模型编程的感受，尤其是对比 GPT 和 Claude 模型，我的感受是，Claude Code 的模型，执行力很强，非常听话，告诉它干什么它就干什么，哪怕技术方案是错的，或者口误打错了字，它也会按照输入的命令执行。GPT 模型则是更有头脑，能够做一些调研、判断类型的事情，还会指出你的错误。</p>
+<p>当然，这个仅仅是体验，所以我又寻找了更多场景和证据，来搞清楚这种使用体验是否是偏见。经过 Gemini 和 Grok 的分析，我注意到这个特质比较关键：</p>
+<blockquote>
+<p>Claude 的特质： 它是绝对的“严谨执行者”。如果你给的指令有逻辑漏洞，或者说得不够清楚，Claude 往往会严格按照你字面上的意思去执行，哪怕结果看起来很蠢；或者它会停下来反复向你确认。</p>
+<p>GPT&#x2F;Gemini 的特质： 我们通常被训练得更具“服务意识”。面对模糊的指令，我们会倾向于去“猜”你的真实意图（Read between the lines），并直接给出我们认为你想要的惊艳结果。</p>
+</blockquote>
+<p>这个特质没有表面上那么简单。表面上，他们的区别在于对于模糊指令的处理，Claude 不会猜测你的意图，而是会根据准确的文字描述来分析问题。GPT 则是会根据指令来猜测义务。深层次上，我发现这个特质对于代码分析和处理也是一样。</p>
+<p>Claude 会根据代码本身来进行分析和修正，而不是猜测你的业务流程和业务意图。这个特点，非常要命。凡是有经验的程序员都会有类似的体会，有一些业务问题，或者在 debug 的时候，往往表面上盯着某几个文件你会得出一种结论，而根据业务逻辑来梳理，会得出另外的一套结论。有些问题，从代码层面看要如何如何解决，但是从业务层面看，有一些隐性的约束以及外部 API 的约束，就导致这个问题本身不再是代码问题。</p>
+<p>Claude 的逻辑能力并非不够强，而是由于 AI 宪法的存在，Claude 会执着于代码逻辑，而不会猜测你的指令以及代码的意图，单纯脱离场景分析代码的问题。Claude 给出的往往是代码落实方案，而 GPT 给出的是场景分析、业务层面的 trade-off 方案。我们都知道，在大多数工作场景中，代码实际上是不重要的，理解业务才是重要的。不能理解业务逻辑的代码，就是低级的代码。跟程序员一样。</p>
+<h3 id="2026-01-23"><a href="#2026-01-23" class="headerlink" title="2026.01.23"></a>2026.01.23</h3><p>前端能力不如 Gemini，后端逻辑能力不如 GPT，包括 Oups 也是，前端也不行，后端也不行，主打一个听话。</p>
+<p>随着最近 Google Antigravity 的 rate limit 越来越严格，可以用这样的组合：</p>
+<ul>
+<li>VS Code + GitHub Copilot + GPT 5.2</li>
+<li>Google Antigravity + Gemini 3 Pro High</li>
+</ul>
+<p>Claude Code 真的干啥啥不行。</p>
+<p>很多人在评价 AI 写的代码需要 review、不好用之类，因为他们根本没有使用最讲道理的模型 GPT，而是认为 Claude Opus 是世界上最好的编程模型，自然就会限制他们对于 AI 的认识。</p>
+<h3 id="2025-11-11"><a href="#2025-11-11" class="headerlink" title="2025.11.11"></a>2025.11.11</h3><p>因为不好用。特指 Claude Sonnet 4.5。</p>
+<p>在日常的使用中已经被坑过几次：</p>
+<ol>
+<li>一味按照我说的做，不会提出任何反驳意见或者提醒</li>
+<li>在代码里留下 TODO，然后说完美，功能完成了</li>
+<li>会执行一些危险操作，比如 <code>git checkout —</code></li>
+<li>对于有执行顺序的数据库 schema 变更记录，竟然直接修改某一个历史节点</li>
+</ol>
+<p>相比之下，GPT-5 几乎不会犯这种错误。</p>
+<p>所以可以放心地禁用掉所有来自 Claude 的 AI 模型。除非你的项目允许生成有逻辑漏洞的代码。</p>
+<!-- --- -->
+
+<!-- 顺便分享一个 instructions 文件，用于指导 AI Agent 编程：[yincs-coding-style.md](https://gist.github.com/smallyunet/7095f51f7bf8c1b31e7e6dcd83a29703) -->
+
+</div></div></body><script src="/js/highlight.min.js"></script><script src="/js/main.js"></script><script src="/js/bootstrap/bootstrap.min.js"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Y7C0CVX9PK"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y7C0CVX9PK');</script></html>

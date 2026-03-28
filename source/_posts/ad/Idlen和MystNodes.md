@@ -7,13 +7,15 @@ tags: 被动收入
 
 经过实际测试，这点钱真的不值得挣，千万不要尝试，我已经放弃。所有类似这种广告费的 “被动收入” 都不值得尝试。
 
+因为 Idlen 作为一个插件，会占用非常高的内存，而且有时候会存在性能问题拖慢整个电脑环境。体验很糟糕。
+
 ---
 
 前几天在寻找被动收入的办法，确实很少。说两个无意间看到、收入非常少、聊胜于无的。
 
 - Idlen
   - 官网：https://idlen.io
-  - 邀请链接：https://dashboard.idlen.io/register?ref=DNC94VE9
+  <!-- - 邀请链接：https://dashboard.idlen.io/register?ref=DNC94VE9 -->
 
 通过邀请链接进入的话，我会获取 0.5 美元，被邀请的账户会获取的 0.25 美元。
 
@@ -25,7 +27,7 @@ tags: 被动收入
 
 - MystNodes
   - 官网：https://mystnodes.com
-  - 邀请链接：https://mystnodes.co/?referral_code=OdjmNsh45KxYHTOj2n0Xxlw85Kq0acGs6NeNrieI
+  <!-- - 邀请链接：https://mystnodes.co/?referral_code=OdjmNsh45KxYHTOj2n0Xxlw85Kq0acGs6NeNrieI -->
 
 另一个是 MystNodes。如果有闲置的 VPS 或者云服务器，可以在上面一键启动一个节点：
 

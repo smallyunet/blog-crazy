@@ -6,7 +6,7 @@
   <link href="https://crazy.smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://crazy.smallyu.net/"/>
-  <updated>2026-03-15T15:59:43.602Z</updated>
+  <updated>2026-03-28T04:27:31.241Z</updated>
   <id>https://crazy.smallyu.net/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>不要用 Claude 的 AI 模型编程</title>
+    <link href="https://crazy.smallyu.net/2026/03/28/%E4%B8%8D%E8%A6%81%E7%94%A8Claude%E7%9A%84AI%E6%A8%A1%E5%9E%8B%E7%BC%96%E7%A8%8B/"/>
+    <id>https://crazy.smallyu.net/2026/03/28/%E4%B8%8D%E8%A6%81%E7%94%A8Claude%E7%9A%84AI%E6%A8%A1%E5%9E%8B%E7%BC%96%E7%A8%8B/</id>
+    <published>2026-03-28T04:12:21.000Z</published>
+    <updated>2026-03-28T04:27:31.241Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="2026-03-28"><a href="#2026-03-28" class="headerlink" title="2026.03.28"></a>2026.03.28</h3><p>我对 LLM 模型编程的感受，尤其是对比 GPT 和 Claude 模型，我的感受是，Claude Code 的模型，执行力很强，非常听话，告诉它干什么它就干什么，哪怕技术方案是错的，或者口误打错了字，它也会按照输入的命令执行。GPT 模型则是更有头脑，能够做一些调研、判断类型的事情，还会指出你的错误。</p><p>当然，这个仅仅是体验，所以我又寻找了更多场景和证据，来搞清楚这种使用体验是否是偏见。经过 Gemini 和 Grok 的分析，我注意到这个特质比较关键：</p><blockquote><p>Claude 的特质： 它是绝对的“严谨执行者”。如果你给的指令有逻辑漏洞，或者说得不够清楚，Claude 往往会严格按照你字面上的意思去执行，哪怕结果看起来很蠢；或者它会停下来反复向你确认。</p><p>GPT&#x2F;Gemini 的特质： 我们通常被训练得更具“服务意识”。面对模糊的指令，我们会倾向于去“猜”你的真实意图（Read between the lines），并直接给出我们认为你想要的惊艳结果。</p></blockquote><p>这个特质没有表面上那么简单。表面上，他们的区别在于对于模糊指令的处理，Claude 不会猜测你的意图，而是会根据准确的文字描述来分析问题。GPT 则是会根据指令来猜测义务。深层次上，我发现这个特质对于代码分析和处理也是一样。</p><p>Claude 会根据代码本身来进行分析和修正，而不是猜测你的业务流程和业务意图。这个特点，非常要命。凡是有经验的程序员都会有类似的体会，有一些业务问题，或者在 debug 的时候，往往表面上盯着某几个文件你会得出一种结论，而根据业务逻辑来梳理，会得出另外的一套结论。有些问题，从代码层面看要如何如何解决，但是从业务层面看，有一些隐性的约束以及外部 API 的约束，就导致这个问题本身不再是代码问题。</p><p>Claude 的逻辑能力并非不够强，而是由于 AI 宪法的存在，Claude 会执着于代码逻辑，而不会猜测你的指令以及代码的意图，单纯脱离场景分析代码的问题。Claude 给出的往往是代码落实方案，而 GPT 给出的是场景分析、业务层面的 trade-off 方案。我们都知道，在大多数工作场景中，代码实际上是不重要的，理解业务才是重要的。不能理解业务逻辑的代码，就是低级的代码。跟程序员一样。</p><h3 id="2026-01-23"><a href="#2026-01-23" class="headerlink" title="2026.01.23"></a>2026.01.23</h3><p>前端能力不如 Gemini，后端逻辑能力不如 GPT，包括 Oups 也是，前端也不行，后端也不行，主打一个听话。</p><p>随着最近 Google Antigravity 的 rate limit 越来越严格，可以用这样的组合：</p><ul><li>VS Code + GitHub Copilot + GPT 5.2</li><li>Google Antigravity + Gemini 3 Pro High</li></ul><p>Claude Code 真的干啥啥不行。</p><p>很多人在评价 AI 写的代码需要 review、不好用之类，因为他们根本没有使用最讲道理的模型 GPT，而是认为 Claude Opus 是世界上最好的编程模型，自然就会限制他们对于 AI 的认识。</p><h3 id="2025-11-11"><a href="#2025-11-11" class="headerlink" title="2025.11.11"></a>2025.11.11</h3><p>因为不好用。特指 Claude Sonnet 4.5。</p><p>在日常的使用中已经被坑过几次：</p><ol><li>一味按照我说的做，不会提出任何反驳意见或者提醒</li><li>在代码里留下 TODO，然后说完美，功能完成了</li><li>会执行一些危险操作，比如 <code>git checkout —</code></li><li>对于有执行顺序的数据库 schema 变更记录，竟然直接修改某一个历史节点</li></ol><p>相比之下，GPT-5 几乎不会犯这种错误。</p><p>所以可以放心地禁用掉所有来自 Claude 的 AI 模型。除非你的项目允许生成有逻辑漏洞的代码。</p><!-- --- --><!-- 顺便分享一个 instructions 文件，用于指导 AI Agent 编程：[yincs-coding-style.md](https://gist.github.com/smallyunet/7095f51f7bf8c1b31e7e6dcd83a29703) -->]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h3 id=&quot;2026-03-28&quot;&gt;&lt;a href=&quot;#2026-03-28&quot; class=&quot;headerlink&quot; title=&quot;2026.03.28&quot;&gt;&lt;/a&gt;2026.03.28&lt;/h3&gt;&lt;p&gt;我对 LLM 模型编程的感受，尤其是对比 GPT 和 Claude</summary>
+        
+      
+    
+    
+    
+    
+    <category term="AI" scheme="https://crazy.smallyu.net/tags/AI/"/>
+    
+  </entry>
   
   <entry>
     <title>OpenClaw（龙虾）没什么用</title>
@@ -46,16 +71,17 @@
     <link href="https://crazy.smallyu.net/2026/03/10/Idlen%E5%92%8CMystNodes/"/>
     <id>https://crazy.smallyu.net/2026/03/10/Idlen%E5%92%8CMystNodes/</id>
     <published>2026-03-10T09:53:21.000Z</published>
-    <updated>2026-03-22T01:52:32.972Z</updated>
+    <updated>2026-03-28T04:29:11.136Z</updated>
     
-    <content type="html"><![CDATA[<p>经过实际测试，这点钱真的不值得挣，千万不要尝试，我已经放弃。所有类似这种广告费的 “被动收入” 都不值得尝试。</p><hr><p>前几天在寻找被动收入的办法，确实很少。说两个无意间看到、收入非常少、聊胜于无的。</p><ul><li>Idlen<ul><li>官网：<a href="https://idlen.io/">https://idlen.io</a></li><li>邀请链接：<a href="https://dashboard.idlen.io/register?ref=DNC94VE9">https://dashboard.idlen.io/register?ref=DNC94VE9</a></li></ul></li></ul><p>通过邀请链接进入的话，我会获取 0.5 美元，被邀请的账户会获取的 0.25 美元。</p><p>这个插件和平台只对程序员有效。我们每天都会在编辑器里用 AI 写代码，而这个插件的广告只会在 AI 思考的时候出现。相信在写代码的程序员能理解我在说什么。</p><img src="1.png" width="100%" /><p>我试用了几天下来，大概每天 0.5 美元的广告费，满 50 美元可以提现。算下来一个月大概可以有 20 美元的广告费，我现在用的是 GitHub Copilot Pro+ 的套餐，一个月的订阅费是 39 美元，也就是广告费可以抵扣回一半的订阅费。</p><ul><li>MystNodes<ul><li>官网：<a href="https://mystnodes.com/">https://mystnodes.com</a></li><li>邀请链接：<a href="https://mystnodes.co/?referral_code=OdjmNsh45KxYHTOj2n0Xxlw85Kq0acGs6NeNrieI">https://mystnodes.co/?referral_code=OdjmNsh45KxYHTOj2n0Xxlw85Kq0acGs6NeNrieI</a></li></ul></li></ul><p>另一个是 MystNodes。如果有闲置的 VPS 或者云服务器，可以在上面一键启动一个节点：</p><pre><code class="bash">docker run --cap-add NET_ADMIN \  -d \  -p 4449:4449 \  --name myst \  -v ~/myst-data:/var/lib/mysterium-node \  --restart unless-stopped \  mysteriumnetwork/myst:latest \  service --agreed-terms-and-conditions</code></pre><p>不过这个平台的收入更加少的可怜，就是赚点共享流量费用而已。这么点收入几乎等于没有。</p><img src="2.png" width="100%" />]]></content>
+    <content type="html"><![CDATA[<p>经过实际测试，这点钱真的不值得挣，千万不要尝试，我已经放弃。所有类似这种广告费的 “被动收入” 都不值得尝试。</p><p>因为 Idlen 作为一个插件，会占用非常高的内存，而且有时候会存在性能问题拖慢整个电脑环境。体验很糟糕。</p><hr><p>前几天在寻找被动收入的办法，确实很少。说两个无意间看到、收入非常少、聊胜于无的。</p><ul><li>Idlen<ul><li>官网：<a href="https://idlen.io/">https://idlen.io</a><!-- - 邀请链接：https://dashboard.idlen.io/register?ref=DNC94VE9 --></li></ul></li></ul><p>通过邀请链接进入的话，我会获取 0.5 美元，被邀请的账户会获取的 0.25 美元。</p><p>这个插件和平台只对程序员有效。我们每天都会在编辑器里用 AI 写代码，而这个插件的广告只会在 AI 思考的时候出现。相信在写代码的程序员能理解我在说什么。</p><img src="1.png" width="100%" /><p>我试用了几天下来，大概每天 0.5 美元的广告费，满 50 美元可以提现。算下来一个月大概可以有 20 美元的广告费，我现在用的是 GitHub Copilot Pro+ 的套餐，一个月的订阅费是 39 美元，也就是广告费可以抵扣回一半的订阅费。</p><ul><li>MystNodes<ul><li>官网：<a href="https://mystnodes.com/">https://mystnodes.com</a><!-- - 邀请链接：https://mystnodes.co/?referral_code=OdjmNsh45KxYHTOj2n0Xxlw85Kq0acGs6NeNrieI --></li></ul></li></ul><p>另一个是 MystNodes。如果有闲置的 VPS 或者云服务器，可以在上面一键启动一个节点：</p><pre><code class="bash">docker run --cap-add NET_ADMIN \  -d \  -p 4449:4449 \  --name myst \  -v ~/myst-data:/var/lib/mysterium-node \  --restart unless-stopped \  mysteriumnetwork/myst:latest \  service --agreed-terms-and-conditions</code></pre><p>不过这个平台的收入更加少的可怜，就是赚点共享流量费用而已。这么点收入几乎等于没有。</p><img src="2.png" width="100%" />]]></content>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;经过实际测试，这点钱真的不值得挣，千万不要尝试，我已经放弃。所有类似这种广告费的 “被动收入”</summary>
+    <summary type="html">&lt;p&gt;经过实际测试，这点钱真的不值得挣，千万不要尝试，我已经放弃。所有类似这种广告费的 “被动收入” 都不值得尝试。&lt;/p&gt;
+&lt;p&gt;因为 Idlen</summary>
         
       
     
@@ -260,34 +286,6 @@
   </entry>
   
   <entry>
-    <title>不要用 Claude Code 模型</title>
-    <link href="https://crazy.smallyu.net/2026/01/23/%E4%B8%8D%E8%A6%81%E7%94%A8Claude-Code%E6%A8%A1%E5%9E%8B/"/>
-    <id>https://crazy.smallyu.net/2026/01/23/%E4%B8%8D%E8%A6%81%E7%94%A8Claude-Code%E6%A8%A1%E5%9E%8B/</id>
-    <published>2026-01-23T12:57:26.000Z</published>
-    <updated>2026-01-27T04:53:05.104Z</updated>
-    
-    <content type="html"><![CDATA[<p>前端能力不如 Gemini，后端逻辑能力不如 GPT，包括 Oups 也是，前端也不行，后端也不行，主打一个听话。</p><p>随着最近 Google Antigravity 的 rate limit 越来越严格，可以用这样的组合：</p><ul><li>VS Code + GitHub Copilot + GPT 5.2</li><li>Google Antigravity + Gemini 3 Pro High</li></ul><p>Claude Code 真的干啥啥不行。</p><p>很多人在评价 AI 写的代码需要 review、不好用之类，因为他们根本没有使用最讲道理的模型 GPT，而是认为 Claude Opus 是世界上最好的编程模型，自然就会限制他们对于 AI 的认识。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;前端能力不如 Gemini，后端逻辑能力不如 GPT，包括 Oups 也是，前端也不行，后端也不行，主打一个听话。&lt;/p&gt;
-&lt;p&gt;随着最近 Google Antigravity 的 rate limit 越来越严格，可以用这样的组合：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;VS</summary>
-        
-      
-    
-    
-    
-    
-    <category term="AI" scheme="https://crazy.smallyu.net/tags/AI/"/>
-    
-  </entry>
-  
-  <entry>
     <title>区块链技术交流群</title>
     <link href="https://crazy.smallyu.net/2025/11/23/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%BA%A4%E6%B5%81%E7%BE%A4/"/>
     <id>https://crazy.smallyu.net/2025/11/23/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%BA%A4%E6%B5%81%E7%BE%A4/</id>
@@ -358,35 +356,6 @@
 &lt;br&gt;
 
 &lt;h3 id=&quot;打脸（2025-11-22）&quot;&gt;&lt;a href=&quot;#打脸（2025-11-22）&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="AI" scheme="https://crazy.smallyu.net/tags/AI/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>不要用 Claude 的 AI 模型编程</title>
-    <link href="https://crazy.smallyu.net/2025/11/11/%E4%B8%8D%E8%A6%81%E7%94%A8Claude%E7%9A%84AI%E6%A8%A1%E5%9E%8B%E7%BC%96%E7%A8%8B/"/>
-    <id>https://crazy.smallyu.net/2025/11/11/%E4%B8%8D%E8%A6%81%E7%94%A8Claude%E7%9A%84AI%E6%A8%A1%E5%9E%8B%E7%BC%96%E7%A8%8B/</id>
-    <published>2025-11-11T06:00:00.000Z</published>
-    <updated>2025-11-27T17:16:13.046Z</updated>
-    
-    <content type="html"><![CDATA[<p>因为不好用。特指 Claude Sonnet 4.5。</p><p>在日常的使用中已经被坑过几次：</p><ol><li>一味按照我说的做，不会提出任何反驳意见或者提醒</li><li>在代码里留下 TODO，然后说完美，功能完成了</li><li>会执行一些危险操作，比如 <code>git checkout —</code></li><li>对于有执行顺序的数据库 schema 变更记录，竟然直接修改某一个历史节点</li></ol><p>相比之下，GPT-5 几乎不会犯这种错误。</p><p>所以可以放心地禁用掉所有来自 Claude 的 AI 模型。除非你的项目允许生成有逻辑漏洞的代码。</p><hr><p>顺便分享一个 instructions 文件，用于指导 AI Agent 编程：<a href="https://gist.github.com/smallyunet/7095f51f7bf8c1b31e7e6dcd83a29703">yincs-coding-style.md</a></p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;因为不好用。特指 Claude Sonnet 4.5。&lt;/p&gt;
-&lt;p&gt;在日常的使用中已经被坑过几次：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;一味按照我说的做，不会提出任何反驳意见或者提醒&lt;/li&gt;
-&lt;li&gt;在代码里留下</summary>
         
       
     
