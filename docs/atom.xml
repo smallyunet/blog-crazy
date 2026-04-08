@@ -6,7 +6,7 @@
   <link href="https://crazy.smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://crazy.smallyu.net/"/>
-  <updated>2026-04-03T11:36:27.751Z</updated>
+  <updated>2026-04-08T08:54:16.587Z</updated>
   <id>https://crazy.smallyu.net/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>X 第二次封我的账号</title>
+    <link href="https://crazy.smallyu.net/2026/04/08/X%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%B0%81%E6%88%91%E7%9A%84%E8%B4%A6%E5%8F%B7/"/>
+    <id>https://crazy.smallyu.net/2026/04/08/X%E7%AC%AC%E4%BA%8C%E6%AC%A1%E5%B0%81%E6%88%91%E7%9A%84%E8%B4%A6%E5%8F%B7/</id>
+    <published>2026-04-08T08:12:11.000Z</published>
+    <updated>2026-04-08T08:54:16.587Z</updated>
+    
+    <content type="html"><![CDATA[<p>比起主动选择的自由，更让人安心的是被动选择。当选择很多的时候，反而不知道该用哪个平台。当被迫排除掉一些选项后，反而清晰了</p><p>2025年 7月 14日，X 第一次封了我的账号：</p><img src="1.png" width="40%" /><p>今天 2026年 4 月 8日，X 封了我的另一个账号：</p><img src="2.png" width="40%" /><p>具体原因不清楚，申诉没有用。我确信自己只是正常在使用，没有刷量或者其他明显异常的行为。而且在 X 上，哪怕是极端或者 18+ 内容，也在允许范围之内，而我的账号也没说什么、什么交互，就反复封我的账号。</p><p>小红书也是类似的，之前发过两个交互量比较大的帖子，带一点刻意的错误或者引战一类的内容，流量不错，但是被小红书删帖了。当时就觉得言论管控太严格，不想用了。而到了 X 上，不是言论是否自由的问题，而是不知道因为什么，直接封号，大概率不是因为发言的内容。</p><p>微博之前因为网络问题，连续点击了 10 次左右一条帖子的转发按钮，被封了 15 天，说是异常交互。就几乎不想再用了。</p><p>总之，微博、小红书、X 等平台，目前注册了新的账号，但是不再发言，只是看一些信息。</p><p>那么为什么非要看呢？确实还真不能不看，既然不好用，那不说话就可以了，看还是得看的。小红书上有一些本地化的经验，什么 APP 就架不住大量女性用户的影响力。X 上则是一线新闻，账号还是需要的。所以接下来的策略也很明确，不再这些平台上发言就可以了。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;比起主动选择的自由，更让人安心的是被动选择。当选择很多的时候，反而不知道该用哪个平台。当被迫排除掉一些选项后，反而清晰了&lt;/p&gt;
+&lt;p&gt;2025年 7月 14日，X 第一次封了我的账号：&lt;/p&gt;
+&lt;img src=&quot;1.png&quot; width=&quot;40%&quot; /&gt;
+
+&lt;p&gt;今天</summary>
+        
+      
+    
+    
+    
+    
+    <category term="账号" scheme="https://crazy.smallyu.net/tags/%E8%B4%A6%E5%8F%B7/"/>
+    
+  </entry>
   
   <entry>
     <title>拼多多，蜜雪冰城，华莱士</title>
@@ -70,31 +99,6 @@
     
     
     <category term="真相" scheme="https://crazy.smallyu.net/tags/%E7%9C%9F%E7%9B%B8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>不要用 Claude 的 AI 模型编程</title>
-    <link href="https://crazy.smallyu.net/2026/03/28/%E4%B8%8D%E8%A6%81%E7%94%A8Claude%E7%9A%84AI%E6%A8%A1%E5%9E%8B%E7%BC%96%E7%A8%8B/"/>
-    <id>https://crazy.smallyu.net/2026/03/28/%E4%B8%8D%E8%A6%81%E7%94%A8Claude%E7%9A%84AI%E6%A8%A1%E5%9E%8B%E7%BC%96%E7%A8%8B/</id>
-    <published>2026-03-28T04:12:21.000Z</published>
-    <updated>2026-04-07T09:55:51.730Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="2026-04-07"><a href="#2026-04-07" class="headerlink" title="2026.04.07"></a>2026.04.07</h3><blockquote><p>模型「急于完成任务」的摆烂行为依然明显。</p></blockquote><p>原文链接：<a href="https://www.theblockbeats.info/flash/339963">https://www.theblockbeats.info/flash/339963</a></p><h3 id="2026-03-28"><a href="#2026-03-28" class="headerlink" title="2026.03.28"></a>2026.03.28</h3><p>我对 LLM 模型编程的感受，尤其是对比 GPT 和 Claude 模型，我的感受是，Claude Code 的模型，执行力很强，非常听话，告诉它干什么它就干什么，哪怕技术方案是错的，或者口误打错了字，它也会按照输入的命令执行。GPT 模型则是更有头脑，能够做一些调研、判断类型的事情，还会指出你的错误。</p><p>当然，这个仅仅是体验，所以我又寻找了更多场景和证据，来搞清楚这种使用体验是否是偏见。经过 Gemini 和 Grok 的分析，我注意到这个特质比较关键：</p><blockquote><p>Claude 的特质： 它是绝对的“严谨执行者”。如果你给的指令有逻辑漏洞，或者说得不够清楚，Claude 往往会严格按照你字面上的意思去执行，哪怕结果看起来很蠢；或者它会停下来反复向你确认。</p><p>GPT&#x2F;Gemini 的特质： 我们通常被训练得更具“服务意识”。面对模糊的指令，我们会倾向于去“猜”你的真实意图（Read between the lines），并直接给出我们认为你想要的惊艳结果。</p></blockquote><p>这个特质没有表面上那么简单。表面上，他们的区别在于对于模糊指令的处理，Claude 不会猜测你的意图，而是会根据准确的文字描述来分析问题。GPT 则是会根据指令来猜测义务。深层次上，我发现这个特质对于代码分析和处理也是一样。</p><p>Claude 会根据代码本身来进行分析和修正，而不是猜测你的业务流程和业务意图。这个特点，非常要命。凡是有经验的程序员都会有类似的体会，有一些业务问题，或者在 debug 的时候，往往表面上盯着某几个文件你会得出一种结论，而根据业务逻辑来梳理，会得出另外的一套结论。有些问题，从代码层面看要如何如何解决，但是从业务层面看，有一些隐性的约束以及外部 API 的约束，就导致这个问题本身不再是代码问题。</p><p>Claude 的逻辑能力并非不够强，而是由于 AI 宪法的存在，Claude 会执着于代码逻辑，而不会猜测你的指令以及代码的意图，单纯脱离场景分析代码的问题。Claude 给出的往往是代码落实方案，而 GPT 给出的是场景分析、业务层面的 trade-off 方案。我们都知道，在大多数工作场景中，代码实际上是不重要的，理解业务才是重要的。不能理解业务逻辑的代码，就是低级的代码。跟程序员一样。</p><p>再补充一个例子。业务场景是，链下 Order id，链上 Tx hash，数据库里保存映射关系，然后前端展示。遇到的问题是前端展示不出关联关系。Claude 在分析之后，很自信的给出了修复方案，说因为数据库查询分页，导致一些数据没有查到。而实际上问题没有解决，为什么呢，因为关键问题在于，链下 Order id 和链上 Tx hash 的映射关系存在问题，而落库的那一套异步程序，在另外一个模块中，有比较复杂的代码逻辑。Claude 根本没有去全盘分析整个项目的业务逻辑，而是执着于看到代码片段、分析代码片段的问题、给出修复方案，不具备分析和定位全局性质的、复杂业务逻辑 bug 的能力。</p><h3 id="2026-01-23"><a href="#2026-01-23" class="headerlink" title="2026.01.23"></a>2026.01.23</h3><p>前端能力不如 Gemini，后端逻辑能力不如 GPT，包括 Oups 也是，前端也不行，后端也不行，主打一个听话。</p><p>随着最近 Google Antigravity 的 rate limit 越来越严格，可以用这样的组合：</p><ul><li>VS Code + GitHub Copilot + GPT 5.2</li><li>Google Antigravity + Gemini 3 Pro High</li></ul><p>Claude Code 真的干啥啥不行。</p><p>很多人在评价 AI 写的代码需要 review、不好用之类，因为他们根本没有使用最讲道理的模型 GPT，而是认为 Claude Opus 是世界上最好的编程模型，自然就会限制他们对于 AI 的认识。</p><h3 id="2025-11-11"><a href="#2025-11-11" class="headerlink" title="2025.11.11"></a>2025.11.11</h3><p>因为不好用。特指 Claude Sonnet 4.5。</p><p>在日常的使用中已经被坑过几次：</p><ol><li>一味按照我说的做，不会提出任何反驳意见或者提醒</li><li>在代码里留下 TODO，然后说完美，功能完成了</li><li>会执行一些危险操作，比如 <code>git checkout —</code></li><li>对于有执行顺序的数据库 schema 变更记录，竟然直接修改某一个历史节点</li></ol><p>相比之下，GPT-5 几乎不会犯这种错误。</p><p>所以可以放心地禁用掉所有来自 Claude 的 AI 模型。除非你的项目允许生成有逻辑漏洞的代码。</p><!-- --- --><!-- 顺便分享一个 instructions 文件，用于指导 AI Agent 编程：[yincs-coding-style.md](https://gist.github.com/smallyunet/7095f51f7bf8c1b31e7e6dcd83a29703) -->]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h3 id=&quot;2026-04-07&quot;&gt;&lt;a href=&quot;#2026-04-07&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="AI" scheme="https://crazy.smallyu.net/tags/AI/"/>
     
   </entry>
   
@@ -626,31 +630,6 @@
   </entry>
   
   <entry>
-    <title>对 Arc 项目的分析</title>
-    <link href="https://crazy.smallyu.net/2025/08/23/%E5%AF%B9Arc%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
-    <id>https://crazy.smallyu.net/2025/08/23/%E5%AF%B9Arc%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
-    <published>2025-08-23T08:37:09.000Z</published>
-    <updated>2025-11-27T17:16:12.926Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><a href="https://arcnetwork.xyz/">Arc</a> 是 Circle 公司在筹备和计划推出的一个 Layer 1 区块链网络。8月12日，Circle 正式发布了关于 Arc 的 <a href="https://www.circle.com/blog/introducing-arc-an-open-layer-1-blockchain-purpose-built-for-stablecoin-finance">宣发文章</a>。Circle 就是发行 USDC 代币的公司，拥有强大的技术实力和资金背景。</p><p>由于 Circle 的强大背景，我们几乎不需要怀疑 Arc 的技术含量，一定能做到世界领先级别的，也许会像当年的 SOL 一样，值得持续关注。</p><p>Arc 目前处于测试网还未公开发布的阶段，只允许合作伙伴加入的测试网。公开的参考资料只有白皮书，不过出于对 Circle 技术实力的信任，白皮书中肯定包含了技术创新在里面的。</p><p>假如将来 Arc 正式上线，想必会改变的，不只是稳定币赛道的格局：</p><ol><li>其他稳定币公司开始做 Layer 1 链</li><li>既然 USDC 可以作为原生代币支付手续费，其他所有 ERC-20 都可以</li><li>世界将迎来代币原生化的浪潮，项目发行代币的，都会自己搞一条链，自己的币付手续费</li></ol><p>所以了解 Arc 的技术架构对我们以及未来的发展会很有帮助。</p><h3 id="手续费"><a href="#手续费" class="headerlink" title="手续费"></a>手续费</h3><p>看了白皮书的前半段，发现里面仍然有很多语焉不详的地方，也有一些刻意吹牛的地方。</p><p>Arc 有专门说自己的费用模型，因为用了 USDC 做原生手续费，所以更加可以预测，比如以太坊上因为 ETH 的价格是波动的，导致用户难以准确估算一笔交易的手续费是多少，而 USDC 的价格是恒定的，只需要考虑协议费用的波动。类似这样的话其实属于很正确的废话，不需要 Arc 在白皮书里说，这是大家都能懂得东西。</p><img src="1.png" width="60%"><p>关键是 Arc 没说清楚自己的手续费到底是怎么设计的，只说参考了 EIP-1559，并且设置了平滑的波动，设置了上限和下限。理想是很好，关键是没说具体怎么做的。</p><h3 id="共识"><a href="#共识" class="headerlink" title="共识"></a>共识</h3><img src="2.png" width="60%"><p>再就是 Arc 有专门说自己链最终一致性的问题，比特币和以太坊就不是什么的。因为 Arc 用的共识是 PBFT，当然自然而然就有最终一致性，不需要刻意强调。</p><p>不过 Arc 技术硬核的地方来了，Arc 没有用某种现成的 PBFT 的实现，而是自己根据 Tendermint 的协议论文，实现了一个 Rust 版本出来，名字叫 <a href="https://github.com/circlefin/malachite">malachite</a>，代码早在去年就 <a href="https://informal.systems/blog/malachite-decentralize-whatever">开源</a> 并且处于公开研发状态。这可不是一般公司能干的了的事情。</p><p>（话说，好像最近新出的链、项目，只要是和区块链相关的，只要是有点性能方面追求的，都在用 Rust。直观感受上 Rust 的出现频率越来越高了。）</p><p>malachite 还有个有意思的项目 <a href="https://github.com/circlefin/malaketh-layered">malaketh-layered</a>，这个项目能让以太坊的执行层客户端，使用 malachite 做公式层。这个想法以及实现都很牛，也就是说，以后以太坊就有 PBFT 版本的链了。Reth+malachite 可以直接运行，联盟链将会有原生的 EVM 版本，这听起来很诱人。</p><img src="3.png" width="60%"><p>虽然 Arc 的技术实力不错，但是有个不小的问题，Arc 竟然选择了 PoA 的模式，禁止外部节点的参与，只允许合作伙伴承担起网络出块的职责。这就稍微有点影响了，对于 USDC 本身的业务没影响，影响的是整体的格局，外部无法参与的话，其他项目就不能直接抄 Arc 的模式了，不公开还要保持信任是个问题。</p><h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><img src="4.png" width="60%"><p>性能方面，Arc 的白皮书里也说了不少。尽管用了 Rust 语言，也只是能提高一些硬件方面的性能而已，PBFT 算法层面的限制始终在那儿，所以实际上并没有比 Cosmos 的 CometBFT 交易速度快多少。</p><h3 id="MEV-与隐私保护"><a href="#MEV-与隐私保护" class="headerlink" title="MEV 与隐私保护"></a>MEV 与隐私保护</h3><p>MEV 和隐私保护是两个东西，但解决手段相似。Arc 在 MEV 方面试图通过加密 mempool、批处理交易等方式，来避免有害的 MEV：</p><img src="5.png" width="60%"><p>类似的，在金融领域，保密的交易是一个必要的功能，有些企业不可能愿意公开自己的转账记录。</p><p>Arc 在工程上，怎么解决这些问题呢？在 malachite 的 <a href="https://github.com/circlefin/malachite/tree/main/specs/starknet">项目目录</a> 下，看到了试图兼容 Starknet 的身影。Starknet 是一个 ZK Layer 2 方案，Arc 应该是想用 Layer 2 的模式来保护隐私、避免 MEV，比如链下完成交易、生成证明，链上结算，这样就很好的解决了隐私问题。</p><p>（Starknet 的技术有点意思，尤其是 Arc 为什么选择 Starknet 而不选择 ZK Scroll 之类，说明 Starknet 的技术有可取之处，有必要关注下。）</p><h3 id="链上应用"><a href="#链上应用" class="headerlink" title="链上应用"></a>链上应用</h3><p>因为 Arc 是 EVM 完备的，自然而然就可以轻易迁移一些 DeFi 应用上去。</p><h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>整个白皮书看下来，有几点没解开的疑惑：</p><ul><li>USDC 作为原生代币支付手续费，具体是怎么实现的？CometBFT 可是有一整个 Cosmos SDK 做应用层。malachite 的应用层是如何设计的？</li><li>PoA 的共识是不是有点 “小气”？</li></ul><p>总结来说，一开始对 Arc 的判断稍微有偏差，Arc 没有什么黑科技。但是 Arc 仍然有强大和专业的技术实力，基于 malachite 这样的共识层，可以做出很多有意思的应用。至于 Arc 将改变世界的判断，给现有的 Layer 1 链带来冲击肯定是会的，开发者搭建区块链会多出一些选择。</p><p>还是期待 Arc 网络正式开源和上限，期待后续，然后再次对 Arc 进行技术分析和解读。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h3 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;https://arcnetwork.xyz/&quot;&gt;Arc&lt;/a&gt; 是 Circle 公司在筹备和计划推出的一个</summary>
-        
-      
-    
-    
-    
-    
-    <category term="项目分析" scheme="https://crazy.smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
     <title>对 Remittix 项目的分析</title>
     <link href="https://crazy.smallyu.net/2025/08/17/%E5%AF%B9Remittix%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
     <id>https://crazy.smallyu.net/2025/08/17/%E5%AF%B9Remittix%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
@@ -748,33 +727,6 @@
     
     
     <category term="项目分析" scheme="https://crazy.smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>对 Midnight Network 项目的分析</title>
-    <link href="https://crazy.smallyu.net/2025/08/10/%E5%AF%B9Midnight-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
-    <id>https://crazy.smallyu.net/2025/08/10/%E5%AF%B9Midnight-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
-    <published>2025-08-09T19:16:34.000Z</published>
-    <updated>2025-11-27T17:16:12.942Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://midnight.network/">Midngiht Network</a> 早在 2022 年就 <a href="https://iohk.io/en/blog/posts/2022/11/18/iog-announces-new-blockchain-to-protect-data-and-safeguard-technology-freedoms/?utm_source=chatgpt.com">宣布成立</a> 并处于技术研发中了。今天 6 月份 <a href="https://midnight.network/blog/state-of-the-network-june-2025?utm_source=chatgpt.com">正式宣布</a> 了 NIGHT 代币的 TGE 计划，目前 NIGHT 代币的 <a href="https://www.midnight.gd/">空投</a> 仍然处于申领阶段，所以近期 Midnight Network 处于比较活跃的状态。</p><p><strong>项目简介</strong></p><p>先来概括下 Midnight Network 在干什么，<a href="https://midnight.network/whitepaper">白皮书</a> 中的介绍是，Midngiht Network 结合了 ZK 技术后，可以实现对链上的数据进行隐私保护的效果。其他公开区块链的 DApp 在和区块链进行交互的时候，必然是暴露所有用户数据和交互记录的，而 Midnight Network 试图解决这个问题，允许用户和区块链交互的时候，有一部分链上数据是保密（Shielded）的。</p><p>对于这样的项目描述，我们可能会好奇两个技术问题：</p><ol><li>Midnight Network 的项目架构是怎样的？</li><li>Midngiht Network 是如何利用 ZK 技术，实现链上数据保密的？</li></ol><p>此外白皮书里还提到了其他概念，像 DID、RWA、投票之类，这些都是噱头类型的应用场景，不用在意。</p><p><strong>项目背景</strong></p><p>Midnight Network 的资金实力非常强大，没有公开的融资信息，但是持续开发了多年，还用了 <a href="https://midnight.foundation/">Midnight Foundation</a> 这样的名字，一般的开发团队可不敢叫基金会。技术实力也比较强大，比如开发出了 <a href="https://docs.midnight.network/develop/reference/compact/writing">Compact</a> 这样的编程语言，作为智能合约的开发语言，这种语言是为了表达 ZK 电路而专门设计的。还有很多已经发布的 <a href="https://docs.midnight.network/relnotes/overview">软件</a>，包括能本地运行的 Proof server、浏览器钱包、VS Code 插件等，简直自己开发了一整套生态。由此可见 Midnight Network 拥有深厚的技术积累。</p><p>遗憾的是，Midnight Network 公开的 <a href="https://github.com/midnight-ntwrk">Github仓库</a> 里，没有开源任何核心代码，所以我们没办法从代码角度对项目的技术结构做分析，只能根据文档描述来推测技术实现。要注意，文档内容不一样靠谱，因为即使一行代码没写，文档也可以写的很全面。即使内部服务器用了单机的程序，也可以对外宣称是去中心化网络，不能因为有公开的测试网 RPC 而相信什么。</p><p><strong>共识与出块</strong></p><p>不过也不用过度担心，文档中已经公开了很多操作流程。首先借用了 Cardano 的 <a href="https://docs.midnight.network/validate/run-a-validator/">质押池</a>，Midnight 的节点会追踪 Cardano 网络的质押情况，用来确认哪些节点有出块权限，有点像是侧链的模式，但是 Midnight 又不完全依赖 Cardano 网络，Midnight 把这种模式叫做 partner chain。</p><p>Midnight 网络的 <a href="https://docs.midnight.network/develop/nodes-and-dapps/consensus">出块</a> 则是借鉴了 PolkDot 网络 Substrate 的思路，由一种叫 <a href="https://openethereum.github.io/Aura">AURA</a> 的 PoA 共识出块，<a href="https://wiki.polkadot.com/learn/learn-consensus/?utm_source=chatgpt.com#finality-gadget-grandpa">GRANDPA</a> 机制负责块的确认。PolkDot 用这种混合的共识机制，是为了迎合子网络与平行链的应用场景。而 Midnight 用这种模式，目前没有找到很好的说辞，猜测一方面是直接用了 Substrate 的代码，方面二次开发；另一方面是有兼容 ZK 服务的考虑，也许有把 proof server 放到 validator 节点的尝试。</p><p>无论是哪种情况，都能看出 Midnight Network 有硬核的开发实力，在区块链的出块、共识方面都进行了自定义改造。</p><p><strong>隐私保护</strong></p><p>Midnight Network 能实现链上隐私保护的理论基础，是 IOHK 的一篇论文 <a href="https://iohk.io/en/research/library/papers/kachina-foundations-of-private-smart-contracts/">Kachina</a>，论文很复杂，简单理解就是用 ZK 电路来描述智能合约的状态转移函数。以往的智能合约不都是公开代码来改变状态吗，Kachina 试图用 ZK 来隐藏代码细节。论文包含很多具体设计，比如 ZK 描述全部状态转移是一件困难的事情，就简化为只描述对状态预言机的访问记录。</p><p>所以对于 Midnight 的隐私保护能力，可以理解为对 Kachina 做了 <a href="https://docs.midnight.network/academy/module-4">工程化</a> 的实现，链下生成对合约操作的 ZK 证明，链上来验证这个证明，并且改变链上状态。当然这个部分很复杂，但是 Midnight 把这一套做出来了，虽然代码没开源。</p><p><strong>隐私应用</strong></p><p>由于 Midngiht 对于 ZK 成熟的应用能力，搞出了 <a href="https://docs.midnight.network/learn/understanding-midnights-technology/zswap">Zswap</a> 这种带有隐私保护的代币交换池，大意是链上只暴露了 ZK 的承诺信息，但是并不透露具体哪两种代币发生了交换，也不知道交换金额是多少。有点类似 Zcash 的效果，但是做的更好。</p><p><strong>代币模型</strong></p><p>Midnight 的代币模型搞的也很复杂，有 NIGHT 和 DUST 两种代币，因为 Midnight 网络本身的节点结构就复杂。NIGHT 是发行在 Cardano 上的，用 partner chain 的方式 1:1 锚定到 Midnight 上。DUST 则用来支付 Midnight 网络的手续费，持有 NIGHT 会不断产生 DUST，类似 Tron 网络的能量，持有 Trx 就会产生能量那种。</p><p><strong>小结</strong></p><p>Midnight Network 拥有很强的技术实力，无论是区块链方面的出块和共识机制，还是对于 ZK 在工程方面的落地能力，都有很大的技术难度，不是一般开发团队能胜任的。尽管叙事上不太接近当前的热点，应该不会很出圈，但是技术方面如果开源的话，肯定会留下浓墨重彩的一笔。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://midnight.network/&quot;&gt;Midngiht Network&lt;/a&gt; 早在 2022 年就 &lt;a</summary>
-        
-      
-    
-    
-    
-    
-    <category term="项目分析" scheme="https://crazy.smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/"/>
-    
-    <category term="ZK" scheme="https://crazy.smallyu.net/tags/ZK/"/>
     
   </entry>
   
@@ -1621,34 +1573,6 @@ li:nth-child(even) {
     
     
     <category term="梦想" scheme="https://crazy.smallyu.net/tags/%E6%A2%A6%E6%83%B3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>工作两年的体会</title>
-    <link href="https://crazy.smallyu.net/2021/07/23/%E5%B7%A5%E4%BD%9C%E4%B8%A4%E5%B9%B4%E7%9A%84%E4%BD%93%E4%BC%9A/"/>
-    <id>https://crazy.smallyu.net/2021/07/23/%E5%B7%A5%E4%BD%9C%E4%B8%A4%E5%B9%B4%E7%9A%84%E4%BD%93%E4%BC%9A/</id>
-    <published>2021-07-23T10:03:03.000Z</published>
-    <updated>2025-11-27T17:16:13.052Z</updated>
-    
-    <content type="html"><![CDATA[<p>如果你看到了这些内容，那么我已经离开上一家公司，开始了新一个阶段的职业生涯。</p><h3 id="最后的稻草"><a href="#最后的稻草" class="headerlink" title="最后的稻草"></a>最后的稻草</h3><p>在一次技术分享会议上，我意识到我的技术理念和上级、和公司、甚至有可能和整个行业不同。这无关对错，没有冲突没有矛盾，仅仅只是 —— 不同。</p><p>我希望技术用来解决技术问题，更关注技术的发展趋势和形态，我并非不会让技术变得具体，只是不认为 “具体” 意味着深度，尤其是把 “具体” 和人类的心理（信任模型）联系起来。具体的技术可以解决特定的问题，有价值，可是格局小了，我不会满足于那样的程度。</p><p>比如，我认为,计算机和计算机之间的路由器，就是负责转发网络消息、保证消息准确无误到达目标计算机的，不应该牵扯到消息的具体内容。如果是转账消息，路由器还应该冻结转出方的资金保证交易事务的顺利完成？这太扯淡了。</p><p>当然不仅仅是这样的原因，只是因此突然产生了出去看看的想法。想法的产生只需要一瞬间，在上级纠正我的观点时，我绝对承认上级在技术问题上，尤其是在业界，理解上的正确性。只是突然觉得，这一切都太无聊了。那个圈，我跳不出去。</p><p>即使没有实现理想的实力，也不妨碍继续拥有理想。</p><p>一直只知道远处的山上有恶龙，现在发现，山脚下有怪物挡住了上山的路，山脚下的怪物，名字叫权威。</p><h3 id="时机"><a href="#时机" class="headerlink" title="时机"></a>时机</h3><p>去年上半年也产生过离开的想法，原因是，当时完全在从事没有技术含量的 CRUD 项目，我不能就那样下去。其实今年的原因也类似。</p><p>后来没有离开的原因，不是工作经验或者技能情况。当面试官问我一些很无聊的问题时，我突然觉得，我没有兴趣再继续找工作。换个地点上班并不能解决我的问题，不应该把技术能力的提升期望于任职的公司。甚至，我其实自己都没想清楚，对新工作的诉求是什么。外加当时大环境影响，面试不方便，以及当时的上级后来给了我不少发挥的空间，就安静呆着了。</p><p>去年下半年，降薪，项目失败，部门人心动荡，离职率高。有同事问我，为什么不跳槽？我倒一直不那么看重薪水，尤其当时在 “忙” 一些别的事情，自己的事情，没有心思关注工作的问题。包括今年也是，不是想不想，是没有去想，个人问题太多了，顾不上想。</p><p>现在是一个好的时机吗？好不好不知道，至少闲下来了。你也许能想象到，一开始看原生的英文视频和电视剧，感觉多么痛苦，听也听不懂，看也看不懂。有一段时间对美剧丧失兴趣，完全不想看，因为 TM 看不懂啊。</p><p>在个人能力的问题上，有一个简单的逻辑。如果我的能力拿得出手，我将找到更好的工作机会。如果我的能力拿不出手，那我必须得走，无论成本多高，即使挣不到钱、交不起房租、在这座城市生存不下去，一定要走。如果只有现在的公司认可我，我就会苟活在这里吗？在现在的公司算是 “被” 核心，但是一两家公司对我认可与否，并不能说明什么。我从来没有期望拿到比自己能力更多的报酬。</p><p>这两年来，我没有闲着。虽然没有把时间用在刷题或背基础知识上，但确实没闲着。速度和加速度，我选择了提高加速度。斧子和木头，我选择了打造更好的斧子。我花费时间，让自己成为一个更好的人类，而不是成为一个更好的码农。</p><p>在工作时间没有明确工作安排的时候，我在摸鱼吗？是的。但那种鱼摸起来，异常痛苦。我需要时刻思考，接下来做什么？我能做哪些工作相关的有价值的事情？每天早上醒来、每天晚上下班，想的都是，今天干什么？明天干什么？明明我已经尽力了，可什么事情都做不了。在工作上，我问心无愧（基本上）。不是故意偷懒，是实在想不到可以做的事情，何况连上级都没有。我才是真正想做些事情的人。</p><p>关于面试，我不希望刻意准备什么。必要的回顾和梳理经历是必要的，但不应该关注面试题。技术能力不可能一时半会儿提高，那种能短时间学会的东西，在哪儿学不一样呢，无论身处现在的公司还是未来的公司。我需要的，也许是一个试用期。如果能力不够份，我会自觉知趣地主动离开（当然，我知道现实社会不是那样运作）。我希望可以压力缓和的完成这次跳槽，如果在找工作过程中突然启动某个主题的学习计划，手忙脚乱不说，可能连找工作的兴趣都没了。</p><p>突然回想起在大学的时候，每次考试的前一天晚上，教室封楼，所有人都在宿舍里专心急迫地看书复习，校园里、操场上空无一人。只有我在外面溜达、在宿舍睡觉。需要会的已经在脑子，不会的临时看也没什么意思。</p><p>如果这次找工作遇到了比较大的阻力，那么我将会用亲身经历验证一个浅显的道理：两三年的工作经验远没有两三年的学历证书重要。我自认为学校里充满各种形式化的事情，各种魔幻的心理状态，无法教给我真正有用的知识。</p><p>（事实上，面试机会还是不少的，把握不住，是我自己的原因了。）</p><h3 id="一些事"><a href="#一些事" class="headerlink" title="一些事"></a>一些事</h3><p>以前没有在博客里提起，因为这些事情对我没有 “成长” 上的意义。虽然有接近 1 年的时间都牵扯在这一系列事情和情绪里面，但确实没有意义，不值一提。现在回忆一下作为记录，防止以后忘得太彻底。</p><h4 id="第一阶段"><a href="#第一阶段" class="headerlink" title="第一阶段"></a>第一阶段</h4><p>部门分两个小组，应用层小组和底层小组，简称 A 组和 B 组。我当时从属于 A 组。其实部门并没有多么明确的权限划分，我也没有搞山头的意思。</p><p>去年下半年，一个项目需要我（A组组员）和 B 组的组长合作，共同完成一件事情。从我当时的立场看，我只是个写代码的，出于在 A 组的工作经历以及对 A 组组长一定程度上的信任，心想好歹也是 B 组的组长，我又不太懂那个项目，他说什么我照做就是了。</p><p>实际的合作过程中却被难受了一把。他的思维逻辑没有足够条理，一会儿测场景一，一会二测场景二，一会儿又要测场景一。然后突然产生个想法，说那就测一下验证一下，场景一和场景二都测。完全想到哪儿做到哪儿。我们测的是分布式系统，有 4 ~ 6 台机器，每台机器上 2 ~ 3 个程序，切换场景需要所有的程序改配置、重启、清日志、记录机器状态、记录结果、分析结果等，还是在远程桌面、网络延迟到能让人爆炸的情况下。其实这个还能忍受，当时也没有多想什么，只是觉得这样的工作有点枯燥繁琐，有点抵触。</p><p>重点在于他不信任我。我事后复盘了一下，他在整个过程中、对我指手画脚的这些工作中，得出的结论，全是我早就已经知道的结论。他连带我消耗的那些时间，完全没有对事情起到推进作用。我事前就和他说过，结论是怎样怎样，然后他说，“那这个得跑一下”，“看看结果” 之类。我当时对自己没有足够的信心，毕竟他的 title 在那儿，而且我也期望他可以得到什么不一样的、更有用的结论，就听他的了。结果呢，他让我做的事情，只是把我的结论又验证了一遍。我开始对他的能力产生质疑。</p><p>后来又隔了几天，他让我重新验证一遍之前最好的一次结果。我在一些操作后，说直接写结论是多少吧。他坚持让我再操作一遍，把过程和结果拿给他。我就生气了，问 “这次测试的目的是什么？是为了把结果给你看一眼吗？” 我心想，我工作的内容就是给你打下手？我工作的价值就是给你看结果，让你相信我？在这件事情上，我们是合作的关系，还是从属关系？我凭什么做这样的事情？是你高估了自己，还是低估了我？你要真有能力也行，问题是你没有。</p><p>然后我的解决方法是，我对他说，以后再有事情，找我的领导（组长或部门负责人），让我的领导来协调，而不是直接命令我。意思就是让我的组长帮忙挡一下，拦掉一些没意义的事情。我从立场上并不能直接拒绝他，说这事我不干。如果我的领导一致认为一件事情是有意义的，从工作的角度，我肯定没有理由拒绝领导安排的工作内容。另外，如果我的领导一致认为我的工作内容就应该是给他打下手，那我当场辞职。</p><h4 id="第二阶段"><a href="#第二阶段" class="headerlink" title="第二阶段"></a>第二阶段</h4><p>经过第一阶段的事情后，我偶尔还瞎想，要是有一天领导要求或安排，我转到他们那个小组了，肯定得搞得天翻地覆，因为我并不信任他（B 组组长）的能力，我不会放心地把工作内容交给他。</p><p>然后神奇的事情发生了。B 组组长离职，B 组的某个组员成为组长，我转岗成为 B 组组员.</p><p>这 NM 搞笑呢？别说 B 组组员升的组长，就是原组长在的时候我也不服啊？甚至原组长的上一任组长、部门技术负责人（已离职），我也是一开始就怼的。</p><p>我确实没服。一个人突然来当我组长、当我领导，有权力安排我接下来要做的工作，这样的人，我不得先试试他的水平吗？我不可能轻易把将来的工作时间，任由没能力的领导瞎指挥瞎浪费啊。</p><p>然后我就用比较生硬的方式搞了点事情。^_^</p><p>事实上，各种迹象都表明，他（现任 B 组组长，即将离职）能力确实不行。不是说技术能力，是指当组长的能力。一般来说，一个内心和实力都强大的人，无论面对别人怎样的质疑，都应该是岿然不动、稳如泰山的。结果他那儿直接就歇菜了，没有反驳，甚至还有点认可和顺从我说的话、我的行为。自己都承认自己不行，那我干嘛听你的？</p><p>最后是部门负责人出面协调解决。当我说出我的判断时，部门负责人说，你不应该反抗他，而是帮助他，一起完成该做的事情……（侧面默认了我的观点，至少面对我是这样的说辞）</p><p>事后，部门负责人还找我谈话，大概意思是，你最近没有搞事情吧？你不要再说他了，再说他就要想走了，我怕他走……</p><h4 id="第三阶段"><a href="#第三阶段" class="headerlink" title="第三阶段"></a>第三阶段</h4><p>或许你会觉得，第一阶段和第二阶段都是我的问题，是我让他们的工作遇到了阻力。要是换个听话一点、服从性强的人，就完全不会发生那样的事情。</p><p>换个角度想，也许是他们太弱了，连我都压不住。我不可能主动降低自己的标准，假装服从他们的安排。</p><p>我到目前还是相信，无论身份、地位、背景、履历，过去多么辉煌、现在多么有钱、关系网络多么庞大、人际来往多么高端，技术就是技术，逻辑就是逻辑。不会因为一个人是部门负责人、首席架构师、行业知名人士，他说的话、他的技术观点就是绝对正确的。</p><p>这是一个能压得住我的人。</p><p>所以我换工作了。 :P</p><h3 id="一些坏话"><a href="#一些坏话" class="headerlink" title="一些坏话"></a>一些坏话</h3><p>我喜欢《海贼王》的故事。</p><p>如果你在一艘几乎停摆的船上。连船长都不知道，船往什么方向开，要到什么地方去。你还敢坐吗？</p><h3 id="感谢公司"><a href="#感谢公司" class="headerlink" title="感谢公司"></a>感谢公司</h3><p>必须要说明的是，上面提到的事情是从非常片面的视角、带有强烈主观个人情绪的描述。公司员工关系和睦、领导管理有方，基本不存在让人不愉快的事情。我只不过是把某条线单独拿出来说了，公司带给我的正面记忆远比写出来的事情多，我的成长离不开每一个遇到过的人。</p><p>感谢公司出现在我生命中的这两年半的时间。</p><h3 id="感谢上级"><a href="#感谢上级" class="headerlink" title="感谢上级"></a>感谢上级</h3><p>在交接工作的时间里，我一度担心会被领导卡离职流程，甚至想好了各种对策来应对各种有可能发生的情况。这种担心的主要的来源，不是上级，也不是我的交接对象，而是另一个和我的工作无关也和我的交接无关的人。</p><p>他的逻辑基本上是，在我离职后，某些事情（不是我的本职工作，友情支持）他们自己处理起来会有困难，所以期望我在离职前就做好一些一步到位的事情。我推测他的动机有两种可能：一种是他认为自己技术能力不足，无法顺利完成某些事情；另一种可能是，他认为这些本该由他自己处理的事情，比较繁琐复杂，他也懒得做，就借机推卸事情，让我做。</p><p>无论是哪一种可能，都应该和我的离职流程无关才对，但也就是稍有点担心，他会以此去影响领导在离职流程上的判断之类，因为在新的组织架构和工作安排上，他是比较重要的承担工作的人，在领导那里可能会有比较高的权重，算是我小人之心了。我相信领导还是拎得清的，事实上也确实没有出现不合理的情况。</p><p>比起这种具体的小事，我倒是更在意，其实我现在离职得稍微有点早，还没有做一些什么事情，就走了。主要也不敢继续留在这里，这次换工作，更像是在逃生。我不敢牺牲以后的可能性，在这里做不知道结局的事情。</p><p>对以前和现在的上级心怀愧疚中心怀感激。</p><h3 id="新的工作"><a href="#新的工作" class="headerlink" title="新的工作"></a>新的工作</h3><p>在新的工作上，我认为会离 “自由” 更近一步。</p><p>这里的自由也许包含多种含义，但我明面上肯定只会承认技术意义上的自由。可以接触真正的互联网，是无法用社会资源衡量的精神财富。</p><h3 id="祝好"><a href="#祝好" class="headerlink" title="祝好"></a>祝好</h3><p>将军不下马，各自奔前程。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;如果你看到了这些内容，那么我已经离开上一家公司，开始了新一个阶段的职业生涯。&lt;/p&gt;
-&lt;h3 id=&quot;最后的稻草&quot;&gt;&lt;a href=&quot;#最后的稻草&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="梦想" scheme="https://crazy.smallyu.net/tags/%E6%A2%A6%E6%83%B3/"/>
-    
-    <category term="工作" scheme="https://crazy.smallyu.net/tags/%E5%B7%A5%E4%BD%9C/"/>
     
   </entry>
   
