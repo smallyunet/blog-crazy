@@ -24,3 +24,9 @@ tags: AI
 
 Gemini 3 Pro 还真是不错。
 
+### 更新（2026.06.18）
+
+GPT 模型依然最好！尤其是代码能力上，CodeX 比 Antigravity 好用很多！
+
+Gemini 模型有一个尴尬的地方，Gemini 3.1 Pro 太慢了，不能写代码，代码效果尤其是推理逻辑链方面不够强，新的 Gemini 3.5 Flash 虽然快且全面，但是智力不够。
+
