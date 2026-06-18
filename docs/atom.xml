@@ -589,9 +589,9 @@
     <link href="https://crazy.smallyu.net/2025/11/19/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4GPT%E6%98%AF%E4%B8%96%E7%95%8C%E4%B8%8A%E6%9C%80%E5%A5%BD%E7%9A%84AI%E6%A8%A1%E5%9E%8B/"/>
     <id>https://crazy.smallyu.net/2025/11/19/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4GPT%E6%98%AF%E4%B8%96%E7%95%8C%E4%B8%8A%E6%9C%80%E5%A5%BD%E7%9A%84AI%E6%A8%A1%E5%9E%8B/</id>
     <published>2025-11-19T10:00:34.000Z</published>
-    <updated>2025-11-27T17:16:13.047Z</updated>
+    <updated>2026-06-18T13:53:57.305Z</updated>
     
-    <content type="html"><![CDATA[<p>因为 BTC 是世界上最好的加密货币。</p><br><h3 id="打脸（2025-11-22）"><a href="#打脸（2025-11-22）" class="headerlink" title="打脸（2025.11.22）"></a>打脸（2025.11.22）</h3><p>从各种 Benchmark 结果来看，Gemini 3 Pro 还真是全面超过 GPT-5：</p><p>(1)<img src="1.png" width="100%"/></p><p>(2)<img src="2.png" width="100%"/></p><p>另外我试着把以前写的小说《<a href="https://smallyu.net/2014/10/04/%E4%B8%8A-%E9%9B%AA%E8%8A%B1%E8%B0%A3%E2%80%A2%E9%99%88%E7%BC%98/">（上）雪花谣 • 陈缘</a>》分别给 GPT-5 和 Gemini 3 Pro 续写，结果 GPT-5 写出来的人物关系是错的，相比之下，Gemini 3 Pro 写出来的就比较正确。</p><p>还有个例子是，我把 <a href="https://smallyu.net/">https://smallyu.net/</a> 的文章列表，分别给 ChatGPT 5.1、Gemini 3 Pro、Grok 4 三种模型，让他们判断作者的年龄。只有 Gemini 3 Pro 给出的判断是异常精准的，仅根据文章标题中的关键字的演进，就给出了准确的年龄判断。另外两个模型给出的年龄都稍微偏大，误差在 2 年以上。</p><p>Gemini 3 Pro 还真是不错。</p>]]></content>
+    <content type="html"><![CDATA[<p>因为 BTC 是世界上最好的加密货币。</p><br><h3 id="打脸（2025-11-22）"><a href="#打脸（2025-11-22）" class="headerlink" title="打脸（2025.11.22）"></a>打脸（2025.11.22）</h3><p>从各种 Benchmark 结果来看，Gemini 3 Pro 还真是全面超过 GPT-5：</p><p>(1)<img src="1.png" width="100%"/></p><p>(2)<img src="2.png" width="100%"/></p><p>另外我试着把以前写的小说《<a href="https://smallyu.net/2014/10/04/%E4%B8%8A-%E9%9B%AA%E8%8A%B1%E8%B0%A3%E2%80%A2%E9%99%88%E7%BC%98/">（上）雪花谣 • 陈缘</a>》分别给 GPT-5 和 Gemini 3 Pro 续写，结果 GPT-5 写出来的人物关系是错的，相比之下，Gemini 3 Pro 写出来的就比较正确。</p><p>还有个例子是，我把 <a href="https://smallyu.net/">https://smallyu.net/</a> 的文章列表，分别给 ChatGPT 5.1、Gemini 3 Pro、Grok 4 三种模型，让他们判断作者的年龄。只有 Gemini 3 Pro 给出的判断是异常精准的，仅根据文章标题中的关键字的演进，就给出了准确的年龄判断。另外两个模型给出的年龄都稍微偏大，误差在 2 年以上。</p><p>Gemini 3 Pro 还真是不错。</p><h3 id="更新（2026-06-18）"><a href="#更新（2026-06-18）" class="headerlink" title="更新（2026.06.18）"></a>更新（2026.06.18）</h3><p>GPT 模型依然最好！尤其是代码能力上，CodeX 比 Antigravity 好用很多！</p><p>Gemini 模型有一个尴尬的地方，Gemini 3.1 Pro 太慢了，不能写代码，代码效果尤其是推理逻辑链方面不够强，新的 Gemini 3.5 Flash 虽然快且全面，但是智力不够。</p>]]></content>
     
     
       
