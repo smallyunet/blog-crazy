@@ -1,14 +1,14 @@
 ---
-title: 不要Copy Trading
+title: 不要 Copy Trading
 date: 2026-06-30 15:09:12
 tags: Copy Trading
 ---
 
-来理解一下Copy Trading的本质是什么。
+来理解一下 Copy Trading 的本质是什么。
 
 本质就是我什么都不需要懂，我看到一个人有钱，我想直接跟着对方赚钱，抄近路、走近道、抄作业。
 
-假如Copy Trading真的能赚钱，有几个人靠这个赚到钱的？
+假如 Copy Trading 真的能赚钱，有几个人靠这个赚到钱的？
 
 有几个人靠抄作业抄成学霸的？
 
