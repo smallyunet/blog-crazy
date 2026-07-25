@@ -1,0 +1,104 @@
+- var pageTitle = page.title || config.title || ''
+- var root = config.root
+// Stable asset version (for cache busting without full-site churn)
+- var assetVersion = theme.asset_version || ''
+- var vq = assetVersion ? ('?v=' + assetVersion) : ''
+
+doctype html
+html(lang=config.language)
+  head
+    title= pageTitle
+    meta(http-equiv="content-type", content="text/html; charset=utf-8")
+    // Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices
+    meta(name="viewport", content="width=device-width, initial-scale=1.0, viewport-fit=cover")
+    // iOS Safari / PWA status bar style (use default so text stays legible on light background)
+    meta(name="apple-mobile-web-app-capable", content="yes")
+    meta(name="apple-mobile-web-app-status-bar-style", content="default")
+    // SEO basics
+    - var description = page.description || (page.excerpt ? strip_html(page.excerpt) : '') || config.description
+    meta(name="description", content= description)
+    // Open Graph & Twitter
+    - var canonicalUrl = (config.url || '') + (config.root || '') + (page.path || '')
+    link(rel="canonical", href= canonicalUrl)
+    meta(property="og:title", content= pageTitle)
+    meta(property="og:type", content= (is_post() ? "article" : "website"))
+    meta(property="og:url", content= canonicalUrl)
+    meta(property="og:site_name", content= config.title)
+    if page.thumbnail
+      meta(property="og:image", content=(config.url || '') + (config.root || '') + page.thumbnail)
+    meta(name="twitter:card", content="summary_large_image")
+    // Browser UI color
+    meta(name="theme-color", media="(prefers-color-scheme: light)", content="#ffffff")
+    meta(name="theme-color", media="(prefers-color-scheme: dark)", content="#0f1115")
+    
+    //- link(rel='icon' type='image/svg+xml' href=root+'favicon.svg')
+    link(rel="apple-touch-icon" sizes="180x180" href=root+"apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href=root+"favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href=root+"favicon-16x16.png")
+    link(rel="manifest" href=root+"site.webmanifest")
+    // stylesheets
+    // Use a stable, configurable asset version to prevent full-site churn on every build.
+    // Set `asset_version` in theme _config.yml when you actually change CSS/JS.
+    link(rel='stylesheet', href=root+"css/xcode.min.css" + vq)
+
+    if is_home() || is_tag() || page.type=='home' || page.type=='tags' || page.type=='404' || page.type=='display' || page.navbar
+      link(rel='stylesheet', href=root+"css/bootstrap.min.css" + vq)
+      link(rel='stylesheet', href=root+"css/home.css" + vq)
+    else 
+      link(rel='stylesheet', href=root+"css/post.css" + vq)
+
+    // unified typography overrides for both home and post pages
+    link(rel='stylesheet', href=root+"css/typography.css" + vq)
+
+  body
+    if is_home() || is_tag() || page.type=='home' || page.type=='tags' || page.type=="404" || page.type=='display' || page.navbar
+      nav.navbar.navbar-default.navbar-fixed-top(style={opacity:".9"}, role="navigation")
+        div.container-fluid
+          div.navbar-header
+            button.navbar-toggle.collapsed(type="button", data-toggle="collapse", data-target="#navbar-bs")
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand(
+              href=root,
+              title=config.title_tooltip,
+              data-toggle="tooltip",
+              data-placement="right"
+              )= config.subtitle
+          div.navbar-collapse.collapse#navbar-bs(style={height:"1px"})
+            ul.nav.navbar-nav.navbar-right
+              - var currentPath = (page.path || '')
+              each url, label in theme.menu
+                - var isActive = false
+                if url == ''
+                  // Root menu: active on home
+                  // Only mark active on the actual homepage. Some pages reuse `type: home` for layout, which should not trigger active here.
+                  - isActive = is_home()
+                else if url == 'tags'
+                  - isActive = page.type == 'tags'
+                else
+                  // For other menu items, mark active when current page path starts with url (covers display pages like micro-blog)
+                  - isActive = currentPath.indexOf(url) === 0
+                li(class=(isActive ? 'active' : ''))
+                  - var href = url.startsWith('http') ? url : root + url
+                  a(href=href, target=theme.header.blank ? "_blank" : "_self")= label
+
+    if body
+      div!= body
+    else
+      block content
+  
+  // Defer non-critical scripts for better performance
+  script(defer src=root+"js/jquery.min.js" + vq)
+  script(defer src=root+"js/highlight.min.js" + vq)
+  script(defer src=root+"js/main.js" + vq)
+  script(defer src=root+"js/lightbox.js" + vq)
+  script(defer src=root+"js/bootstrap.min.js" + vq)
+
+  if theme.google_analysis.enable
+    script(async="" src="https://www.googletagmanager.com/gtag/js?id="+theme.google_analysis.id)
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '#{theme.google_analysis.id}');

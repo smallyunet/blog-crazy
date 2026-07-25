@@ -1,0 +1,49 @@
+# Navigation bar without starting with a slash
+menu:
+  博客: ''
+  # 微博: 'https://t.smallyu.net'
+  关于: about
+
+# Recommended to enable when the page count is more than 1
+paginator: false
+
+# Header section
+header:
+  blank: false     # Open header links in a new tab
+
+# Article list
+list:
+  date: true       # Display date in the article list
+  wordcount: true  # Display word count
+
+# Footer section
+footer:
+  display: false               # Display the footer
+  context: "© smallyu.net"     # Footer content
+
+# Article page
+post:
+  title_h1: true               # Use h1 for article titles
+  blank: false                 # Open articles in a new tab
+  backHome: false              # Display back to home at the end of the article
+  backhome_right: false        # Align back to home content to the right
+  backHome_hr: false           # Display a divider line before back to home
+  backHome_prefix: "↶ "        # Prefix content for back to home
+  backHome_content: "Back to Home"  # Main content for back to home
+  backHome_suffix: ""          # Suffix content for back to home
+  show_tags: false             # Display tags at the end of the article
+  enable_hidden: true
+
+# Tag cloud
+tags:
+  all: false       # Display all tags on the tag cloud page
+
+# Micro-blog (removed)
+
+google_analysis:
+  enable: true
+  id: G-Y7C0CVX9PK
+
+# Static assets version (for cache busting). Bump this when CSS/JS changes.
+# Leaving it empty avoids touching all generated HTML on each build.
+asset_version: "v1.1"

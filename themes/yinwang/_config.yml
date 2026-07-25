@@ -3,10 +3,6 @@ menu:
   博客: ''
   微博: 'https://t.smallyu.net'
   关于: about
-  # 捐赠: donation
-  # 我的定投: ri
-  # English: https://en.smallyu.net
-  # 加群: "https://smallyu.net/2025/11/23/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E4%BA%A4%E6%B5%81%E7%BE%A4/"
 
 # Recommended to enable when the page count is more than 1
 paginator: false

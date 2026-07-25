@@ -1,0 +1,731 @@
+/*
+  Typography system (Chinese-optimized)
+  - Unify font stacks for Chinese and Latin
+  - Establish consistent rhythm (font-size, line-height, spacing)
+  - Improve readability for headings, paragraphs, lists, quotes, code
+  - Responsive scaling
+
+  Design principles
+  - Base size: 18px (desktop), 16px for micro-blog, 32px for body.mobile retained but scaled.
+  - Line height: body 1.8 for CJK; headings tighter but >=1.3
+  - Modular scale: 1.25 (Minor Third) for headings
+  - Comfortable paragraph spacing and list spacing
+  - Chinese-friendly font stack prioritizing PingFang/Hiragino/Microsoft YaHei
+*/
+
+/* ===================== */
+/* CSS variables / theme */
+/* ===================== */
+
+:root {
+  /* Scale variables */
+  --font-size-base: 18px; /* body base on desktop */
+  --font-size-sm: 0.8889rem; /* ~16px from 18px base */
+  --font-size-xs: 0.7778rem; /* ~14px */
+  --font-size-code: 0.8889rem; /* inline/code blocks */
+
+  /* Heading size tokens (desktop defaults) */
+  --h1-size: clamp(1.75em, 4.2vw, 2em);
+  --h2-size: 1.6em;
+  /* h3 tuned to 1.17em per design */
+  --h3-size: 1.17em;
+  --h4-size: 1.1em;
+  --h5-size: 1.0em;
+  --h6-size: 0.8889em; /* ≈ 16px on 18px base */
+
+  --lh-base: 1.8;  /* Recommended for Chinese text */
+  --lh-tight: 1.3; /* Code, headings minimal */
+  /* List-specific line heights (tokens used by article content) */
+  --lh-list-desktop: 1.72;
+  --lh-list-mobile: 1.75;
+
+  /* Background and surfaces */
+  --bg-color: #f7f8fa;           /* neutral light gray to reduce blue cast */
+  --surface-1: #ffffff;          /* primary surfaces (cards/containers) */
+  --surface-2: #f3f4f6;          /* neutral secondary surface */
+
+  --color-text: #111;
+  --color-muted: #666;
+  --text-muted: #6b7280; /* slate-500 for secondary text */
+  /* Accent & link colors (adjust here to switch theme hues) */
+  --color-accent: #7a3cff; /* accent used in some elements */
+  --link-color: #2563eb;      /* blue-600 */
+  --link-hover: #1d4ed8;      /* blue-700 */
+  --link-visited: #1e40af;    /* blue-800 */
+  --color-hr: #e5e5e5;
+  /* Unified border tokens for cards, boxes, images, details, etc. */
+  --border-color: #e2e6ea;           /* slightly darker than hr for visible edges */
+  --border-color-subtle: rgba(0,0,0,0.06); /* hairline separators */
+  --color-quote-bg: #fafafa;
+  --color-quote-border: #e0e0e0;
+  --color-code-bg: #f6f6f6;
+  --color-code-border: #e2e2e2;
+
+  /* UI Colors */
+  --color-hover-bg: #f6f9ff;
+  --color-notice: #AA4433;
+  --color-tag-link: #77b3e0;
+  --color-tag-link-hover: #559bce;
+  
+  /* Shadows */
+  --shadow-card: 0 1px 6px rgba(30,41,59,0.05);
+  --shadow-image: 0 1px 4px rgba(0,0,0,0.08);
+  --shadow-image-hover: 0 4px 18px rgba(0,0,0,0.12);
+
+  /* Heading */
+  --heading-color: #333;
+  --heading-underline: #e6e6e6;
+  --heading-underline-accent: var(--link-color);
+
+  /* ===================== */
+  /* Structural layout tokens (light & dark shared) */
+  /* ===================== */
+  /* Homepage article list container paddings (desktop) */
+  --list-pad-x: 24px;
+  --list-pad-y: 24px;
+  /* Homepage outer horizontal margin (desktop max, shrink on narrower viewports)
+    Keep 10% each side on wide screens; below ~1280px, reduce smoothly so the
+    content doesn’t get cramped. Minimum ~24px to align closely with the 3% phone
+    gutters at the 860px breakpoint (~26px). */
+  --home-outer-margin-x: clamp(24px, calc((100vw - 1024px)/2), 10%);
+  /* Homepage list row metrics */
+  --list-grid-gap: 16px;
+  --date-col-width: 10ch; /* width reserved for date column */
+  --row-pad-y: 16px; /* vertical padding in each list-group-item row */
+  --row-separator-inset-left: 8px; /* gradient separator horizontal inset */
+  --row-separator-inset-right: 8px;
+
+  /* Navbar (desktop) */
+  --navbar-font-size-desktop: 20px;
+  --navbar-height-desktop: 54px; /* align brand + links vertically */
+
+  /* Post (article) page container */
+  /*
+    Horizontal margin around the article card (.inner).
+    Old behavior: fixed 14% each side then hard jump to 0 at <=860px.
+    New behavior: fluid shrink:
+      - Keep 14% on very wide viewports (> ~1528px) to preserve generous white space.
+      - Between ~1528px and 1100px shrink smoothly using a calc() based on viewport width.
+      - Never go below a small safety gutter (8px) before the mobile breakpoint.
+      - Mobile media query (<=860px in post.css) still forces margin to 0 for edge-to-edge style.
+    Formula explanation:
+      middle = (100vw - 1100px)/2
+      When vw = 1528px => middle ≈ 214px; 14% of 1528 ≈ 214px (switch point)
+      When vw = 1100px => middle = 0 < 8px => clamp picks 8px (minimum gutter)
+    Adjust 1100px if you want the start of the minimal gutter earlier or later.
+  */
+  /*
+    Only shrink when the viewport gets narrower (never wider than original):
+    - Keep 14% each side on typical/wide desktops (>=1280px). This preserves the
+      original content width (72% of viewport).
+    - Below ~1280px, reduce margins smoothly by tying them to (100vw - 922px)/2.
+      922px ≈ 0.72 * 1280px, so at 1280px the two formulas meet exactly.
+    - Never go below an 8px safety gutter before the mobile breakpoint.
+    - At <=860px, post.css already sets outer margin to 0 for edge-to-edge.
+  */
+  --post-inner-margin-x: clamp(8px, calc((100vw - 922px)/2), 14%);
+  --post-inner-pad-top: 2%;
+  --post-inner-pad-x: 8%;
+  --post-inner-pad-bottom: 4%;
+
+  /* Narrow variant (if used) */
+  --post-inner-narrow-margin-x: 7%;
+
+  /* Post mobile container paddings */
+  --post-mobile-pad-top: 8px;
+  --post-mobile-pad-x: 22px;
+  --post-mobile-pad-bottom: 20px;
+
+  /* Mobile list paddings */
+  --list-pad-x-mobile: 12px;
+  --list-pad-y-mobile: 8px;
+}
+
+/* ==================== */
+/* Base / document root */
+/* ==================== */
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", "WenQuanYi Micro Hei", "Helvetica Neue", Arial, sans-serif;
+  color: var(--color-text);
+  background: var(--bg-color);
+  color-scheme: light dark; /* enable form controls adapting to theme */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base sizing */
+body { font-size: var(--font-size-base); }
+
+/* ===================== */
+/* Headings hierarchy    */
+/* ===================== */
+h1, h2, h3, h4, h5, h6 {
+  margin: 1.4em 0 0.8em; /* slightly tighter top spacing by default */
+  line-height: 1.35;
+  color: var(--heading-color);
+  font-weight: 600;
+}
+
+/* Keep the classic Palatino look for main titles but fallback sensibly for CJK */
+h1, h2 {
+  font-family: "Palatino Linotype", Palatino, "Times New Roman", STKaiti, "Kaiti SC", serif;
+}
+
+h1 { font-size: var(--h1-size); }
+h2 { font-size: var(--h2-size); }
+h3 { font-size: var(--h3-size); }
+h4 { font-size: var(--h4-size); }
+h5 { font-size: var(--h5-size); }
+h6 { font-size: var(--h6-size); }
+
+/* Center main H1 as original theme does */
+h1 { text-align: center; }
+
+/* Let non-centered headings shrink-wrap so underline can follow text width */
+h2, h3 { display: inline-block; }
+
+/* Remove legacy full-width borders from theme for a cleaner look */
+h2, h3, h4 { border-bottom: none; }
+
+/* Decorative underlines using pseudo-elements (proportional, not full-width) */
+/* Shared base for heading underlines to avoid duplication */
+h1::after,
+h2::after,
+h3::after {
+  content: "";
+  display: block;
+  background: var(--heading-underline);
+  border-radius: 2px;
+}
+
+h1::after {
+  width: 6em;   /* proportional to title, not too long */
+  max-width: 80%; /* responsive: never exceed title width on narrow screens */
+  height: 3px;
+  margin: 0.45em auto 0; /* center under H1 */
+}
+
+h2::after {
+  width: 100%; /* follow text width */
+  height: 2px;
+  margin-top: 0.4em;
+}
+
+/* ------------------------------ */
+/* Mobile typography refinements  */
+/* ------------------------------ */
+@media screen and (max-width: 860px) {
+  /* Mobile base */
+  :root {
+    /* Keep global mobile base at 17px for non-article pages (homepage, lists, titles) */
+    --font-size-base: 17px;
+    --font-size-code: 0.875rem; /* keep code readable but compact */
+
+    /* Override structural tokens for mobile where needed */
+    --navbar-height-desktop: 44px; /* treated as mobile navbar height */
+    --list-pad-x: var(--list-pad-x-mobile);
+    --list-pad-y: var(--list-pad-y-mobile);
+  }
+
+  /* Balanced mobile heading scale via variables */
+  :root {
+    --h1-size: clamp(1.6em, 7vw, 1.9em);
+    --h2-size: clamp(1.25em, 4.2vw, 1.4em);
+    /* Fix h3+ to non-fluid sizes on mobile to avoid width-driven jumps */
+    --h3-size: 1.15em; /* previously fluid 1.05–1.20em */
+    --h4-size: 1.06em; /* previously fluid 1.00–1.08em */
+    --h5-size: 0.95em;
+    --h6-size: 0.85em;
+
+    /* Mobile list indentation tokens (tweak here if needed) */
+    --list-mobile-indent: 1.8em;          /* primary list indent */
+    --list-mobile-indent-nested: 1.4em;   /* nested list additional indent */
+  }
+
+  /* Article body only: shrink font-size on phones and slightly tighten rhythm */
+  .inner p { font-size: 16px; line-height: 1.76; margin: 0.85em 0; }
+  .inner ul li, .inner ol li { font-size: 16px; line-height: 1.72; }
+
+  /* Lists on phones: use padding-based indent so marker + text create a clear gutter */
+  .inner ul,
+  .inner ol { margin: 0.8em 0 1.2em 0; padding-left: var(--list-mobile-indent); list-style-position: outside; }
+  /* Nested lists: slightly smaller additional indent to save space */
+  .inner ul ul,
+  .inner ol ol,
+  .inner ul ol,
+  .inner ol ul { margin: 0.3em 0 0.6em 0; padding-left: var(--list-mobile-indent-nested); }
+
+  /* Quotes: tighten padding, remove left offset */
+  blockquote { padding-left: 12px; margin-left: 0; }
+  /* Article quotes: keep same size/leading as 16px body */
+  .inner blockquote { font-size: 16px; line-height: 1.76; }
+
+  /* Code blocks: slightly smaller, with safe horizontal scroll */
+  pre { font-size: 0.88em; padding: 8px 10px; overflow-x: auto; }
+
+  /* Prevent layout break by long URLs on phones */
+  a { overflow-wrap: anywhere; word-break: break-word; }
+}
+h3::after {
+  width: 100%; /* follow text width */
+  height: 2px;
+  margin-top: 0.35em;
+}
+
+/* Tighter spacing for non-H1 headings
+   Original combined gap between a heading and the next paragraph was
+   heading margin-bottom (0.8em) + paragraph margin-top (1em) = 1.8em, which felt large.
+   Reduce only the bottom margin for h2–h6 so regular paragraph rhythm stays intact. */
+h2, h3, h4, h5, h6 { margin-bottom: 0.35em; }
+
+/* H4+ no underline by default for cleanliness */
+
+/* ===================== */
+/* Paragraphs and lists  */
+/* ===================== */
+p, li {
+  font-size: 1em;
+  line-height: var(--lh-base);
+}
+
+p { margin: 1em 0; }
+
+ul, ol { margin: 0.8em 0 1.2em 1.4em; }
+ul ul, ol ol, ul ol, ol ul { margin-top: 0.3em; margin-bottom: 0.6em; }
+
+/* ====== */
+/* Quotes */
+/* ====== */
+blockquote {
+  background: var(--color-quote-bg);
+  border-left: 4px solid var(--color-quote-border);
+  padding: 0.6em 1em; /* give quotes comfortable breathing room */
+  margin: 1em 0 1.2em 0;
+  /* Use theme text color so quotes remain readable in both light and dark modes.
+     A previous hard-coded dark gray (#444) reduced contrast in dark mode. */
+  color: var(--color-text);
+  font-size: 0.95rem; /* slightly smaller */
+}
+blockquote p { margin: 0.6em 0; }
+
+/* ==== */
+/* Code */
+/* ==== */
+code, pre, kbd, samp {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Noto Sans Mono CJK SC", "Source Han Mono SC", monospace;
+}
+
+p code, li code {
+  font-size: 0.9em;
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-code-border);
+  border-radius: 3px;
+  padding: 0 0.25em;
+  margin: 0 0.15em;
+  word-break: break-word;
+}
+
+pre {
+  font-size: 0.92em; /* slightly tighter globally */
+  line-height: 1.5;
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-code-border);
+  border-radius: 6px;
+  padding: 8px 10px; /* slightly narrower gutters */
+  margin: 1.2em 0; /* consistent vertical rhythm around code blocks */
+  overflow: auto;
+}
+
+/* Avoid double backgrounds when using highlight.js */
+pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+/* Some highlight.js styles may set a fixed background; keep it transparent so
+   our theme variables control the surface in both light and dark modes. */
+.hljs { background: transparent; }
+
+/* Ensure links inside blockquotes maintain clear contrast */
+blockquote a { color: var(--link-color); }
+blockquote a:hover, blockquote a:focus { color: var(--link-hover); }
+
+/* ===== */
+/* Links */
+/* ===== */
+/* Links: readable, accessible, and elegant */
+a {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 0.08em;
+  text-decoration-skip-ink: auto;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+a:hover,
+a:focus {
+  color: var(--link-hover);
+  text-decoration-thickness: 0.12em;
+}
+
+/* Note: visited is placed after hover/focus to preserve the existing visual behavior
+  for visited links on hover. Do not reorder without intentional design change. */
+a:visited { color: var(--link-visited); }
+
+/* Keyboard focus ring */
+a:focus-visible {
+  outline: 2px solid var(--link-hover);
+  outline-offset: 2px;
+}
+
+/* Avoid heavy decoration in headings; reveal on hover/focus */
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: inherit;
+  text-decoration: none;
+}
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover,
+h1 a:focus, h2 a:focus, h3 a:focus, h4 a:focus, h5 a:focus, h6 a:focus {
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+/* Links wrapping code should not double-decorate */
+a code { text-decoration: none; }
+
+/* Navigation/controls: no underline by default */
+.navbar a, ul.tags a { text-decoration: none; }
+
+/* ================== */
+/* HR and small text */
+/* ================== */
+hr { border: none; border-top: 1px solid var(--color-hr); margin: 2em 0; }
+small, .muted { color: var(--text-muted); font-size: var(--font-size-xs); }
+/* Secondary metadata text */
+.word-count { color: var(--text-muted); }
+
+/* ====== */
+/* Tables */
+/* ====== */
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--border-color); padding: 8px 10px; }
+tr { background: var(--surface-1); }
+/* tr:nth-child(2n){ background:#fafafa; } keep optional */
+
+/* Content tables inside post/home inner containers (shared) */
+.inner table,
+.inner-narrow table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+.inner table tr,
+.inner-narrow table tr {
+  background-color: var(--surface-1);
+  border-top: 1px solid var(--border-color);
+}
+.inner table th,
+.inner-narrow table th { text-align: center; }
+.inner table th,
+.inner table td,
+.inner-narrow table th,
+.inner-narrow table td {
+  padding: 6px 13px;
+  border: 1px solid var(--border-color);
+}
+
+/* ================= */
+/* Images and video */
+/* ================= */
+img, video { max-width: 100%; height: auto; }
+
+/* ============== */
+/* Time/metadata */
+/* ============== */
+.time { font-size: 0.9rem; color: var(--text-muted); }
+
+/* Tag list harmonization */
+ul.tags { font-size: 0.9rem; }
+
+/* Content tags within inner containers (shared) */
+.inner ul.tags,
+.inner-narrow ul.tags {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 90%;
+  margin-bottom: 20px;
+}
+.inner ul.tags li,
+.inner-narrow ul.tags li {
+  display: inline-block;
+  margin-left: 0;
+}
+.inner ul.tags li:not(:last-child),
+.inner-narrow ul.tags li:not(:last-child) { margin-right: 10px; }
+
+/* micro-blog feature removed: previously used smaller base size */
+
+/* ======================= */
+/* Details / Summary (UI)  */
+/* ======================= */
+/*
+  Goal
+  - Provide consistent cross-page styling for <details>/<summary>
+  - Replace UA marker with a lightweight chevron built with CSS
+  - Clear hover/focus affordance and good contrast in both light/dark modes
+  - Work inside regular content (.inner/.inner-narrow) and anywhere else
+*/
+
+details {
+  border: 1px solid var(--border-color);
+  background: var(--surface-1);
+  border-radius: 8px;
+  padding: 0.6em 0.9em;
+  margin: 1em 0;
+}
+
+/* Click target and visual affordance */
+summary {
+  cursor: pointer;
+  list-style: none; /* hide default marker on Firefox */
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  color: var(--heading-color);
+  font-weight: 550;
+  /* extend hit area without shifting layout */
+  margin: -0.2em -0.3em 0.1em;
+  padding: 0.2em 0.3em;
+  border-radius: 6px;
+}
+summary::-webkit-details-marker { display: none; } /* hide default marker on WebKit */
+
+/* Chevron marker */
+summary::before {
+  content: "";
+  width: 0.55em;
+  height: 0.55em;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(-45deg);
+  transition: transform .18s ease, border-color .18s ease;
+}
+details[open] summary::before { transform: rotate(45deg); }
+
+/* Hover/Focus states */
+summary:hover { background: var(--surface-2); }
+summary:focus-visible {
+  outline: 2px solid var(--link-hover);
+  outline-offset: 2px;
+}
+
+/* Content spacing inside details */
+details > *:not(summary) { margin-top: 0.6em; }
+details p:last-child { margin-bottom: 0; }
+
+/* Nested details: subtle indentation */
+details details { margin: 0.6em 0 0.2em 0; }
+details details summary { font-weight: 500; }
+
+/* ======================================================== */
+/* Mobile scaling: keep existing .mobile behavior & headings */
+/* ======================================================== */
+/* removed duplicate mobile block; consolidated earlier */
+
+/* Trim the very first article title spacing inside the post container */
+.inner h1:first-child,
+.inner-narrow h1:first-child {
+  margin-top: 0.8em;
+}
+
+/* ================= */
+/* Print refinements */
+/* ================= */
+@media print {
+  a { color: #000; border-bottom: 0; }
+  pre { box-shadow: none; }
+}
+
+/* ======================== */
+/* Reduced motion preference */
+/* ======================== */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* ===================== */
+/* Dark mode (variables) */
+/* ===================== */
+/* Lightweight lightbox styles (shared across home and post pages) */
+/* Base: hidden by default; opened via JS by toggling the `.open` class */
+.lb-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.62);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out;
+}
+.lb-overlay.open { display: flex; }
+.lb-overlay img {
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  background: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #0f1115;
+    --surface-1: #12161a;  /* slightly above page for contrast */
+    --surface-2: #0f1317;
+    --color-text: #e7e7e7;
+    --color-muted: #a6a6a6;
+    --link-color: #8ab4f8;   /* Google blue-ish for dark */
+    --link-hover: #a9c6ff;
+    --link-visited: #a0b3ff;
+    --color-hr: #2a2f37;
+    /* Borders in dark mode should stay subtle but visible */
+    --border-color: #2a2f37;
+    --border-color-subtle: rgba(255,255,255,0.08);
+    --color-quote-bg: #141a20;
+    --color-quote-border: #2a2f37;
+    --color-code-bg: #12161a;
+    --color-code-border: #2a2f37;
+    --heading-color: #f0f0f0;
+    --heading-underline: #2a2f37;
+    --heading-underline-accent: var(--link-color);
+    --text-muted: #9aa4b2; /* dark secondary text */
+
+    /* UI Colors Dark */
+    --color-hover-bg: rgba(138,180,248,0.08);
+    --color-tag-link: var(--link-color);
+    --color-tag-link-hover: var(--link-hover);
+    
+    /* Shadows Dark */
+    --shadow-card: 0 1px 6px rgba(0,0,0,0.18);
+    --shadow-image: 0 1px 3px rgba(0,0,0,0.5);
+    --shadow-image-hover: 0 4px 18px rgba(0,0,0,0.5);
+  }
+}
+
+/* Dark theme adjustments for the lightbox */
+@media (prefers-color-scheme: dark) {
+  .lb-overlay { background: rgba(0,0,0,0.72); }
+  .lb-overlay img { background: #0f1115; }
+}
+
+/* Dark mode: content tables inside inner containers */
+@media (prefers-color-scheme: dark) {
+  .inner table tr,
+  .inner-narrow table tr { background-color: #0f1115; border-top-color: #2a2f37; }
+  .inner table th, .inner table td,
+  .inner-narrow table th, .inner-narrow table td { border-color: #2a2f37; }
+}
+
+/* ================================ */
+/* Dark mode: highlight.js overrides */
+/* Improve token readability on dark */
+/* ================================ */
+@media (prefers-color-scheme: dark) {
+  /* Base text color inside highlighted code blocks */
+  .hljs { color: #e8e8e8; }
+  .hljs-comment, .hljs-quote { color: #8a9199; font-style: italic; }
+  .hljs-keyword, .hljs-selector-tag, .hljs-doctag { color: #c792ea; }
+  .hljs-string, .hljs-built_in, .hljs-name, .hljs-title.class_ { color: #ecc48d; }
+  .hljs-number, .hljs-literal, .hljs-symbol { color: #f78c6c; }
+  .hljs-title, .hljs-section { color: #82aaff; }
+  .hljs-attr, .hljs-attribute { color: #f8bd96; }
+}
+
+/* Manual theme override hooks */
+html[data-theme="dark"],
+body[data-theme="dark"] {
+  --bg-color: #0f1115;
+  --color-text: #e7e7e7;
+  --color-muted: #a6a6a6;
+  --link-color: #8ab4f8;
+  --link-hover: #a9c6ff;
+  --link-visited: #a0b3ff;
+  --color-hr: #2a2f37;
+  --color-quote-bg: #141a20;
+  --color-quote-border: #2a2f37;
+  --color-code-bg: #12161a;
+  --color-code-border: #2a2f37;
+  --heading-color: #f0f0f0;
+  --heading-underline: #2a2f37;
+  --heading-underline-accent: var(--link-color);
+}
+
+html[data-theme="light"],
+body[data-theme="light"] {
+  --bg-color: #f7f8fa;
+  --surface-1: #ffffff;
+  --surface-2: #f3f4f6;
+}
+
+/* Dark: ensure code text has enough contrast regardless of external themes */
+@media (prefers-color-scheme: dark) {
+  pre, code, kbd, samp { color: #e8e8e8; }
+}
+html[data-theme="dark"] pre,
+html[data-theme="dark"] code,
+html[data-theme="dark"] kbd,
+html[data-theme="dark"] samp,
+body[data-theme="dark"] pre,
+body[data-theme="dark"] code,
+body[data-theme="dark"] kbd,
+body[data-theme="dark"] samp { color: #e8e8e8; }
+
+/* Manual dark override: content tables inside inner containers */
+html[data-theme="dark"] .inner table tr,
+body[data-theme="dark"] .inner table tr,
+html[data-theme="dark"] .inner-narrow table tr,
+body[data-theme="dark"] .inner-narrow table tr { background-color: #0f1115; border-top-color: #2a2f37; }
+html[data-theme="dark"] .inner table th,
+html[data-theme="dark"] .inner table td,
+body[data-theme="dark"] .inner table th,
+/* ================================================ */
+/* Code typography refinements (scoped to .inner)   */
+/* Slightly smaller code for better hierarchy        */
+/* Desktop and mobile tuned separately               */
+/* ================================================ */
+/* Block code within post content */
+.inner pre {
+  font-size: 0.84em;   /* ~15.1px on desktop (body=18px) */
+  line-height: 1.55;   /* comfortable for long lines */
+}
+
+/* Inline code a notch smaller than block */
+.inner p code,
+.inner li code {
+  font-size: 0.82em;   /* ~14.8px on desktop */
+}
+
+/* Mobile adjustments (<=860px) */
+@media screen and (max-width: 860px) {
+  .inner pre {
+    font-size: 14px; /* aligned to 16px body (slightly smaller for hierarchy) */
+    line-height: 1.55;
+  }
+  .inner p code,
+  .inner li code {
+    font-size: 0.81em; /* ~13.8px */
+  }
+}
+
+body[data-theme="dark"] .inner table td,
+html[data-theme="dark"] .inner-narrow table th,
+html[data-theme="dark"] .inner-narrow table td,
+body[data-theme="dark"] .inner-narrow table th,
+body[data-theme="dark"] .inner-narrow table td { border-color: #2a2f37; }

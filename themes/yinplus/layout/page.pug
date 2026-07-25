@@ -1,0 +1,14 @@
+
+block content
+    if page.type == 'tags'
+      include ./pages/tags.pug
+    else if page.type == 'categories'
+      include ./pages/categories.pug
+    else if page.type == 'home'
+      include ./pages/home.pug
+    else if page.type == 'display'
+      include ./pages/display.pug
+    else 
+      .inner
+        h2= page.title
+        != page.content

@@ -1,0 +1,28 @@
+
+block content
+  .inner
+    if theme.post.title_h1
+      h1= page.title
+      div.time= date(page.date, 'YYYY-MM-DD')
+      if theme.post.show_tags
+        if page.tags.length
+          ul.tags
+            - page.tags.each(function(tag){
+              li
+                span #
+                a(href= config.root + tag.path)= tag.name
+            - });
+      else 
+        div.title-margin
+    else
+      h2= page.title
+    != page.content
+    if theme.post.backHome
+      if theme.post.backHome_hr
+        hr
+      p(class=theme.post.backhome_right ? "textAlignRight" : "")
+        - var prefix = theme.post.backHome_prefix
+        - var suffix = theme.post.backHome_suffix
+        span!= prefix 
+        a(href=config.root)= theme.post.backHome_content
+        span!= suffix

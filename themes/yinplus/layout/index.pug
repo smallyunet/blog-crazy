@@ -1,0 +1,95 @@
+
+
+//- Home index with lightweight series grouping
+//- Usage in post front-matter:
+//-   series: <Series Name>
+//-   series_index: <Number, optional for within-series ordering>
+//- Behavior:
+//-   - On the first occurrence of a series, render a single collapsible row
+//-     titled with the series name and a small "Series · N" badge; subsequent
+//-     posts from the same series are not rendered as separate rows.
+//-   - Inside the collapsible, posts are ordered by `series_index` (asc) when
+//-     present, otherwise by date ascending.
+//-   - Non-series posts are rendered as normal.
+
+block content
+  .outer
+    if page.posts.length > 0
+      ul.list-group
+        // Group posts by optional front-matter `series`.
+        // Only render the first occurrence of a series as a collapsible group entry.
+        - var seenSeries = {};
+        each post in page.posts.sort('date', -1).filter(p => (!p.hidden || !theme.post.enable_hidden)).toArray()
+          if post.series
+            - var seriesName = String(post.series);
+            if !seenSeries[seriesName]
+              - seenSeries[seriesName] = true;
+              // Collect all posts (site-wide) in this series, excluding hidden ones.
+              - var seriesPostsArr = site.posts.filter(p => p.series === seriesName && (!p.hidden || !theme.post.enable_hidden)).toArray();
+              // Order inside series:
+              // 1) If any post defines numeric `series_index`, sort by it asc; fallback to date asc.
+              // 2) Otherwise, sort by date asc.
+              - var usesIndex = seriesPostsArr.some(sp => (typeof sp.series_index !== 'undefined'));
+              - if (usesIndex) {
+              -   seriesPostsArr.sort(function(a,b){
+              -     var ai = (typeof a.series_index === 'number') ? a.series_index : (typeof a.series_index === 'string' ? parseInt(a.series_index, 10) : NaN);
+              -     var bi = (typeof b.series_index === 'number') ? b.series_index : (typeof b.series_index === 'string' ? parseInt(b.series_index, 10) : NaN);
+              -     ai = (Number.isFinite(ai)) ? ai : Number.MAX_SAFE_INTEGER;
+              -     bi = (Number.isFinite(bi)) ? bi : Number.MAX_SAFE_INTEGER;
+              -     if (ai !== bi) return ai - bi;
+              -     return a.date - b.date;
+              -   });
+              - } else {
+              -   seriesPostsArr.sort(function(a,b){ return a.date - b.date; });
+              - }
+              - var seriesPostsAsc = seriesPostsArr;
+              - var seriesCount = seriesPostsAsc.length;
+              - var latestDate = seriesPostsAsc.length ? seriesPostsAsc[seriesPostsAsc.length - 1].date : post.date;
+              - var seriesPostsDesc = seriesPostsAsc.slice().reverse();
+              // Render the group only when iterating the latest post of the series (site-wide)
+              - var latestPost = seriesPostsAsc[seriesPostsAsc.length - 1];
+              if (latestPost && latestPost.path === post.path)
+              li.list-group-item.title.series-item
+                if (theme.list.date)
+                  div.date= date(latestDate, 'YYYY-MM-DD')
+                // Checkbox + label toggle (no UA marker, no default bold)
+                - var seriesUid = 'series_' + seriesName.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-') + '_' + seriesCount;
+                input.series-toggle(type="checkbox", id=seriesUid)
+                label.series-summary(for=seriesUid)= seriesName
+                if (theme.list.wordcount)
+                  div.word-count= seriesCount + __('series_count_unit')
+                // Series posts list (render in reverse order: latest first)
+                ul.series-posts
+                  each sp in seriesPostsDesc
+                    li.series-post
+                      if (theme.list.date)
+                        div.date= date(sp.date, 'YYYY-MM-DD')
+                      a(href=config.root + sp.path, target=theme.post.blank ? "_blank" : "_self")= sp.title
+                      if (theme.list.wordcount)
+                        div.word-count= wordcount(sp.content, '') +  __('word_count')
+            else
+              // Skip subsequent posts from an already rendered series
+              - null
+          else
+            li.list-group-item.title
+              if (theme.list.date)
+                div.date= date(post.date, 'YYYY-MM-DD')
+              a(href=config.root + post.path, target=theme.post.blank ? "_blank" : "_self")= post.title
+              if (theme.list.wordcount)
+                div.word-count= wordcount(post.content, '') +  __('word_count')
+              if (theme.post.show_tags)
+                if post.tags.length
+                  ul.tags
+                    - post.tags.each(function(tag){
+                      li
+                        span #
+                        a(href= config.root + tag.path)= tag.name
+                    - });
+  // paginator removed by request: theme no longer renders pagination
+  if theme.footer.display
+    div.footer
+      if theme.footer.href
+        p.text-center
+          a(href=theme.footer.href)= theme.footer.text
+      else
+        p.text-center= theme.footer.text

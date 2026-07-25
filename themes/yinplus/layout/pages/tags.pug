@@ -1,0 +1,17 @@
+
+.inner
+  // Optional page intro content written in source/tags/index.md
+  != page.content
+
+  if site.tags && site.tags.length
+    // Tag cloud section
+    h3= __('tag_cloud')
+    .tag-cloud
+      // Compact sizes for a calm visual
+      != tagcloud({amount:0, min_font:11, max_font:18, unit:'px'})
+
+    // Tag list section (ordered by usage, desc)
+    h3= __('tag_list')
+    // Use base class 'tag' so Hexo generates `.tag-list`, `.tag-list-item`, `.tag-list-link`, `.tag-list-count`
+    != list_tags({style: 'list', class: 'tag', show_count: true, orderby: 'length', order: -1})
+
