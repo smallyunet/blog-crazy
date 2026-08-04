@@ -46,4 +46,4 @@ google_analysis:
 
 # Static assets version (for cache busting). Bump this when CSS/JS changes.
 # Leaving it empty avoids touching all generated HTML on each build.
-asset_version: "v1.1"
+asset_version: "v1.2"
