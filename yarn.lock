@@ -722,11 +722,6 @@ hexo-util@^2.0.0, hexo-util@^2.1.0, hexo-util@^2.7.0:
     prismjs "^1.17.1"
     strip-indent "^3.0.0"
 
-hexo-wordcount-sy@^6.0.4:
-  version "6.0.4"
-  resolved "https://registry.npmjs.org/hexo-wordcount-sy/-/hexo-wordcount-sy-6.0.4.tgz"
-  integrity sha512-2MSvUZDgVk35CkSQ14w3Q3RY4diQd7VSzJnuWKpW+8T2uec176cFu58JtohzTEbnEHpAXHQI1mKz7uJRx5wXLQ==
-
 hexo@^6.1.0:
   version "6.3.0"
   resolved "https://registry.npmjs.org/hexo/-/hexo-6.3.0.tgz"
