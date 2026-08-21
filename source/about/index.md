@@ -6,7 +6,7 @@ type: about
 
 如果你对任何话题感兴趣，可以联系我：
 
-- 邮箱：[hello@smallyu.net](mailto:hello@smallyu.net)
+- 邮箱：[dev.wangyu@gmail.com](mailto:dev.wangyu@gmail.com)
 - TG：[https://t.me/smallyutg](https://t.me/smallyutg)
 
 ### 已归档内容
