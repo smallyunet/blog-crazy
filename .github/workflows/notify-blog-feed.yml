@@ -1,0 +1,52 @@
+name: Notify blog feed
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - docs/atom.xml
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Wait for published Atom feed
+        env:
+          ATOM_URL: https://crazy.smallyu.net/atom.xml
+        run: |
+          expected_hash="$(sha256sum docs/atom.xml | cut -d ' ' -f 1)"
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent --show-error --location \
+              "${ATOM_URL}?source_sha=${GITHUB_SHA}" \
+              --output "${RUNNER_TEMP}/atom.xml"; then
+              published_hash="$(sha256sum "${RUNNER_TEMP}/atom.xml" | cut -d ' ' -f 1)"
+              if [ "${published_hash}" = "${expected_hash}" ]; then
+                exit 0
+              fi
+            fi
+            echo "Published feed is not ready (attempt ${attempt}/20)."
+            sleep 15
+          done
+          echo "Published Atom feed did not match commit ${GITHUB_SHA}." >&2
+          exit 1
+
+      - name: Dispatch blog-feed rebuild
+        env:
+          GH_TOKEN: ${{ secrets.BLOG_FEED_DISPATCH_TOKEN }}
+          SOURCE_ID: blog-crazy
+        run: |
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "BLOG_FEED_DISPATCH_TOKEN is not configured." >&2
+            exit 1
+          fi
+          gh api --method POST repos/smallyunet/blog-feed/dispatches \
+            -f event_type=source_updated \
+            -f "client_payload[source]=${SOURCE_ID}" \
+            -f "client_payload[sha]=${GITHUB_SHA}"
