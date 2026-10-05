@@ -16,7 +16,11 @@ block content
         div.title-margin
     else
       h2= page.title
-    != page.content
+    if page.collection === 'ai'
+      .ai-content
+        != page.content
+    else
+      != page.content
     if theme.post.backHome
       if theme.post.backHome_hr
         hr

@@ -1,0 +1,749 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>单钱包行为分类与逐类分析</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://crazy.smallyu.net/2026/09/12/单钱包行为分类与逐类分析/"><meta property="og:title" content="单钱包行为分类与逐类分析"><meta property="og:type" content="article"><meta property="og:url" content="https://crazy.smallyu.net/2026/09/12/单钱包行为分类与逐类分析/"><meta property="og:site_name" content="smallyu的博客（疯狂版）"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客（疯狂版）" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>单钱包行为分类与逐类分析</h1><div class="time">2026-09-12</div><div class="title-margin"></div><div class="ai-content"><p>整理日期：2026-09-12。</p>
+<p>本文沿用讨论中的十二类行为，按照“做什么—在哪里做—需要什么条件—过程是什么—结果如何确认”逐类展开，用于产品讨论和历史交易分析。</p>
+<p>平台和协议示例沿用同日的<a href="single-wallet-onchain-interaction-reading-guide.md">《单钱包链上交互识别与解读手册》</a>及其官方来源，本次是结构化整理，没有新增交易实查。具体部署地址、版本、接口字段和三笔公开交易案例见该手册；本文侧重行为分类，不重复整套 ABI。</p>
+<h2 id="一、十二类行为总表"><a href="#一、十二类行为总表" class="headerlink" title="一、十二类行为总表"></a>一、十二类行为总表</h2><table>
+<thead>
+<tr>
+<th>行为类型</th>
+<th>可能发生的操作</th>
+<th>平台或服务类型</th>
+<th>常见实际目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>收款与转账</td>
+<td>接收代币、向其他地址转账</td>
+<td>个人钱包、商家、项目金库</td>
+<td>收付款、资产保管、个人账户间调拨</td>
+</tr>
+<tr>
+<td>交易所充提</td>
+<td>从 CEX 提币、向 CEX 充值</td>
+<td>中心化交易所的钱包与充值地址</td>
+<td>入金、出金、交易或归集资产</td>
+</tr>
+<tr>
+<td>代币兑换</td>
+<td>用一种资产兑换另一种资产</td>
+<td>AMM DEX、订单簿 DEX、DEX 聚合器</td>
+<td>买卖资产、调整持仓、兑换支付所需资产</td>
+</tr>
+<tr>
+<td>授权管理</td>
+<td>授权合约使用代币、修改或撤销授权</td>
+<td>代币合约、应用合约、授权管理工具</td>
+<td>使用应用或管理资产权限</td>
+</tr>
+<tr>
+<td>跨链与资产转换</td>
+<td>跨链转移、原生币包装或解包</td>
+<td>跨链桥、跨链路由、包装资产合约</td>
+<td>将资产用于另一条链或适配应用</td>
+</tr>
+<tr>
+<td>提供流动性</td>
+<td>添加或移除流动性、领取手续费、调整仓位</td>
+<td>AMM 流动性池、流动性管理协议</td>
+<td>提供交易深度并承担相应风险</td>
+</tr>
+<tr>
+<td>借贷</td>
+<td>存入资产、提供抵押、借款、还款、提取资产</td>
+<td>链上借贷协议</td>
+<td>资金周转、抵押融资、资产运用</td>
+</tr>
+<tr>
+<td>质押</td>
+<td>质押、领取奖励、申请退出、解除质押</td>
+<td>网络质押服务、流动性质押协议</td>
+<td>参与网络安全或获取质押收益</td>
+</tr>
+<tr>
+<td>NFT 与游戏</td>
+<td>铸造、购买、出售、转移 NFT，进行游戏操作</td>
+<td>NFT 市场、游戏、数字藏品应用</td>
+<td>收藏、消费、娱乐或交易</td>
+</tr>
+<tr>
+<td>治理与公共参与</td>
+<td>委托投票、链上投票、捐赠</td>
+<td>DAO、治理合约、公共物品资助平台</td>
+<td>参与项目决策或支持项目</td>
+</tr>
+<tr>
+<td>应用消费</td>
+<td>支付服务费、购买域名、使用预测市场等</td>
+<td>链上支付、域名、预测市场及其他应用</td>
+<td>使用具体产品</td>
+</tr>
+<tr>
+<td>安全与账户维护</td>
+<td>调整多签成员、迁移资产、更新智能账户权限</td>
+<td>多签钱包、智能账户、安全管理服务</td>
+<td>更换设备、团队协作、降低账户风险</td>
+</tr>
+</tbody></table>
+<p>“常见实际目的”是可能的业务解释，不能仅凭交易直接认定。十二类也不是用户必须完成的清单；长期只收款、只持有资产或只使用一个应用，都可能具有合理用途。</p>
+<h2 id="二、阅读口径"><a href="#二、阅读口径" class="headerlink" title="二、阅读口径"></a>二、阅读口径</h2><ul>
+<li><strong>业务行为</strong>：用户要完成的事情，例如借款或购买域名。</li>
+<li><strong>辅助操作</strong>：为业务提供条件，例如授权、包装资产。</li>
+<li><strong>交易</strong>：链上执行与记录单位；一次业务可能跨越多笔交易，一笔交易也可能包含多个操作。</li>
+<li><strong>结果</strong>：资产、债务、仓位、权限或应用状态的改变。</li>
+</ul>
+<p>每类下面的“过程”描述已有记录的业务关系，不代表每个协议都要求相同顺序。具体步骤必须结合版本、已有授权、智能钱包和实际回执核实。</p>
+<h2 id="三、逐类展开"><a href="#三、逐类展开" class="headerlink" title="三、逐类展开"></a>三、逐类展开</h2><h3 id="1-收款与转账"><a href="#1-收款与转账" class="headerlink" title="1. 收款与转账"></a>1. 收款与转账</h3><p><strong>平台与链：</strong>以 Ethereum 上的原生 ETH、USDC 转账为例。钱包软件是操作界面，收款方可以是普通地址，也可以是合约；不存在统一的“个人转账平台合约”。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>接收原生币</td>
+<td>有有效收款地址；普通接收方通常无需主动签名</td>
+<td>付款方发起原生币转移，或合约执行时向该地址付款</td>
+<td>检查交易或内部调用、执行状态及原生币变化</td>
+</tr>
+<tr>
+<td>发送原生币</td>
+<td>付款账户有资产及执行费用来源</td>
+<td>外层交易携带原生币；接收方有代码时可能触发业务逻辑</td>
+<td>区分付款金额与手续费，查看是否还有合约操作</td>
+</tr>
+<tr>
+<td>ERC-20 收付</td>
+<td>发送方拥有对应代币</td>
+<td>Token 合约执行转移；外层目标合约与代币接收方可能不同</td>
+<td>核对真实 Token 合约、<code>Transfer</code> 和精度</td>
+</tr>
+<tr>
+<td>个人账户间调拨</td>
+<td>已有资料证明两个地址均属本人</td>
+<td>链上表现为普通转移</td>
+<td>转移可查；“本人账户”需要额外归属证据</td>
+</tr>
+<tr>
+<td>商家或项目收付</td>
+<td>有订单、发票或收款公示等业务资料</td>
+<td>普通转账或收款合约结算</td>
+<td>资产移动与链下凭证一起支持支付目的</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>收到资产不等于有主动交互；陌生代币转入也不能自动代表用户兴趣或选择。</p>
+<h3 id="2-交易所充提"><a href="#2-交易所充提" class="headerlink" title="2. 交易所充提"></a>2. 交易所充提</h3><p><strong>平台与链：</strong>以 CEX 与 Ethereum 钱包之间的 ETH、USDC 移动为例。具体支持网络和充值地址由交易所账户页面确定，不能把交易所品牌映射为一个永久通用地址。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CEX 提币到钱包</td>
+<td>交易所账户可提余额、正确的目标网络与地址</td>
+<td>提币请求发生在交易所系统；随后服务钱包发出链上付款</td>
+<td>链上转入与提币记录对应后，才能确认业务来源</td>
+</tr>
+<tr>
+<td>钱包充值到 CEX</td>
+<td>对应资产和网络的有效充值信息</td>
+<td>钱包转入指定地址，交易所系统识别并记账</td>
+<td>链上成功与交易所入账是两个状态</td>
+</tr>
+<tr>
+<td>充值后的服务端归集</td>
+<td>交易所管理相关充值地址</td>
+<td>服务方将余额转入其他服务钱包</td>
+<td>不应自动算成充值用户再次主动操作</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>“来自已标记热钱包”支持服务来源线索，不能证明所有接收地址属于同一用户。链上没有普遍统一的 CEX 充值或提现函数。</p>
+<h3 id="3-代币兑换"><a href="#3-代币兑换" class="headerlink" title="3. 代币兑换"></a>3. 代币兑换</h3><p><strong>平台与链：</strong>具体协议示例采用 Ethereum Uniswap V3；订单簿 DEX 与聚合器作为机制子类型列出，本文没有为它们新增部署和成交样本核验。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AMM 单池兑换</td>
+<td>输入资产、可用池及必要权限</td>
+<td>路由器或池完成两种资产的交换</td>
+<td>池 <code>Swap</code> 与钱包最终收支相互对应</td>
+</tr>
+<tr>
+<td>多池或聚合兑换</td>
+<td>有可用路径及输入资产</td>
+<td>一个业务请求经过多个池或协议</td>
+<td>汇总用户最终输入输出，避免把中间资产当成新增持仓</td>
+</tr>
+<tr>
+<td>订单簿挂单与成交</td>
+<td>可用余额或协议要求的资金状态</td>
+<td>创建订单，随后可能取消、部分成交或全部成交</td>
+<td>订单状态和结算记录共同确认成交，挂单不等于兑换完成</td>
+</tr>
+<tr>
+<td>为支付准备资产</td>
+<td>后续业务需要另一种资产</td>
+<td>先兑换，再进行支付或应用操作；也可能被组合执行</td>
+<td>兑换可单独确认，支付用途需后续记录支持</td>
+</tr>
+</tbody></table>
+<p><strong>接口阅读：</strong>Uniswap 原版 V3 Router 的输入、输出资产与请求数量说明兑换意图；最低输出是约束，实际收到多少应查看结算结果。相应字段及交易案例见配套手册第 4.3、5.3 节。</p>
+<h3 id="4-授权管理"><a href="#4-授权管理" class="headerlink" title="4. 授权管理"></a>4. 授权管理</h3><p><strong>平台与链：</strong>Ethereum 的 ERC-20 &#x2F; NFT 合约，以及 Revoke.cash 等权限查看工具。实际权限保存在对应合约中。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>设置或修改 ERC-20 额度</td>
+<td>账户有权管理自身授权</td>
+<td>修改某个 spender 可使用的代币额度</td>
+<td><code>Approval</code> 和 allowance 状态；不会因此自动扣款</td>
+</tr>
+<tr>
+<td>撤销代币额度</td>
+<td>存在需要管理的授权</td>
+<td>修改或清除相应权限</td>
+<td>查看最终额度，不能只看网站连接状态</td>
+</tr>
+<tr>
+<td>NFT 单项或操作员授权</td>
+<td>拥有相应资产或管理权限</td>
+<td>设置单个 NFT 授权或集合操作员权限</td>
+<td>区分单资产权限与 <code>setApprovalForAll</code></td>
+</tr>
+<tr>
+<td>签名授权</td>
+<td>协议支持相应签名方案</td>
+<td>授权可能先在链下签署，后由交易提交使用</td>
+<td>没有独立授权交易不代表从未授权；核对实际提交与状态</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>授权对象不是收款人；撤销授权通常不自动退出存款、质押或 LP 仓位。</p>
+<h3 id="5-跨链与资产转换"><a href="#5-跨链与资产转换" class="headerlink" title="5. 跨链与资产转换"></a>5. 跨链与资产转换</h3><p><strong>平台与链：</strong>Ethereum ↔ OP Mainnet Standard Bridge；Ethereum WETH9、Lido wstETH。跨链与同链包装分别记录。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>跨链转入另一网络</td>
+<td>源资产和对应桥支持该路径</td>
+<td>源链发起，消息传递，目标链执行；不同方向可能有额外阶段</td>
+<td>建立消息与两端交易对应关系，分别记录各阶段状态</td>
+</tr>
+<tr>
+<td>跨链返回或退出</td>
+<td>持有支持退出的资产</td>
+<td>按桥协议完成退出流程</td>
+<td>源链成功不足以证明另一端到账</td>
+</tr>
+<tr>
+<td>ETH 包装为 WETH</td>
+<td>持有 ETH</td>
+<td>WETH9 接收 ETH 并记入 WETH</td>
+<td><code>Deposit</code> 与 ETH &#x2F; WETH 变化</td>
+</tr>
+<tr>
+<td>WETH 解包为 ETH</td>
+<td>持有 WETH</td>
+<td>包装合约减少 WETH 并返还 ETH</td>
+<td><code>Withdrawal</code> 与实际 ETH 转入</td>
+</tr>
+<tr>
+<td>stETH 与 wstETH 转换</td>
+<td>持有对应资产和必要权限</td>
+<td>根据份额关系包装或解包</td>
+<td>数量不应预设一比一；此操作不是质押退出</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>包装可能是兑换交易里的内部步骤，不一定是用户另外签署的一笔交易。</p>
+<h3 id="6-提供流动性"><a href="#6-提供流动性" class="headerlink" title="6. 提供流动性"></a>6. 提供流动性</h3><p><strong>平台与链：</strong>具体示例为 Ethereum Uniswap V3；自动管理金库只作为服务类型，不指定未经核查的产品或部署。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>创建 LP 仓位</td>
+<td>可用池、资产及权限</td>
+<td>仓位管理合约建立相应价格区间的头寸</td>
+<td>仓位 NFT、实际资产投入与流动性状态</td>
+</tr>
+<tr>
+<td>增加流动性</td>
+<td>已有仓位及新增资产</td>
+<td>对已有仓位增加投入</td>
+<td><code>IncreaseLiquidity</code>、转移记录与仓位变化</td>
+</tr>
+<tr>
+<td>减少流动性</td>
+<td>拥有或有权管理仓位</td>
+<td>减少流动性，形成待领取资产</td>
+<td><code>DecreaseLiquidity</code> 不代表资金已经回到钱包</td>
+</tr>
+<tr>
+<td>领取资产</td>
+<td>仓位存在待领取余额</td>
+<td>管理合约向接收方支付</td>
+<td><code>Collect</code> 可能混合本金与手续费，需要分账</td>
+</tr>
+<tr>
+<td>调整区间</td>
+<td>有可调整或可退出的仓位</td>
+<td>旧区间退出与新区间建立之间可能包含多步</td>
+<td>关联旧、新仓位和资金去向，不能仅凭一次调用认定完成</td>
+</tr>
+<tr>
+<td>通过管理金库持有 LP 敞口</td>
+<td>具体金库接受存入</td>
+<td>用户持有金库份额，由管理逻辑处理底层仓位</td>
+<td>份额持有人与池仓位所有人可能不同，需读取该金库定义</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>LP NFT 的业务主类是流动性，不因为采用 NFT 标准就归为收藏消费。资产领取额也不是净收益。</p>
+<h3 id="7-借贷"><a href="#7-借贷" class="headerlink" title="7. 借贷"></a>7. 借贷</h3><p><strong>平台与链：</strong>Ethereum Aave V3。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>存入资产</td>
+<td>协议支持该资产且满足当时限制</td>
+<td>Pool 接收底层资产，形成存款凭证</td>
+<td><code>Supply</code>、底层资产转移与 aToken 状态</td>
+</tr>
+<tr>
+<td>启用或停用抵押用途</td>
+<td>存款和协议风险条件允许</td>
+<td>改变资产的抵押用途配置</td>
+<td>抵押状态变化，可能没有代币转移</td>
+</tr>
+<tr>
+<td>借款</td>
+<td>满足协议借款与抵押条件，或相应信用委托条件</td>
+<td>Pool 发放资产并记入债务</td>
+<td><code>Borrow</code>、资产到账与债务记录一起解读</td>
+</tr>
+<tr>
+<td>还款</td>
+<td>持有还款资产并满足权限要求</td>
+<td>资产付回协议，减少对应债务</td>
+<td><code>Repay</code> 与债务变化；付款人与债务人可能不同</td>
+</tr>
+<tr>
+<td>提取资产</td>
+<td>有可提取存款且满足当时限制</td>
+<td>赎回底层资产给指定接收方</td>
+<td><code>Withdraw</code>、凭证与实际到账</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>借到的资产同时对应负债；存款不一定已经被启用为抵押。实际借款示例见配套手册第 5.2 节。</p>
+<h3 id="8-质押"><a href="#8-质押" class="headerlink" title="8. 质押"></a>8. 质押</h3><p><strong>平台与链：</strong>具体示例采用 Ethereum Lido；验证者直接质押与其他委托式网络的生命周期不同，不套用 Lido 接口。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>通过流动性质押服务提交资产</td>
+<td>支持的资产与可用服务</td>
+<td>提交 ETH，获得 stETH 等相应凭证</td>
+<td>Lido <code>Submitted</code>、份额和资产变化</td>
+</tr>
+<tr>
+<td>持有并累积质押相关收益</td>
+<td>已持有相应凭证</td>
+<td>收益可能体现在余额或兑换关系中</td>
+<td>不一定存在主动领取交易，需读取资产记账机制</td>
+</tr>
+<tr>
+<td>发起退出请求</td>
+<td>有可退出资产且满足队列要求</td>
+<td>建立退出请求及相应凭证</td>
+<td>请求编号、所有人和数量，不等于已收到 ETH</td>
+</tr>
+<tr>
+<td>领取退出资产</td>
+<td>请求达到可领取状态</td>
+<td>完成领取并改变请求状态</td>
+<td>已领取状态与真实 ETH 到账</td>
+</tr>
+<tr>
+<td>在 DEX 卖出质押凭证</td>
+<td>持有可交易凭证和可用交易路径</td>
+<td>通过市场出售凭证</td>
+<td>主类为兑换，不能等同于协议退出</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>“持有质押凭证”“亲自提交质押”“获得网络奖励”是不同判断。买到 stETH 不证明该地址之前曾向 Lido 提交 ETH。</p>
+<h3 id="9-NFT-与游戏"><a href="#9-NFT-与游戏" class="headerlink" title="9. NFT 与游戏"></a>9. NFT 与游戏</h3><p><strong>平台与链：</strong>Ethereum OpenSea &#x2F; Seaport；Ronin Market 的历史协议示例。Ronin 部署范围沿用配套手册的 2024 年审计资料，不认定为当前实现。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>铸造 NFT</td>
+<td>满足项目铸造规则</td>
+<td>资产合约创建 NFT 并分配所有权</td>
+<td>铸造日志及资产状态；支付情况另查</td>
+</tr>
+<tr>
+<td>买卖 NFT</td>
+<td>有有效订单、相应资产和权限</td>
+<td>订单结算协议交付资产与支付对价</td>
+<td><code>OrderFulfilled</code> 及代币、NFT 转移共同确认</td>
+</tr>
+<tr>
+<td>普通 NFT 转移</td>
+<td>有转移权限</td>
+<td>所有权或余额从一个地址移至另一个地址</td>
+<td>单独转移不能证明买卖或成交价格</td>
+</tr>
+<tr>
+<td>游戏资产交易</td>
+<td>有对应游戏资产或付款资产</td>
+<td>市场结算游戏资产交易</td>
+<td>必须关联已确认的游戏资产合约</td>
+</tr>
+<tr>
+<td>游戏内操作</td>
+<td>游戏账户和相应游戏状态</td>
+<td>操作可能在服务端，也可能调用游戏合约</td>
+<td>只有实际上链部分能从链上核实，登录和战斗不一定有交易</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>ERC-721 &#x2F; ERC-1155 是资产格式，不是业务分类；域名、LP 仓位和预测市场头寸也可能使用这些标准。</p>
+<h3 id="10-治理与公共参与"><a href="#10-治理与公共参与" class="headerlink" title="10. 治理与公共参与"></a>10. 治理与公共参与</h3><p><strong>平台与链：</strong>Ethereum Compound 治理；Snapshot 链下投票与 Snapshot X 链上治理分别解释。捐赠接收方需以具体项目公示为依据。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>委托投票权</td>
+<td>对应治理资产和委托机制</td>
+<td>将投票权委托给某地址</td>
+<td>委托状态及 <code>DelegateChanged</code>；不代表转移代币</td>
+</tr>
+<tr>
+<td>链上投票</td>
+<td>满足提案规则及相应时点的投票资格</td>
+<td>治理合约记录提案、选项和投票权</td>
+<td><code>VoteCast</code> 与具体提案规则对应</td>
+</tr>
+<tr>
+<td>链下签名投票</td>
+<td>满足该空间的资格与签名规则</td>
+<td>向投票服务提交签名消息</td>
+<td>需要平台或签名记录，不能要求钱包必有一笔链上交易</td>
+</tr>
+<tr>
+<td>公共物品捐赠</td>
+<td>已确认资助项目及收款方式</td>
+<td>普通付款或资助协议处理捐赠</td>
+<td>资金记录加项目公示、收据等支持捐赠语义</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>链上可证明投票选项和记录，不能证明用户是否阅读过讨论；投给同一代表也不证明账户共同控制。</p>
+<h3 id="11-应用消费"><a href="#11-应用消费" class="headerlink" title="11. 应用消费"></a>11. 应用消费</h3><p><strong>平台与链：</strong>Ethereum ENS；Polygon Polymarket CTF；商家链上支付按具体收款方案分析。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>域名注册</td>
+<td>名称可注册且满足协议规则</td>
+<td>注册承诺、注册及名称归属处理</td>
+<td>单有 commitment 不算成功，需注册结果与所有权</td>
+</tr>
+<tr>
+<td>域名续费与记录管理</td>
+<td>满足续费或记录管理权限</td>
+<td>延长有效期，或修改解析记录</td>
+<td>到期状态与解析记录；付款人不一定是名称所有人</td>
+</tr>
+<tr>
+<td>服务或商品支付</td>
+<td>明确订单、资产及收款方</td>
+<td>普通转账或支付合约完成付款</td>
+<td>链上证明付款，商品交付通常需要业务系统证据</td>
+</tr>
+<tr>
+<td>预测市场头寸交易</td>
+<td>有可交易头寸或所需资产及权限</td>
+<td>订单结算改变结果头寸持有量</td>
+<td>对应成交与头寸转移，不能只看 ERC-1155 事件</td>
+</tr>
+<tr>
+<td>头寸拆分或合并</td>
+<td>持有对应抵押资产或结果头寸</td>
+<td>CTF 在抵押资产与头寸组合之间转换</td>
+<td><code>PositionSplit</code>、<code>PositionsMerge</code>，区别于订单成交</td>
+</tr>
+<tr>
+<td>结算领取</td>
+<td>条件已有可用结算结果且持有可兑付头寸</td>
+<td>兑付并改变头寸及抵押资产状态</td>
+<td><code>PayoutRedemption</code> 与到账；领取额不等于净利润</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>同一应用里的操作可能分别属于购买、配置、转换和结算，不能统一按一次“消费”计数。</p>
+<h3 id="12-安全与账户维护"><a href="#12-安全与账户维护" class="headerlink" title="12. 安全与账户维护"></a>12. 安全与账户维护</h3><p><strong>平台与链：</strong>Ethereum Safe；普通钱包迁移按资产实际去向分析。具体接口解释沿用 Safe 1.4.1，其他智能账户版本需单独核对。</p>
+<table>
+<thead>
+<tr>
+<th>子类型</th>
+<th>前置条件</th>
+<th>交互过程与合约角色</th>
+<th>结果与识别依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>调整多签成员</td>
+<td>满足账户当前授权要求</td>
+<td>增加、删除或替换 owner</td>
+<td>成员事件与最终 owner 集合</td>
+</tr>
+<tr>
+<td>修改签名门槛</td>
+<td>满足现有账户规则</td>
+<td>修改执行所需签名数量</td>
+<td>门槛状态，不必出现资产转移</td>
+</tr>
+<tr>
+<td>管理账户扩展权限</td>
+<td>账户支持相应模块且有管理权限</td>
+<td>启用、停用或修改对应功能</td>
+<td>按具体版本核查权限状态和事件</td>
+</tr>
+<tr>
+<td>将资产迁往新钱包</td>
+<td>对原资产有转移权限</td>
+<td>分别转移代币、NFT 或其他可转移头寸</td>
+<td>资产转移可证；“设备更换”动机与新钱包归属需额外证据</td>
+</tr>
+<tr>
+<td>清理应用权限</td>
+<td>已存在需调整的权限</td>
+<td>管理代币或应用授权</td>
+<td>主操作归授权管理，可附加账户维护目的</td>
+</tr>
+</tbody></table>
+<p><strong>关键区别：</strong>迁移可转移资产不会自动迁移所有协议状态；旧地址的债务、授权和不可转移权益需要分别检查。</p>
+<h2 id="四、跨类别关系：按目的归类，保留辅助操作"><a href="#四、跨类别关系：按目的归类，保留辅助操作" class="headerlink" title="四、跨类别关系：按目的归类，保留辅助操作"></a>四、跨类别关系：按目的归类，保留辅助操作</h2><table>
+<thead>
+<tr>
+<th>已观察到的业务</th>
+<th>主要类别</th>
+<th>可能包含的辅助操作</th>
+<th>统计时的注意点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用 ETH 兑换某 ERC-20</td>
+<td>代币兑换</td>
+<td>内部包装为 WETH、路由经过多个池</td>
+<td>不把内部包装和每个池跳转都算成用户独立决策</td>
+</tr>
+<tr>
+<td>存入 Aave</td>
+<td>借贷</td>
+<td>代币授权、转移、凭证记账</td>
+<td>底层存款与凭证不能重复算成收入</td>
+</tr>
+<tr>
+<td>创建 Uniswap V3 仓位</td>
+<td>提供流动性</td>
+<td>授权、资产投入、LP NFT 铸造</td>
+<td>LP NFT 不另计为收藏品购买</td>
+</tr>
+<tr>
+<td>注册 ENS 名称</td>
+<td>应用消费</td>
+<td>支付、名称 NFT 归属变化、解析设置</td>
+<td>名称相关步骤归到一个业务过程，但保留各笔交易</td>
+</tr>
+<tr>
+<td>卖出 stETH</td>
+<td>代币兑换</td>
+<td>质押凭证转移</td>
+<td>不能记为质押协议完成退出</td>
+</tr>
+<tr>
+<td>从桥接到另一条链后消费</td>
+<td>跨链、应用消费两个业务</td>
+<td>目标链资产到账、授权等</td>
+<td>两个业务可以关联，但目标链到账必须独立核验</td>
+</tr>
+<tr>
+<td>为账户维护而撤销授权</td>
+<td>授权管理</td>
+<td>账户维护目的标签</td>
+<td>一项操作不要在两个类别中重复计入总数</td>
+</tr>
+</tbody></table>
+<p>“主要类别”以可核验业务为准。无法确定目的时，可以记录“ERC-20 转移，目的未知”，不必强行补全用户故事。</p>
+<h2 id="五、后续分析表建议"><a href="#五、后续分析表建议" class="headerlink" title="五、后续分析表建议"></a>五、后续分析表建议</h2><p>每条记录对应一个已观察到的业务事件，可关联多笔交易；同一交易也可关联多个子操作。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>记录内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>行为大类 &#x2F; 子类型</td>
+<td>使用本文十二类及其子类型，保留未知项</td>
+</tr>
+<tr>
+<td>业务事件编号</td>
+<td>用于关联一个业务过程中的多笔交易</td>
+</tr>
+<tr>
+<td>网络 &#x2F; 时间 &#x2F; 区块 &#x2F; 交易哈希</td>
+<td>可复核的定位信息；跨链分别记录两端</td>
+</tr>
+<tr>
+<td>发起者 &#x2F; 资产持有人 &#x2F; 受益人</td>
+<td>分别记录，不能默认都是外层 from</td>
+</tr>
+<tr>
+<td>平台与版本</td>
+<td>依据部署资料、历史实现和业务证据确定</td>
+</tr>
+<tr>
+<td>合约角色</td>
+<td>Token、Router、Pool、仓位管理器、代理、智能账户等</td>
+</tr>
+<tr>
+<td>操作及字段解释</td>
+<td>解码的函数、参数含义及业务事件</td>
+</tr>
+<tr>
+<td>结果</td>
+<td>资产收支、债务、仓位、权限或应用状态变化</td>
+</tr>
+<tr>
+<td>费用</td>
+<td>与本金、付款额和收入分开记录</td>
+</tr>
+<tr>
+<td>完成状态</td>
+<td>发起、待执行、已执行、已领取、失败等，按业务定义</td>
+</tr>
+<tr>
+<td>主要类别 &#x2F; 辅助标签</td>
+<td>支持汇总，同时避免重复计算</td>
+</tr>
+<tr>
+<td>证据与不确定项</td>
+<td>交易链接、文档出处、链下凭证，以及仍不能确认的内容</td>
+</tr>
+</tbody></table>
+<p>本文不设定交易频率、操作占比或“真人评分”。判断一种行为是否合理，应结合资产、仓位、账户权限和实际业务需求；行为种类多寡本身不能证明真人身份。</p>
+<h2 id="六、来源与核验范围"><a href="#六、来源与核验范围" class="headerlink" title="六、来源与核验范围"></a>六、来源与核验范围</h2><p>完整合约地址表、接口说明、26 组来源及三笔实查交易在<a href="single-wallet-onchain-interaction-reading-guide.md">配套手册</a>中。本文件复用这些研究资料，不声称逐个验证了本表所有子类型。</p>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th>官方资料入口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ethereum 交易 &#x2F; ERC-20</td>
+<td><a href="https://ethereum.org/developers/docs/transactions/">交易结构</a>；<a href="https://eips.ethereum.org/EIPS/eip-20">ERC-20 标准</a></td>
+</tr>
+<tr>
+<td>Uniswap V3 兑换与 LP</td>
+<td><a href="https://developers.uniswap.org/docs/protocols/v3/deployments/v3-ethereum-deployments">Ethereum 部署</a>；<a href="https://github.com/Uniswap/v3-periphery/blob/main/contracts/interfaces/INonfungiblePositionManager.sol">仓位接口</a></td>
+</tr>
+<tr>
+<td>授权管理</td>
+<td><a href="https://revoke.cash/learn/approvals/what-are-token-approvals">Revoke.cash 授权说明</a></td>
+</tr>
+<tr>
+<td>OP 跨链</td>
+<td><a href="https://docs.optimism.io/app-developers/guides/bridging/standard-bridge">Standard Bridge</a></td>
+</tr>
+<tr>
+<td>Aave V3</td>
+<td><a href="https://aave.com/docs/aave-v3/smart-contracts/pool">Pool 接口</a></td>
+</tr>
+<tr>
+<td>Lido</td>
+<td><a href="https://docs.lido.fi/contracts/lido/">核心合约</a>；<a href="https://docs.lido.fi/contracts/withdrawal-queue-erc721/">退出队列</a></td>
+</tr>
+<tr>
+<td>NFT 订单结算</td>
+<td><a href="https://github.com/ProjectOpenSea/seaport">Seaport</a></td>
+</tr>
+<tr>
+<td>治理</td>
+<td><a href="https://docs.compound.finance/v2/governance/">Compound</a>；<a href="https://docs.snapshot.box/faq">Snapshot</a></td>
+</tr>
+<tr>
+<td>ENS</td>
+<td><a href="https://docs.ens.domains/learn/deployments/">官方部署目录</a></td>
+</tr>
+<tr>
+<td>Polymarket</td>
+<td><a href="https://docs.polymarket.com/resources/contracts">合约目录</a>；<a href="https://docs.polymarket.com/trading/positions/how-positions-work">头寸说明</a></td>
+</tr>
+<tr>
+<td>Safe</td>
+<td><a href="https://docs.safe.global/reference-smart-account/transactions/execTransaction">执行接口</a>；<a href="https://docs.safe.global/reference-smart-account/owners/swapOwner">成员替换</a></td>
+</tr>
+</tbody></table>
+<p>上述入口用于追溯资料来源，不能替代某个历史区块的状态核验。CEX 账务、订单交付、个人钱包归属和链下游戏行为尤其需要链外证据。</p>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Y7C0CVX9PK"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y7C0CVX9PK');</script></html>

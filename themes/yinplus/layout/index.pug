@@ -25,7 +25,7 @@ block content
             if !seenSeries[seriesName]
               - seenSeries[seriesName] = true;
               // Collect all posts (site-wide) in this series, excluding hidden ones.
-              - var seriesPostsArr = site.posts.filter(p => p.series === seriesName && (!p.hidden || !theme.post.enable_hidden)).toArray();
+              - var seriesPostsArr = site.posts.filter(p => p.collection !== 'ai' && p.series === seriesName && (!p.hidden || !theme.post.enable_hidden)).toArray();
               // Order inside series:
               // 1) If any post defines numeric `series_index`, sort by it asc; fallback to date asc.
               // 2) Otherwise, sort by date asc.

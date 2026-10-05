@@ -1,0 +1,567 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>钱包关联关系检测与展示工具调研</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://crazy.smallyu.net/2026/09/12/钱包关联关系检测与展示工具调研/"><meta property="og:title" content="钱包关联关系检测与展示工具调研"><meta property="og:type" content="article"><meta property="og:url" content="https://crazy.smallyu.net/2026/09/12/钱包关联关系检测与展示工具调研/"><meta property="og:site_name" content="smallyu的博客（疯狂版）"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客（疯狂版）" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>钱包关联关系检测与展示工具调研</h1><div class="time">2026-09-12</div><div class="title-margin"></div><div class="ai-content"><h2 id="1-范围与主要结论"><a href="#1-范围与主要结论" class="headerlink" title="1. 范围与主要结论"></a>1. 范围与主要结论</h2><p>本文件整理十类常见链上分析产品，重点回答：在哪里查看钱包关系、页面展示什么、指标如何定义、公开的检测方法是什么，以及有哪些可查看的例子。资料核查日期为 <strong>2026 年 9 月 12 日</strong>。</p>
+<p>钱包“有关联”至少有四种含义：存在转账、共享交易对手、具有行为相关性、被归属到同一实体。它们的证据强度不同。<strong>一条图连线通常不是共同所有权证明，一个风险分数也不是地址关联图。</strong></p>
+<p>主要结论如下：</p>
+<ul>
+<li><strong>看地址之间的线索</strong>：Bubblemaps、Arkham Visualizer &#x2F; Tracer、Nansen Profiler 最直接；Etherscan 也提供 Token Flow Visualizer。</li>
+<li><strong>看某一群地址占多少供应量</strong>：GeckoTerminal、CoinMarketCap、GMGN、Birdeye 提供相关持仓、分组或标签数据，但定义不完全相同。</li>
+<li><strong>看合约权限与开发者持仓</strong>：GoPlus 等安全产品提供结构化证据，但不应被当成全面的共同控制识别器。</li>
+<li><strong>看交易与行情，再回查地址</strong>：DEX Screener 是有用的市场观察入口；其公开行情 API 不等于钱包归属算法。</li>
+</ul>
+<p>全文分别标注“官方定义”“官方历史案例”“页面核实”“说明性示例”。官方描述不代表内部算法完整公开；本文件不将某个页面显示的标签当成独立证实的现实身份。</p>
+<h2 id="2-工具与页面入口总表"><a href="#2-工具与页面入口总表" class="headerlink" title="2. 工具与页面入口总表"></a>2. 工具与页面入口总表</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>可打开的产品入口</th>
+<th>关联展示的主要形式</th>
+<th>最适合回答的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bubblemaps V2</td>
+<td><a href="https://v2.bubblemaps.io/">v2.bubblemaps.io</a></td>
+<td>气泡图、转账线、集群、间接节点与时间节点</td>
+<td>大持仓地址之间有什么联系？</td>
+</tr>
+<tr>
+<td>Arkham</td>
+<td><a href="https://arkm.com/visualizer">Visualizer</a>、<a href="https://arkm.com/tracer">Tracer</a></td>
+<td>地址&#x2F;实体关系图、资金路径、标签</td>
+<td>钱往哪里流？多个地址被平台归到谁？</td>
+</tr>
+<tr>
+<td>Nansen</td>
+<td><a href="https://app.nansen.ai/">app.nansen.ai</a></td>
+<td>Profiler、钱包对比、关联钱包与交易对手表</td>
+<td>哪些地址与这个钱包有互动或被列为关联？</td>
+</tr>
+<tr>
+<td>GeckoTerminal</td>
+<td><a href="https://www.geckoterminal.com/">geckoterminal.com</a></td>
+<td>持仓、风险指标、图表、集成关系图</td>
+<td>持仓是否集中？相关群体占比及风险是什么？</td>
+</tr>
+<tr>
+<td>CoinMarketCap &#x2F; DexScan</td>
+<td><a href="https://dex.coinmarketcap.com/token/all/">dex.coinmarketcap.com&#x2F;token&#x2F;all</a></td>
+<td>持仓&#x2F;交易者信息、标签、趋势</td>
+<td>某些标签群体如何持仓和交易？</td>
+</tr>
+<tr>
+<td>GMGN</td>
+<td><a href="https://gmgn.ai/">gmgn.ai</a></td>
+<td>交易及持仓标签、Bundler 筛选、集成气泡图</td>
+<td>早期交易群体有哪些共同特征？</td>
+</tr>
+<tr>
+<td>Birdeye</td>
+<td><a href="https://birdeye.so/">birdeye.so</a></td>
+<td>持仓画像、标签分组、钱包明细与资金来源 API</td>
+<td>相关标签群体持有多少、具体是谁？</td>
+</tr>
+<tr>
+<td>Etherscan</td>
+<td><a href="https://etherscan.io/token/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce">Token 页面示例</a>、<a href="https://etherscan.io/advanced-filter">Advanced Filter</a></td>
+<td>Token Flow Visualizer、交易&#x2F;转账表、地址分析</td>
+<td>图上的关系能否追溯到具体链上事件？</td>
+</tr>
+<tr>
+<td>DEX Screener</td>
+<td><a href="https://dexscreener.com/">dexscreener.com</a></td>
+<td>池成交、交易地址、价格及流动性</td>
+<td>哪些地址在池中交易？何时、多少？</td>
+</tr>
+<tr>
+<td>GoPlus</td>
+<td><a href="https://console.gopluslabs.io/token-security/1/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce">Token Security 示例入口</a></td>
+<td>合约、owner&#x2F;creator、持仓及 LP 风险字段</td>
+<td>开发者或权限地址持有什么、能做什么？</td>
+</tr>
+</tbody></table>
+<p>入口可访问不等于全部功能可用。动态页面、登录、订阅、链覆盖和刷新状态都会影响结果。文末另列本次实例核实情况；未加载的图没有被当成完整实时样本。</p>
+<h2 id="3-Bubblemaps：持仓关系图"><a href="#3-Bubblemaps：持仓关系图" class="headerlink" title="3. Bubblemaps：持仓关系图"></a>3. Bubblemaps：持仓关系图</h2><h3 id="3-1-页面与展示"><a href="#3-1-页面与展示" class="headerlink" title="3.1 页面与展示"></a>3.1 页面与展示</h3><p>官方说明：<a href="https://wiki.bubblemaps.io/bubblemaps-v2/how-does-it-work">How does it work?</a>。[^1]</p>
+<p>默认视图以主要持币地址为节点，气泡大小体现持仓，连接体现转账关系。点击节点可以查看地址及持仓；查看转入&#x2F;转出记录可定位关系中的资产和交易时间。历史视图与当前图应分别理解。</p>
+<table>
+<thead>
+<tr>
+<th>页面元素</th>
+<th>表达什么</th>
+<th>不直接表达什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>气泡大小 &#x2F; 持仓数量</td>
+<td>地址在所选代币中的仓位</td>
+<td>地址在其他代币中的财富</td>
+</tr>
+<tr>
+<td>Supply %</td>
+<td>地址或指定集群的供应占比</td>
+<td>团队最终受益权占比</td>
+</tr>
+<tr>
+<td>转账连线</td>
+<td>地址间存在被纳入当前视图的转账</td>
+<td>两个地址一定属于同一人</td>
+</tr>
+<tr>
+<td>集群</td>
+<td>在当前图规则下连接的一组节点</td>
+<td>全部成员共同控制的法律或事实证明</td>
+</tr>
+<tr>
+<td>节点类型与标签</td>
+<td>持币地址、合约、服务地址等上下文</td>
+<td>每个标签都经过同等强度验证</td>
+</tr>
+</tbody></table>
+<p>视图会受节点范围、过滤条件和数据更新时间影响。高活跃服务节点可能产生大量关系；官方有专门的显示处理。<strong>没有画出线，不等于历史上没有联系。</strong></p>
+<h3 id="3-2-公开方法"><a href="#3-2-公开方法" class="headerlink" title="3.2 公开方法"></a>3.2 公开方法</h3><p><strong>基础图：</strong>持仓记录确定观察对象，转账数据确定连接。V2 的连接不局限于正在研究的那一种代币；部分关系可能涉及跨链。[^1]</p>
+<p><strong>Magic Nodes：</strong>加入不在当前主要持币列表中的中间地址，帮助展示间接资金联系。这里新增的节点可能当前不持有目标币。[^2]</p>
+<p><strong>Time Nodes：</strong>用时间维度组织互动，显示时间上协调的地址关系。它与单纯的地址转账边不同；具体产品实现、完整判定参数及所有链的覆盖不能从公开概述完整还原。[^3]</p>
+<h3 id="3-3-可查看的示例"><a href="#3-3-可查看的示例" class="headerlink" title="3.3 可查看的示例"></a>3.3 可查看的示例</h3><p><strong>官方历史案例：SHIB 的 Magic Nodes 对比。</strong>官方教程提供两张可分享图：</p>
+<ul>
+<li><a href="https://v2.bubblemaps.io/map/PWljIpdYB8TZuUfaDSwT">SHIB：默认关系图</a></li>
+<li><a href="https://v2.bubblemaps.io/map/LSxRoiNVWvIanZJdFyTS">SHIB：加入 Magic Nodes 的关系图</a></li>
+<li><a href="https://wiki.bubblemaps.io/bubblemaps-v2/magic-nodes">案例原文及配图</a></li>
+</ul>
+<p>教程展示：加入非持币中间地址后，原来不明显的资金路径可以连起来。这证明默认持币图与扩展关系图观察范围不同，不能据此直接断言所有节点同属一个控制者。[^2]</p>
+<p><strong>实际访问状态：</strong>默认案例链接在本次浏览器访问中重定向为 <a href="https://v2.bubblemaps.io/map?address=0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce&chain=eth">SHIB 当前查询入口</a>，随后页面显示加载错误。因此案例结论来自官方历史教程，未将历史百分比或图结构当作当前值。</p>
+<p><strong>时间关系案例：</strong><a href="https://wiki.bubblemaps.io/bubblemaps-v2/time-nodes">Time Nodes 官方页面</a>附有 BULLISH、OVPP 图示，分别说明服务节点的时间关系和早期交易协调线索。本文件将其视为供应商案例，不独立确认项目方身份。[^3]</p>
+<h2 id="4-Arkham：从地址关系到实体归属"><a href="#4-Arkham：从地址关系到实体归属" class="headerlink" title="4. Arkham：从地址关系到实体归属"></a>4. Arkham：从地址关系到实体归属</h2><h3 id="4-1-页面-URL"><a href="#4-1-页面-URL" class="headerlink" title="4.1 页面 URL"></a>4.1 页面 URL</h3><ul>
+<li>关系图：<a href="https://arkm.com/visualizer">arkm.com&#x2F;visualizer</a></li>
+<li>路径追踪：<a href="https://arkm.com/tracer">arkm.com&#x2F;tracer</a></li>
+<li>官方实体示例：<a href="https://arkm.com/explorer/entity/blackrock">BlackRock entity</a></li>
+<li>功能与页面说明：<a href="https://info.arkm.com/research/how-to-use-arkham-intel-guide-explained">How To Use Arkham Intel</a>。[^4]</li>
+</ul>
+<h3 id="4-2-展示与公开方法"><a href="#4-2-展示与公开方法" class="headerlink" title="4.2 展示与公开方法"></a>4.2 展示与公开方法</h3><p>Visualizer 展示地址或实体之间的资金关系；Tracer 更强调资金沿地址顺序流动的路径。交易明细可以提供资产、金额和时间依据，实体视图则把平台归属到同一主体的地址汇总。[^4]</p>
+<p>Arkham 将元数据区分为三层：<strong>Entity 是主体集合，Label 是具体地址名称，Tag 是行为或属性说明</strong>。其公开方法概述包含链上聚类、机器学习、链下公开资料、内部研究和社区情报。完整模型、权重和每个实体的全部证据未公开。[^4]</p>
+<table>
+<thead>
+<tr>
+<th>需要区分的结果</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>交易关系图</td>
+<td>A 与 B 之间出现资金流</td>
+</tr>
+<tr>
+<td>已验证实体标签</td>
+<td>Arkham 按其证据标准作出的高置信归属</td>
+</tr>
+<tr>
+<td>Entity Prediction</td>
+<td>平台明确区分的较低置信预测</td>
+</tr>
+<tr>
+<td>Custom Entity &#x2F; Label</td>
+<td>用户创建或修改的归类，不应视为 Arkham 自动认定</td>
+</tr>
+</tbody></table>
+<p>平台专门说明过预测标签与已验证标签不同，也调整过自定义标签的展示以避免误解。[^5][^6]</p>
+<h3 id="4-3-示例如何阅读"><a href="#4-3-示例如何阅读" class="headerlink" title="4.3 示例如何阅读"></a>4.3 示例如何阅读</h3><p>BlackRock 页面是<strong>平台实体归类示例</strong>，不是本文件独立审计的地址清单。阅读时应分别检查：实体包含的地址、地址具体标签、实体对外资金流，以及标签的证据类型。不要把“向该实体转过账”理解成“属于该实体”。</p>
+<p>旧的 <code>intel.arkm.com</code> Visualizer、Tracer 和该实体链接在本次访问中重定向到 <code>arkm.com</code>。入口已核实，完整交互式资金图未在本次逐节点审计。</p>
+<h2 id="5-Nansen：关联钱包、交易对手与钱包对比"><a href="#5-Nansen：关联钱包、交易对手与钱包对比" class="headerlink" title="5. Nansen：关联钱包、交易对手与钱包对比"></a>5. Nansen：关联钱包、交易对手与钱包对比</h2><h3 id="5-1-页面与功能入口"><a href="#5-1-页面与功能入口" class="headerlink" title="5.1 页面与功能入口"></a>5.1 页面与功能入口</h3><p>产品入口：<a href="https://app.nansen.ai/">app.nansen.ai</a>。官方 <a href="https://academy.nansen.ai/help/articles/0002013-nansen-profiler-101">Nansen Profiler 101</a>介绍三个功能：地址 Profiler、Wallet Profiler for Token、Wallet Pair Profiler。最后一种用于同时查看两个地址的直接交易、共享交易对手和网络关系。具体页面可能需要登录。[^7]</p>
+<h3 id="5-2-可核实的指标与接口"><a href="#5-2-可核实的指标与接口" class="headerlink" title="5.2 可核实的指标与接口"></a>5.2 可核实的指标与接口</h3><table>
+<thead>
+<tr>
+<th>功能 &#x2F; 文档 URL</th>
+<th>主要字段</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://docs.nansen.ai/api/profiler/address-related-wallets">Address Related Wallets</a></td>
+<td>地址、标签、<code>relation</code>、交易哈希、时间、链</td>
+<td>返回具体关系记录，不只是一个相似度分数</td>
+</tr>
+<tr>
+<td><a href="https://docs.nansen.ai/api/profiler/address-counterparties">Address Counterparties</a></td>
+<td>互动次数、总额、流入、流出、代币明细</td>
+<td>按地址或实体观察互动规模与方向</td>
+</tr>
+<tr>
+<td><a href="https://docs.nansen.ai/api/profiler/address-first-funder">Address First Funder</a></td>
+<td>首个资助地址、标签、交易哈希、时间、链</td>
+<td>当前公开定义是 EVM 钱包最早收到原生 Gas 资产的资助来源</td>
+</tr>
+</tbody></table>
+<p>Related Wallets 文档提供当前关系视图，不提供任意历史时间范围查询；关系类型字段存在，但不能据此推断所有内部分类逻辑已公开。[^8]</p>
+<p>Counterparties 是对互动数据的统计，可以按钱包或实体聚合。<strong>交易对手是交互对象，不是同伙或同一控制者的同义词。</strong>[^9]</p>
+<p>First Funder 的资产口径尤其重要：原生 Gas 资产的首次来源，不必然是钱包 USDC 或全部资金的来源。该接口对地址和链有明确范围，不能泛化为所有链、所有资产的完整资金溯源。[^10]</p>
+<h3 id="5-3-示例"><a href="#5-3-示例" class="headerlink" title="5.3 示例"></a>5.3 示例</h3><p>官方 Counterparties 文档以公开地址 <code>0x28c6c06298d514db089934071355e5743bf21d60</code> 和 Coinbase 实体为参数示例，说明“单地址对手”和“实体汇总对手”的差别。可在<a href="https://docs.nansen.ai/api/profiler/address-counterparties">示例所在文档</a>查看字段及示例。这里没有把文档请求示例伪装成已取得的实时 API 结果。[^9]</p>
+<h2 id="6-GeckoTerminal-x2F-CoinGecko：集群持仓指标与安全评分"><a href="#6-GeckoTerminal-x2F-CoinGecko：集群持仓指标与安全评分" class="headerlink" title="6. GeckoTerminal &#x2F; CoinGecko：集群持仓指标与安全评分"></a>6. GeckoTerminal &#x2F; CoinGecko：集群持仓指标与安全评分</h2><h3 id="6-1-页面-URL-与实查例子"><a href="#6-1-页面-URL-与实查例子" class="headerlink" title="6.1 页面 URL 与实查例子"></a>6.1 页面 URL 与实查例子</h3><ul>
+<li>产品：<a href="https://www.geckoterminal.com/">geckoterminal.com</a></li>
+<li>具体池：<a href="https://www.geckoterminal.com/eth/pools/0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640">Ethereum WETH &#x2F; USDC，Uniswap V3</a></li>
+<li>使用说明：<a href="https://www.coingecko.com/learn/geckoterminal">How to Use GeckoTerminal</a>。[^11]</li>
+</ul>
+<p>该池页面本次已在浏览器打开，确认有价格、成交笔数、买卖计数、成交量、流动性、Holders、GT Security Score 和安全工具跳转入口。这是<strong>行情与安全信息的页面实例</strong>，不是证明该池存在异常关联的案例，也不证明所有链都显示相同关联字段。</p>
+<h3 id="6-2-与钱包关联直接相关的指标"><a href="#6-2-与钱包关联直接相关的指标" class="headerlink" title="6.2 与钱包关联直接相关的指标"></a>6.2 与钱包关联直接相关的指标</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>官方描述的观察对象</th>
+<th>阅读重点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Top 10 Holders %</td>
+<td>十个主要钱包的供应占比，说明中排除已知池持仓</td>
+<td>地址集中度不等于实体集中度</td>
+</tr>
+<tr>
+<td>Developer Holding %</td>
+<td>被识别为开发者&#x2F;部署者相关的钱包持仓</td>
+<td>取决于识别覆盖，不代表完整团队经济权益</td>
+</tr>
+<tr>
+<td>Clusters Holding %</td>
+<td>被联系起来的地址群持有的供应占比</td>
+<td>需回看群内地址及关系依据</td>
+</tr>
+<tr>
+<td>Early Buyers Holding %</td>
+<td>被标记的早期买入群体持仓</td>
+<td>属于群体标签，不直接证明与发行方同属一方</td>
+</tr>
+</tbody></table>
+<p>官方指标页提到转账与共同资金来源等关联线索；没有公布完整聚类算法。合约 mint&#x2F;freeze、买卖限制和 LP 状态则属于另外的风险维度。[^12]</p>
+<h3 id="6-3-两个不应混淆的检测功能"><a href="#6-3-两个不应混淆的检测功能" class="headerlink" title="6.3 两个不应混淆的检测功能"></a>6.3 两个不应混淆的检测功能</h3><p><strong>GT Security Score：</strong>结合市场活动与安全&#x2F;供应信息；官方明确不公布精确权重或阈值，且数据覆盖因链而异。它不是钱包归属概率。[^13]</p>
+<p><strong>Suspicious chart detection：</strong>官方描述为分析周期 K 线和成交量中的异常模式，并标明 beta。这是市场行为异常检查，不是地址间转账边的定义。[^14]</p>
+<p><strong>说明性示例：</strong>一个代币 Top 10 较低，但关联群体的总持仓较高，两项并不矛盾：前者数单地址，后者数满足某种关系规则的群体。判断前要对齐供应量分母、地址排除规则和数据时间。</p>
+<h2 id="7-CoinMarketCap-x2F-DexScan：持仓标签与地址活动"><a href="#7-CoinMarketCap-x2F-DexScan：持仓标签与地址活动" class="headerlink" title="7. CoinMarketCap &#x2F; DexScan：持仓标签与地址活动"></a>7. CoinMarketCap &#x2F; DexScan：持仓标签与地址活动</h2><h3 id="7-1-页面-URL"><a href="#7-1-页面-URL" class="headerlink" title="7.1 页面 URL"></a>7.1 页面 URL</h3><ul>
+<li>旧入口：<a href="https://coinmarketcap.com/dexscan/">coinmarketcap.com&#x2F;dexscan</a></li>
+<li>本次重定向后的入口：<a href="https://dex.coinmarketcap.com/token/all/">dex.coinmarketcap.com&#x2F;token&#x2F;all</a></li>
+<li>字段文档：<a href="https://pro.coinmarketcap.com/api/documentation/pro-api-reference/holder">Holder API Documentation</a>。[^15]</li>
+</ul>
+<h3 id="7-2-公开指标"><a href="#7-2-公开指标" class="headerlink" title="7.2 公开指标"></a>7.2 公开指标</h3><table>
+<thead>
+<tr>
+<th>数据组</th>
+<th>文档中的代表字段</th>
+<th>可回答的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>持仓</td>
+<td><code>walletAddress</code>、<code>balance</code>、<code>percent</code>、<code>totalSupply</code></td>
+<td>谁持有多少？</td>
+</tr>
+<tr>
+<td>地址标签</td>
+<td><code>tags</code>，dev、bot、sniper、whale 等标签筛选</td>
+<td>哪些地址被平台标记为某类参与者？</td>
+</tr>
+<tr>
+<td>来源与活动</td>
+<td><code>fundingSource</code>、<code>fundingTime</code>、<code>firstActiveTime</code>、<code>lastActiveTime</code></td>
+<td>平台记录的来源和活动时点是什么？</td>
+</tr>
+<tr>
+<td>交易画像</td>
+<td>买卖次数、买卖额、净买入、持仓与 PnL 字段</td>
+<td>某地址的交易和仓位怎样变化？</td>
+</tr>
+<tr>
+<td>群体变化</td>
+<td>holder count、trend、tag count 接口</td>
+<td>持币数量或标签分组如何变化？</td>
+</tr>
+</tbody></table>
+<p>字段说明证明产品提供这些数据对象，但没有完整公开 dev&#x2F;bot&#x2F;sniper 的判定公式。文档里的 <code>walletCreateTime</code> 也不能直接解释为 EOA 私钥离线生成的真实时间。[^15]</p>
+<h3 id="7-3-示例与边界"><a href="#7-3-示例与边界" class="headerlink" title="7.3 示例与边界"></a>7.3 示例与边界</h3><p>官方 Holder 文档提供请求及返回结构示例，可看到“一个持仓地址记录同时携带来源、标签和买卖信息”的形式。示例中的占位值不是实际代币检测结果。本次核实了 DexScan 入口及公开接口文档，未声称某个具体代币的全部标签已实测。</p>
+<p><strong>说明性示例：</strong>标签表出现多个 <code>dev</code> 或 <code>bot</code> 地址，是平台分类结果；如果要判断它们是否相互转账，还需要交易明细或关系图。不能仅因为标签相同就合并成同一实体。</p>
+<h2 id="8-GMGN：早期交易标签与集成气泡图"><a href="#8-GMGN：早期交易标签与集成气泡图" class="headerlink" title="8. GMGN：早期交易标签与集成气泡图"></a>8. GMGN：早期交易标签与集成气泡图</h2><h3 id="8-1-页面-URL"><a href="#8-1-页面-URL" class="headerlink" title="8.1 页面 URL"></a>8.1 页面 URL</h3><ul>
+<li>产品：<a href="https://gmgn.ai/">gmgn.ai</a></li>
+<li>指标和页面示例：<a href="https://gmgn.ai/blog/what-is-a-meme-coin-bundle/">What Is a Meme Coin Bundle?</a></li>
+<li>标签图例：<a href="https://docs.gmgn.ai/index/featured-icon-definition">Featured Icon Definition</a>。[^16][^17]</li>
+</ul>
+<h3 id="8-2-展示方式与公开方法"><a href="#8-2-展示方式与公开方法" class="headerlink" title="8.2 展示方式与公开方法"></a>8.2 展示方式与公开方法</h3><p>官方指南描述：Trenches 显示相关指标；代币详情中的 Trades 可按 Bundler 筛选；地址带有 DEV、Sniper、Insider 等标签；关联图入口可以使用 InsightX、Bubblemaps、Faster100X 等来源，具体随链和页面变化。<strong>GMGN 展示的关系图不一定由 GMGN 自己计算。</strong>[^16]</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>公开含义</th>
+<th>需要注意</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bundle %</td>
+<td>官方指南描述为捆绑买入贡献的交易量比例</td>
+<td>不等于这些钱包当前持有的供应比例</td>
+</tr>
+<tr>
+<td>Bundler 钱包</td>
+<td>被产品判为参与捆绑交易的地址</td>
+<td>不自动等于发行方钱包</td>
+</tr>
+<tr>
+<td>Sniper</td>
+<td>早期买入行为标签</td>
+<td>早买与共同控制是不同问题</td>
+</tr>
+<tr>
+<td>Suspected Insider</td>
+<td>基于来源、时序等相似特征的疑似关联标签</td>
+<td>名称中的“疑似”不能省略</td>
+</tr>
+<tr>
+<td>气泡图</td>
+<td>由当前集成供应商定义的关联可视化</td>
+<td>同一名称的线或节点需看供应商解释</td>
+</tr>
+</tbody></table>
+<p>公开资料给出标签概念和展示方式，但没有完整公开统一的 Insider 模型。[^17]</p>
+<h3 id="8-3-示例：Bundle-与-Cluster-为什么不一致"><a href="#8-3-示例：Bundle-与-Cluster-为什么不一致" class="headerlink" title="8.3 示例：Bundle 与 Cluster 为什么不一致"></a>8.3 示例：Bundle 与 Cluster 为什么不一致</h3><p>GMGN 指南与 Bubblemaps 的<a href="https://blog.bubblemaps.io/whats-the-difference-between-bundle-cluster-2/">Bundle &#x2F; Cluster 说明</a>都强调两者不同：一个侧重早期交易协调，另一个侧重可观察的资金联系。因此可能有被标记为 bundle 的地址而默认图上没有直接连线，也可能有资金集群但不属于早期买入群。[^18]</p>
+<p>这是<strong>官方概念示例</strong>。没有必要用一个“是否关联”的布尔值覆盖两种不同指标；不同工具对 bundle 的定义也不能默认一致。</p>
+<h2 id="9-Birdeye：标签群体持仓与首笔-SOL-来源"><a href="#9-Birdeye：标签群体持仓与首笔-SOL-来源" class="headerlink" title="9. Birdeye：标签群体持仓与首笔 SOL 来源"></a>9. Birdeye：标签群体持仓与首笔 SOL 来源</h2><h3 id="9-1-产品与接口页面"><a href="#9-1-产品与接口页面" class="headerlink" title="9.1 产品与接口页面"></a>9.1 产品与接口页面</h3><ul>
+<li>产品：<a href="https://birdeye.so/">birdeye.so</a></li>
+<li><a href="https://birdeye.so/data-api/blog/detail/token-holder-profile-token-holder-positions-complete-holder-intelligence-on-solana">Holder Profile 与 Holder Positions 官方说明</a></li>
+<li><a href="https://docs.birdeye.so/reference/get-token-v1-holder-profile">Holder Profile API 文档入口</a></li>
+<li><a href="https://birdeye.so/data-api/blog/detail/wallet-funded-by-api-trace-the-first-sol-funding-event">Wallet Funded By 官方说明</a>。[^19][^20]</li>
+</ul>
+<h3 id="9-2-指标与方法"><a href="#9-2-指标与方法" class="headerlink" title="9.2 指标与方法"></a>9.2 指标与方法</h3><p>Holder Profile 按 bundler、sniper、insider、dev 分组展示地址数、供应占比、持仓、买卖额和 PnL；Holder Positions 则进一步提供单钱包明细。2026-04-21 的发布说明将这两个端点限定为 Solana，并说明早期历史标签存在回填边界。不能把 Birdeye 平台支持多链理解为每个端点都支持多链。[^19]</p>
+<p>2026-08-25 的 Funded By 说明提供另一种证据：索引历史中最早的有效原生 SOL 资助事件，包含来源、金额、slot、时间和交易签名。其定义是资金来源上下文，不是最终控制权证明。[^20]</p>
+<h3 id="9-3-示例"><a href="#9-3-示例" class="headerlink" title="9.3 示例"></a>9.3 示例</h3><p>官方 Holder 文章有两层返回结构：先看某类标签的总持仓，再看该类中的具体钱包。可直接在文章的返回字段表查看例子。<strong>这些字段表是产品结构示例，不是本次采集的实盘持仓数值。</strong></p>
+<p><strong>说明性示例：</strong>一份标签汇总显示某组持有 12% 的供应，另一个页面显示其交易量占比为 30%，不能说两平台相差 18 个百分点：它们统计的是不同分母。示例数字仅用于解释口径。</p>
+<h2 id="10-Etherscan：转账证据与-Token-Flow-Visualizer"><a href="#10-Etherscan：转账证据与-Token-Flow-Visualizer" class="headerlink" title="10. Etherscan：转账证据与 Token Flow Visualizer"></a>10. Etherscan：转账证据与 Token Flow Visualizer</h2><h3 id="10-1-页面-URL"><a href="#10-1-页面-URL" class="headerlink" title="10.1 页面 URL"></a>10.1 页面 URL</h3><ul>
+<li>SHIB Token 示例：<a href="https://etherscan.io/token/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce">etherscan.io&#x2F;token&#x2F;0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce</a></li>
+<li>交易筛选：<a href="https://etherscan.io/advanced-filter">etherscan.io&#x2F;advanced-filter</a></li>
+<li>可视化功能介绍：<a href="https://info.etherscan.com/25-etherscan-features-in-2025/">25 Etherscan Features in 2025，第 17、18 项</a></li>
+<li>官方筛选案例：<a href="https://kb.etherscan.com/advanced-filter">Advanced Filter</a>。[^21][^22]</li>
+</ul>
+<h3 id="10-2-展示与公开方法"><a href="#10-2-展示与公开方法" class="headerlink" title="10.2 展示与公开方法"></a>10.2 展示与公开方法</h3><p>Token Flow Visualizer 在 ERC-20 Token 页面提供主要持仓地址之间的转账图，并可调整类别、时间及观察地址范围。地址 Analytics 另提供活跃记录、交易热图、主要邻居及 dApp 信息。[^21]</p>
+<p>Advanced Filter 则将普通交易、代币转账、内部交易等按条件汇总，适合回查图中关系的原始证据。它主要是事件查询和可视化，不等于对所有地址自动提供最终受益人识别。[^22]</p>
+<h3 id="10-3-官方案例"><a href="#10-3-官方案例" class="headerlink" title="10.3 官方案例"></a>10.3 官方案例</h3><p>Advanced Filter 文档以 <strong>2023 年 Euler 事件</strong>说明如何将不同交易类型放入同一观察窗口。案例重点在于不同资产和调用记录能够共同解释资金路径，而不是仅凭一个地址标签作结论。[^22]</p>
+<p>本次 Token 页面内容读取受到访问限制，没有把该页面的实时关系图作为已核实结果。功能说明和案例来自官方文章；亦未确认所有 Etherscan 系浏览器都拥有相同功能。</p>
+<h2 id="11-DEX-Screener：交易地址观察入口"><a href="#11-DEX-Screener：交易地址观察入口" class="headerlink" title="11. DEX Screener：交易地址观察入口"></a>11. DEX Screener：交易地址观察入口</h2><h3 id="11-1-页面-URL"><a href="#11-1-页面-URL" class="headerlink" title="11.1 页面 URL"></a>11.1 页面 URL</h3><ul>
+<li><a href="https://dexscreener.com/ethereum/0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640">WETH &#x2F; USDC 同池示例</a></li>
+<li><a href="https://docs.dexscreener.com/api/reference">官方 API Reference</a>。[^23]</li>
+</ul>
+<h3 id="11-2-指标与检测边界"><a href="#11-2-指标与检测边界" class="headerlink" title="11.2 指标与检测边界"></a>11.2 指标与检测边界</h3><p>公开 API 包括池价格、买卖笔数、成交量、流动性和其他市场字段。页面的成交记录可作为定位地址及交易的起点，但行情 API 没有因此提供完整的钱包控制关系推断。某页面如嵌入第三方图或安全标签，应另行确认来源。[^23]</p>
+<p><strong>同池比较示例：</strong>本节链接与 GeckoTerminal 示例使用同一个 Ethereum 池合约，可以对照交易窗口和池身份。即使两站买卖笔数或成交量暂时不同，也应先排查时间、刷新和聚合口径，而不是把差异当作关联检测的误判。</p>
+<p>“Makers”“Traders”“Holders”等界面计数在未经明确身份归并时，不应直接译为独立真实用户人数。这是指标解释边界，不是本文件发现该池有异常的结论。</p>
+<h2 id="12-GoPlus：合约角色和持仓风险"><a href="#12-GoPlus：合约角色和持仓风险" class="headerlink" title="12. GoPlus：合约角色和持仓风险"></a>12. GoPlus：合约角色和持仓风险</h2><h3 id="12-1-页面-URL"><a href="#12-1-页面-URL" class="headerlink" title="12.1 页面 URL"></a>12.1 页面 URL</h3><ul>
+<li><a href="https://console.gopluslabs.io/token-security/1/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce">SHIB Token Security 示例入口</a></li>
+<li><a href="https://docs.gopluslabs.io/reference/response-details">Response Details</a></li>
+<li><a href="https://docs.gopluslabs.io/reference/tokensecurityusingget_1">Token Security API</a>。[^24]</li>
+</ul>
+<h3 id="12-2-指标与公开方法"><a href="#12-2-指标与公开方法" class="headerlink" title="12.2 指标与公开方法"></a>12.2 指标与公开方法</h3><p>文档提供 <code>owner_address</code>、<code>creator_address</code>、对应余额&#x2F;占比、主要持仓及 LP 持仓等字段，并描述合约权限、买卖限制和锁仓信息。它回答的是合约角色、资金分布与安全风险，不能仅靠这些字段还原完整团队钱包网络。[^24]</p>
+<table>
+<thead>
+<tr>
+<th>情况</th>
+<th>正确解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Owner 持仓低</td>
+<td>被识别 owner 地址的持仓低，不代表所有团队关联地址持仓低</td>
+</tr>
+<tr>
+<td>合约有增发权限</td>
+<td>合约能力风险，不等于已经增发或证明控制了其他地址</td>
+</tr>
+<tr>
+<td>部分字段不返回</td>
+<td>可能是未知、未覆盖或接口权限限制，不是零风险</td>
+</tr>
+<tr>
+<td>LP 信息存在</td>
+<td>描述相应 LP 对象，不能混为普通 Token 供应占比</td>
+</tr>
+</tbody></table>
+<p>官方字段说明中 creator&#x2F;owner 个别文字有重复或不够清楚的地方。严谨使用时应核验合约部署与当前权限状态，不把含糊字段说明扩展为同一实体证明。</p>
+<h3 id="12-3-示例状态"><a href="#12-3-示例状态" class="headerlink" title="12.3 示例状态"></a>12.3 示例状态</h3><p>旧产品域名的安全页本次重定向至 <code>console.gopluslabs.io</code>，可提供具体入口，但未读取到完整动态安全结果。本节字段来自官方接口文档，不对示例代币当前安全性作结论。</p>
+<h2 id="13-各种“关联”的直观区别"><a href="#13-各种“关联”的直观区别" class="headerlink" title="13. 各种“关联”的直观区别"></a>13. 各种“关联”的直观区别</h2><p>以下为概念示意，不对应真实钱包或任何平台的内部算法。</p>
+<pre><code class="mermaid">flowchart LR
+    A[钱包 A] --&gt;|链上转账事实| B[钱包 B]
+    F[公共服务地址] --&gt; C[钱包 C]
+    F --&gt; D[钱包 D]
+    C -.共享服务来源.-&gt; D
+    E[平台实体 X] -.平台归属标签.-&gt; G[钱包 G]
+    E -.平台归属标签.-&gt; H[钱包 H]
+</code></pre>
+<p>第一组是直接资金联系；第二组共享服务来源；第三组是平台归属结果。三者都可以被界面称为“关联”，但证据内容不同。若还出现相近时间的动作，那是另一层行为相关性，不能取代资金或身份依据。</p>
+<h3 id="13-1-核心指标字典"><a href="#13-1-核心指标字典" class="headerlink" title="13.1 核心指标字典"></a>13.1 核心指标字典</h3><table>
+<thead>
+<tr>
+<th>指标 &#x2F; 概念</th>
+<th>实际观察对象</th>
+<th>最常见的误读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Transfer link</td>
+<td>一笔或多笔资金转移</td>
+<td>有转账就一定是同一个人</td>
+</tr>
+<tr>
+<td>Shared counterparty</td>
+<td>共享交互对象</td>
+<td>用同一交易所即同属一方</td>
+</tr>
+<tr>
+<td>First funder</td>
+<td>某产品定义下的首次资助事件</td>
+<td>等于全部资金的最终来源</td>
+</tr>
+<tr>
+<td>Cluster</td>
+<td>依据某种边规则形成的群体</td>
+<td>不同平台集群必然一致</td>
+</tr>
+<tr>
+<td>Entity</td>
+<td>平台归属到一个主体的地址集合</td>
+<td>用户自定义实体也有平台验证背书</td>
+</tr>
+<tr>
+<td>Developer holdings</td>
+<td>已识别的开发者相关持仓</td>
+<td>包含所有未识别团队地址</td>
+</tr>
+<tr>
+<td>Top holders %</td>
+<td>按地址排序的集中度</td>
+<td>等同于按控制实体归并后的集中度</td>
+</tr>
+<tr>
+<td>Tag-group supply %</td>
+<td>某标签群的持仓&#x2F;供应量</td>
+<td>可与另一平台的成交量比例比较</td>
+</tr>
+<tr>
+<td>Bundler &#x2F; Sniper</td>
+<td>产品定义的交易行为类别</td>
+<td>任何相关标签都证明发行方控制</td>
+</tr>
+<tr>
+<td>Suspected Insider</td>
+<td>一组提示疑似关系的特征</td>
+<td>“疑似”就是已确定内幕身份</td>
+</tr>
+<tr>
+<td>Security score</td>
+<td>多因素安全&#x2F;市场汇总值</td>
+<td>代表地址关联或真人身份置信度</td>
+</tr>
+<tr>
+<td>Wallet age &#x2F; first seen</td>
+<td>某种首次观测时间</td>
+<td>等于真实离线创建时间</td>
+</tr>
+</tbody></table>
+<h3 id="13-2-平台差异从哪里来"><a href="#13-2-平台差异从哪里来" class="headerlink" title="13.2 平台差异从哪里来"></a>13.2 平台差异从哪里来</h3><p>以下是比较结果时应区分的分析维度，不是某一家工具已经确认的全部实现：</p>
+<ol>
+<li><strong>节点范围</strong>：当前持币地址、历史持币地址、非持币中间节点，还是已知实体。</li>
+<li><strong>边的定义</strong>：直接转账、间接关系、共享服务、时间关系或外部归属。</li>
+<li><strong>数据范围</strong>：单币、全资产、单链、部分跨链及不同历史窗口。</li>
+<li><strong>统计分母</strong>：总供应、流通供应、特定池成交量或标签内交易量。</li>
+<li><strong>排除规则</strong>：池、交易所、销毁地址、锁仓和其他合约如何处理。</li>
+<li><strong>标签类型</strong>：人工已验证、规则生成、模型预测或用户自定义。</li>
+<li><strong>时效与覆盖</strong>：索引时间、快照时间、是否正在回填、是否缺失数据。</li>
+</ol>
+<p>在这些条件没有对齐之前，不适合把两平台的百分比相减，或用一方结果直接判另一方错误。相同上游数据被多家平台展示，也不构成多份相互独立的证据。</p>
+<h2 id="14-示例与链接核实清单"><a href="#14-示例与链接核实清单" class="headerlink" title="14. 示例与链接核实清单"></a>14. 示例与链接核实清单</h2><table>
+<thead>
+<tr>
+<th>示例</th>
+<th>类型</th>
+<th>本次确认范围</th>
+<th>不作出的结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SHIB，Bubblemaps 默认与 Magic Nodes</td>
+<td>官方历史案例</td>
+<td>官方配图和说明可读；默认分享链接重定向后页面报错</td>
+<td>不声称当前图与历史图完全一致</td>
+</tr>
+<tr>
+<td>BULLISH &#x2F; OVPP，Time Nodes</td>
+<td>官方案例</td>
+<td>官方页面提供案例及图链接</td>
+<td>不独立确认控制人或项目方身份</td>
+</tr>
+<tr>
+<td>BlackRock，Arkham Entity</td>
+<td>官方实体页面</td>
+<td>产品入口及域名重定向已确认</td>
+<td>不把全部标签视为本文件独立验证</td>
+</tr>
+<tr>
+<td>Nansen Counterparties</td>
+<td>官方文档示例</td>
+<td>参数、字段和不同聚合口径已确认</td>
+<td>不声称付费 API 已调用</td>
+</tr>
+<tr>
+<td>Ethereum WETH &#x2F; USDC，GeckoTerminal</td>
+<td>本次页面实例</td>
+<td>池身份及主要行情、安全显示已确认</td>
+<td>不声称存在疑似项目方集群</td>
+</tr>
+<tr>
+<td>同池，DEX Screener</td>
+<td>本次页面实例</td>
+<td>页面与对应池合约已确认</td>
+<td>不据此计算独立用户人数</td>
+</tr>
+<tr>
+<td>GMGN Bundle &#x2F; Cluster</td>
+<td>官方指南与概念例子</td>
+<td>页面位置、指标解释与供应商差异已确认</td>
+<td>不将示例解释成当前代币实测</td>
+</tr>
+<tr>
+<td>Birdeye Holder &#x2F; Funded By</td>
+<td>官方发布及字段例子</td>
+<td>两层持仓数据及资金来源定义已确认</td>
+<td>不声称所有链&#x2F;历史区间均覆盖</td>
+</tr>
+<tr>
+<td>Etherscan Token &#x2F; Euler</td>
+<td>产品入口与官方历史案例</td>
+<td>功能和历史案例文档可读；Token 页面访问受限</td>
+<td>不声称实时图已逐节点验证</td>
+</tr>
+<tr>
+<td>GoPlus SHIB</td>
+<td>具体产品入口与字段例子</td>
+<td>重定向及官方 schema 已确认</td>
+<td>不输出示例代币当前安全评分</td>
+</tr>
+</tbody></table>
+<h2 id="15-来源目录"><a href="#15-来源目录" class="headerlink" title="15. 来源目录"></a>15. 来源目录</h2><p>所有来源访问日期为 2026-09-12。文档未明确标注发布日期的，以下记为“未注明”；搜索引擎抓取时间不作为发布日期。产品入口、官方案例页和字段文档承担不同的证据角色。</p>
+<p>[^1]: Bubblemaps， <a href="https://wiki.bubblemaps.io/bubblemaps-v2/how-does-it-work">How does it work?</a>，未注明。基础持仓图、连接与节点展示。
+[^2]: Bubblemaps， <a href="https://wiki.bubblemaps.io/bubblemaps-v2/magic-nodes">Magic Nodes</a>，未注明。间接联系与 SHIB 历史图示。
+[^3]: Bubblemaps， <a href="https://wiki.bubblemaps.io/bubblemaps-v2/time-nodes">Time Nodes</a>，未注明。时间关系展示及官方案例。
+[^4]: Arkham， <a href="https://info.arkm.com/research/how-to-use-arkham-intel-guide-explained">How To Use Arkham Intel</a>，2026-09-02。Visualizer、Tracer、实体&#x2F;标签&#x2F;Tag 和公开方法概述。
+[^5]: Arkham， <a href="https://info.arkm.com/announcements/ai-entity-predictions-are-now-live-on-arkham">AI Entity Predictions are now live on Arkham!</a>，2023-10-10。预测与已验证标签的区别，属历史功能说明。
+[^6]: Arkham， <a href="https://info.arkm.com/announcements/updates-to-custom-labeling">Updates To Custom Labeling</a>，日期未固定。自定义标签的来源与显示区别。
+[^7]: Nansen， <a href="https://academy.nansen.ai/help/articles/0002013-nansen-profiler-101">Nansen Profiler 101</a>，发布日期未注明。三类 Profiler 及钱包对比展示。
+[^8]: Nansen， <a href="https://docs.nansen.ai/api/profiler/address-related-wallets">Address Related Wallets</a>，未注明。关系字段、交易证据和当前视图。
+[^9]: Nansen， <a href="https://docs.nansen.ai/api/profiler/address-counterparties">Address Counterparties</a>，未注明。互动统计、实体&#x2F;钱包聚合及公开参数例子。
+[^10]: Nansen， <a href="https://docs.nansen.ai/api/profiler/address-first-funder">Address First Funder</a>，未注明。原生 Gas 资助来源及 EVM 范围。
+[^11]: CoinGecko， <a href="https://www.coingecko.com/learn/geckoterminal">How to Use GeckoTerminal</a>，日期未固定。页面功能和安全信息入口；<a href="https://www.geckoterminal.com/eth/pools/0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640">WETH&#x2F;USDC 实例</a>，2026-09-12 页面观察。
+[^12]: CoinGecko， <a href="https://support.coingecko.com/hc/en-us/articles/55538452200473-What-are-the-security-indicators-that-GT-tracks">What are the security indicators that GT tracks?</a>，更新 2026-03-26。持仓与安全指标。
+[^13]: CoinGecko， <a href="https://support.coingecko.com/hc/en-us/articles/38381394237593-What-is-the-GT-Score-How-is-the-GT-Score-calculated">What is the GT Score? How is the GT Score calculated?</a>，更新 2026-06-09。评分范围、未公开参数及链覆盖差异。
+[^14]: CoinGecko， <a href="https://support.coingecko.com/hc/en-us/articles/53068328045721-What-is-the-suspicious-chart-detection-on-GeckoTerminal-about">What is the suspicious chart detection on GeckoTerminal about?</a>，更新 2025-12-05。K 线及成交量异常。
+[^15]: CoinMarketCap， <a href="https://pro.coinmarketcap.com/api/documentation/pro-api-reference/holder">Holder API Documentation</a>，未注明。持仓、标签、来源和交易字段；<a href="https://coinmarketcap.com/dexscan/">DexScan 入口</a>，2026-09-12 核实重定向。
+[^16]: GMGN， <a href="https://gmgn.ai/blog/what-is-a-meme-coin-bundle/">What Is a Meme Coin Bundle? How to Check Bundle % and Linked Wallets on GMGN</a>，更新 2026-08-14。Bundle % 口径、页面位置及图供应商。
+[^17]: GMGN， <a href="https://docs.gmgn.ai/index/featured-icon-definition">Featured Icon Definition</a>，未注明。Sniper、Bundler、疑似 Insider 等图例说明。
+[^18]: Bubblemaps， <a href="https://blog.bubblemaps.io/whats-the-difference-between-bundle-cluster-2/">What’s the Difference Between Bundle &amp; Cluster?</a>，日期未固定。两类信号的概念区别；案例不作独立身份确认。
+[^19]: Birdeye， <a href="https://birdeye.so/data-api/blog/detail/token-holder-profile-token-holder-positions-complete-holder-intelligence-on-solana">Token – Holder Profile &amp; Token – Holder Positions: Complete Holder Intelligence on Solana</a>，2026-04-21。标签群体与单钱包指标、端点范围和历史覆盖说明。
+[^20]: Birdeye， <a href="https://birdeye.so/data-api/blog/detail/wallet-funded-by-api-trace-the-first-sol-funding-event">Wallet – Funded By API: Trace the First SOL Funding Event</a>，2026-08-25。首次 SOL 资助事件与归属解释限制。
+[^21]: Etherscan， <a href="https://info.etherscan.com/25-etherscan-features-in-2025/">25 Etherscan Features in 2025</a>，年度功能汇总，第 17、18 项。Token Flow Visualizer 与地址 Analytics。
+[^22]: Etherscan， <a href="https://kb.etherscan.com/advanced-filter">Advanced Filter</a>，日期未固定。交易筛选及 Euler 历史案例。
+[^23]: DEX Screener， <a href="https://docs.dexscreener.com/api/reference">API Reference</a>，未注明。公开行情字段；<a href="https://dexscreener.com/ethereum/0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640">WETH&#x2F;USDC 池实例</a>，2026-09-12 页面核实。
+[^24]: GoPlus， <a href="https://docs.gopluslabs.io/reference/response-details">Response Details</a>、<a href="https://docs.gopluslabs.io/reference/tokensecurityusingget_1">Token Security API</a>，未注明。权限、owner&#x2F;creator、持仓、LP 字段与未知状态。</p>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Y7C0CVX9PK"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y7C0CVX9PK');</script></html>

@@ -1,0 +1,46 @@
+/* Loaded only for collection: ai posts. Heading semantics are preserved. */
+@media screen and (min-width: 861px) {
+  .ai-content p,
+  .ai-content li {
+    font-size: 17px;
+    line-height: 1.75;
+  }
+}
+
+.inner .ai-content h1 {
+  font-family: inherit;
+  font-size: var(--h3-size);
+  text-align: left;
+  display: inline-block;
+  margin: 1.4em 0 0.35em;
+  padding: 0;
+}
+
+.inner .ai-content h1::after {
+  width: 100%;
+  max-width: none;
+  height: 2px;
+  margin: 0.35em 0 0;
+}
+
+.ai-content h2 {
+  font-family: inherit;
+  font-size: var(--h3-size);
+  padding: 0;
+}
+
+.ai-content h2::after {
+  margin-top: 0.35em;
+}
+
+.ai-content h3 {
+  font-size: var(--h4-size);
+  display: block;
+}
+
+.ai-content h3::after {
+  content: none;
+}
+
+.ai-content h4 { font-size: var(--h5-size); }
+.ai-content h5 { font-size: var(--h6-size); }

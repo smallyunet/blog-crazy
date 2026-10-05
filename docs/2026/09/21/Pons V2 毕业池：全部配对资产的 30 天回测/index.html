@@ -1,0 +1,1190 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>Pons V2 毕业池：全部配对资产的 30 天回测</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://crazy.smallyu.net/2026/09/21/Pons V2 毕业池：全部配对资产的 30 天回测/"><meta property="og:title" content="Pons V2 毕业池：全部配对资产的 30 天回测"><meta property="og:type" content="article"><meta property="og:url" content="https://crazy.smallyu.net/2026/09/21/Pons V2 毕业池：全部配对资产的 30 天回测/"><meta property="og:site_name" content="smallyu的博客（疯狂版）"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客（疯狂版）" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>Pons V2 毕业池：全部配对资产的 30 天回测</h1><div class="time">2026-09-21</div><div class="title-margin"></div><div class="ai-content"><p><strong>链上窗口：</strong> 2026-08-21 04:25 至 2026-09-20 03:40 UTC；Robinhood Chain 主网；同一批 8,582 个毕业事件。</p>
+<h2 id="核心发现"><a href="#核心发现" class="headerlink" title="核心发现"></a>核心发现</h2><p>这批毕业币跨 <strong>66 种配对资产</strong>：原生 ETH <strong>3,847</strong> 个、USDG <strong>1,625</strong> 个，其余为股票、ETF、BTC 等代币化资产及少量其他资产。其中 <strong>40</strong> 种配对资产的毕业数少于 30，分组胜率波动会较大。按链上 <code>symbol()</code> 与地址核对，这批配对资产中<strong>没有 USDC</strong>；USDG 是不同资产。</p>
+<p>全样本中成功建模 <strong>8,309&#x2F;8,582</strong> 个；另有 <strong>273</strong> 个因模型边界排除，<strong>0</strong> 个抓取或计时失败。主情景（B0、买入毕业时注入配对资产的 1&#x2F;84、持有 5 分钟）的<strong>配对资产计价、扣 hook 费和创建者税、未扣 Gas</strong>胜率为 **34.3%**，中位收益率 **-30.5%**。B1 对应见下表。</p>
+<p><strong>注意：</strong> 跨配对胜率不是 ETH 或美元实际盈利概率。用 USDG 买入就用 USDG 计算收益，用 NVDA 配对就用 NVDA 计价；若配对资产对 ETH&#x2F;美元变价，最终钱包财富还会变化。Gas 用原生 ETH 支付，本报告没有可靠的逐分钟 ETH&#x2F;每种配对资产汇率，因此跨配对表未扣 Gas。原 ETH 报告的净收益率已扣估计 Gas，数值口径不同。</p>
+<h2 id="样本构成与覆盖"><a href="#样本构成与覆盖" class="headerlink" title="样本构成与覆盖"></a>样本构成与覆盖</h2><img src="1.png" width="100%">
+
+<p>按配对资产<strong>合约地址</strong>分组；符号仅作阅读标签，同名符号不会合并。链上事件与目标代币地址一一对应，8,582 个毕业事件对应 8,582 个不同目标代币。全部配对数相加回到总数。下表使用主情景，每个币等权；<code>n&lt;30</code> 的胜率容易被少数币改变，只作描述。</p>
+<table>
+<thead>
+<tr>
+<th>配对资产</th>
+<th>合约地址</th>
+<th align="right">毕业数</th>
+<th align="right">可建模数</th>
+<th align="right">覆盖率</th>
+<th align="right">B0 胜率</th>
+<th align="right">B0 中位收益</th>
+<th align="right">B0 P10&#x2F;P90</th>
+<th align="right">B1 胜率</th>
+<th align="right">B1 中位收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ETH</td>
+<td><code>0x0000000000000000000000000000000000000000</code></td>
+<td align="right">3,847</td>
+<td align="right">3,681</td>
+<td align="right">95.7%</td>
+<td align="right">40.0%</td>
+<td align="right">-15.1%</td>
+<td align="right">-93.8% &#x2F; +94.4%</td>
+<td align="right">39.0%</td>
+<td align="right">-16.4%</td>
+</tr>
+<tr>
+<td>USDG</td>
+<td><code>0x5fc5360d0400a0fd4f2af552add042d716f1d168</code></td>
+<td align="right">1,625</td>
+<td align="right">1,544</td>
+<td align="right">95.0%</td>
+<td align="right">23.3%</td>
+<td align="right">-64.8%</td>
+<td align="right">-93.0% &#x2F; +75.8%</td>
+<td align="right">23.1%</td>
+<td align="right">-64.9%</td>
+</tr>
+<tr>
+<td>NVDA</td>
+<td><code>0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec</code></td>
+<td align="right">467</td>
+<td align="right">462</td>
+<td align="right">98.9%</td>
+<td align="right">34.0%</td>
+<td align="right">-37.0%</td>
+<td align="right">-92.8% &#x2F; +152.9%</td>
+<td align="right">33.8%</td>
+<td align="right">-37.5%</td>
+</tr>
+<tr>
+<td>SPY</td>
+<td><code>0x117cc2133c37b721f49de2a7a74833232b3b4c0c</code></td>
+<td align="right">272</td>
+<td align="right">265</td>
+<td align="right">97.4%</td>
+<td align="right">36.6%</td>
+<td align="right">-34.6%</td>
+<td align="right">-92.2% &#x2F; +141.3%</td>
+<td align="right">37.0%</td>
+<td align="right">-34.6%</td>
+</tr>
+<tr>
+<td>SPCX</td>
+<td><code>0x4a0e65a3eccec6dbe60ae065f2e7bb85fae35eea</code></td>
+<td align="right">266</td>
+<td align="right">266</td>
+<td align="right">100.0%</td>
+<td align="right">29.7%</td>
+<td align="right">-53.4%</td>
+<td align="right">-92.9% &#x2F; +115.0%</td>
+<td align="right">29.3%</td>
+<td align="right">-53.8%</td>
+</tr>
+<tr>
+<td>GME</td>
+<td><code>0x1b0e319c6a659f002271b69db8a7df2f911c153e</code></td>
+<td align="right">213</td>
+<td align="right">211</td>
+<td align="right">99.1%</td>
+<td align="right">29.4%</td>
+<td align="right">-49.9%</td>
+<td align="right">-91.2% &#x2F; +163.2%</td>
+<td align="right">28.9%</td>
+<td align="right">-50.6%</td>
+</tr>
+<tr>
+<td>DJT</td>
+<td><code>0x1d11f0496982706c5e14a514d4e79f2e6bde4516</code></td>
+<td align="right">170</td>
+<td align="right">167</td>
+<td align="right">98.2%</td>
+<td align="right">20.4%</td>
+<td align="right">-79.7%</td>
+<td align="right">-94.4% &#x2F; +74.4%</td>
+<td align="right">20.4%</td>
+<td align="right">-79.7%</td>
+</tr>
+<tr>
+<td>GOOGL</td>
+<td><code>0x2e0847e8910a9732eb3fb1bb4b70a580adad4fe3</code></td>
+<td align="right">146</td>
+<td align="right">145</td>
+<td align="right">99.3%</td>
+<td align="right">37.2%</td>
+<td align="right">-35.0%</td>
+<td align="right">-90.3% &#x2F; +92.6%</td>
+<td align="right">36.6%</td>
+<td align="right">-40.9%</td>
+</tr>
+<tr>
+<td>QQQ</td>
+<td><code>0xd5f3879160bc7c32ebb4dc785f8a4f505888de68</code></td>
+<td align="right">142</td>
+<td align="right">142</td>
+<td align="right">100.0%</td>
+<td align="right">38.0%</td>
+<td align="right">-40.5%</td>
+<td align="right">-92.8% &#x2F; +142.7%</td>
+<td align="right">37.3%</td>
+<td align="right">-40.5%</td>
+</tr>
+<tr>
+<td>RDDT</td>
+<td><code>0x05b37fb53a299a1b874a619e1c4c404d52c36f4c</code></td>
+<td align="right">111</td>
+<td align="right">111</td>
+<td align="right">100.0%</td>
+<td align="right">31.5%</td>
+<td align="right">-40.7%</td>
+<td align="right">-91.0% &#x2F; +88.4%</td>
+<td align="right">30.6%</td>
+<td align="right">-41.2%</td>
+</tr>
+<tr>
+<td>AAPL</td>
+<td><code>0xaf3d76f1834a1d425780943c99ea8a608f8a93f9</code></td>
+<td align="right">99</td>
+<td align="right">97</td>
+<td align="right">98.0%</td>
+<td align="right">28.9%</td>
+<td align="right">-27.8%</td>
+<td align="right">-90.8% &#x2F; +67.6%</td>
+<td align="right">26.8%</td>
+<td align="right">-27.8%</td>
+</tr>
+<tr>
+<td>GLD</td>
+<td><code>0xc9a981fee1f9dec688bb123ccdecc63d0debfc4e</code></td>
+<td align="right">92</td>
+<td align="right">92</td>
+<td align="right">100.0%</td>
+<td align="right">32.6%</td>
+<td align="right">-37.7%</td>
+<td align="right">-92.0% &#x2F; +102.7%</td>
+<td align="right">32.6%</td>
+<td align="right">-37.3%</td>
+</tr>
+<tr>
+<td>TSLA</td>
+<td><code>0x322f0929c4625ed5bad873c95208d54e1c003b2d</code></td>
+<td align="right">87</td>
+<td align="right">86</td>
+<td align="right">98.9%</td>
+<td align="right">27.9%</td>
+<td align="right">-38.2%</td>
+<td align="right">-92.6% &#x2F; +82.3%</td>
+<td align="right">27.9%</td>
+<td align="right">-43.1%</td>
+</tr>
+<tr>
+<td>MSFT</td>
+<td><code>0xe93237c50d904957cf27e7b1133b510c669c2e74</code></td>
+<td align="right">87</td>
+<td align="right">85</td>
+<td align="right">97.7%</td>
+<td align="right">40.0%</td>
+<td align="right">-17.4%</td>
+<td align="right">-87.3% &#x2F; +97.4%</td>
+<td align="right">38.8%</td>
+<td align="right">-17.4%</td>
+</tr>
+<tr>
+<td>TTWO</td>
+<td><code>0x5e81213613b6b86eab4c6c50d718d34359459786</code></td>
+<td align="right">85</td>
+<td align="right">84</td>
+<td align="right">98.8%</td>
+<td align="right">25.0%</td>
+<td align="right">-66.4%</td>
+<td align="right">-93.3% &#x2F; +120.3%</td>
+<td align="right">25.0%</td>
+<td align="right">-66.4%</td>
+</tr>
+<tr>
+<td>META</td>
+<td><code>0xc0d6457c16cc70d6790dd43521c899c87ce02f35</code></td>
+<td align="right">73</td>
+<td align="right">73</td>
+<td align="right">100.0%</td>
+<td align="right">30.1%</td>
+<td align="right">-49.6%</td>
+<td align="right">-91.9% &#x2F; +55.9%</td>
+<td align="right">30.1%</td>
+<td align="right">-49.6%</td>
+</tr>
+<tr>
+<td>cbBTC</td>
+<td><code>0xcec185eb182c47d1ba1efc84e6959e18cd620be4</code></td>
+<td align="right">65</td>
+<td align="right">64</td>
+<td align="right">98.5%</td>
+<td align="right">43.8%</td>
+<td align="right">-16.7%</td>
+<td align="right">-87.5% &#x2F; +116.5%</td>
+<td align="right">43.8%</td>
+<td align="right">-20.7%</td>
+</tr>
+<tr>
+<td>SGOV</td>
+<td><code>0x92fd66527192e3e61d4ddd13322aa222de86f9b5</code></td>
+<td align="right">65</td>
+<td align="right">65</td>
+<td align="right">100.0%</td>
+<td align="right">24.6%</td>
+<td align="right">-54.9%</td>
+<td align="right">-92.6% &#x2F; +120.8%</td>
+<td align="right">24.6%</td>
+<td align="right">-54.9%</td>
+</tr>
+<tr>
+<td>AMZN</td>
+<td><code>0x12f190a9f9d7d37a250758b26824b97ce941bf54</code></td>
+<td align="right">60</td>
+<td align="right">60</td>
+<td align="right">100.0%</td>
+<td align="right">43.3%</td>
+<td align="right">-10.4%</td>
+<td align="right">-89.1% &#x2F; +95.4%</td>
+<td align="right">41.7%</td>
+<td align="right">-12.3%</td>
+</tr>
+<tr>
+<td>PLTR</td>
+<td><code>0x894e1ec2d74ffe5aef8dc8a9e84686accb964f2a</code></td>
+<td align="right">52</td>
+<td align="right">52</td>
+<td align="right">100.0%</td>
+<td align="right">38.5%</td>
+<td align="right">-28.0%</td>
+<td align="right">-90.0% &#x2F; +77.6%</td>
+<td align="right">38.5%</td>
+<td align="right">-28.0%</td>
+</tr>
+<tr>
+<td>RBLX</td>
+<td><code>0xf0c4bf4c582cb3836e98394b1d4e7b7281101be8</code></td>
+<td align="right">42</td>
+<td align="right">42</td>
+<td align="right">100.0%</td>
+<td align="right">33.3%</td>
+<td align="right">-16.3%</td>
+<td align="right">-91.8% &#x2F; +65.4%</td>
+<td align="right">33.3%</td>
+<td align="right">-19.8%</td>
+</tr>
+<tr>
+<td>LULU</td>
+<td><code>0x4e62068525ab11fe768e29dfd00ef909b9803016</code></td>
+<td align="right">40</td>
+<td align="right">40</td>
+<td align="right">100.0%</td>
+<td align="right">25.0%</td>
+<td align="right">-51.1%</td>
+<td align="right">-92.2% &#x2F; +81.5%</td>
+<td align="right">25.0%</td>
+<td align="right">-51.6%</td>
+</tr>
+<tr>
+<td>HIMS</td>
+<td><code>0xccee82fe024c36fa15e1005ede3e9e4787e23d09</code></td>
+<td align="right">35</td>
+<td align="right">35</td>
+<td align="right">100.0%</td>
+<td align="right">25.7%</td>
+<td align="right">-44.9%</td>
+<td align="right">-91.2% &#x2F; +133.5%</td>
+<td align="right">25.7%</td>
+<td align="right">-44.9%</td>
+</tr>
+<tr>
+<td>COIN</td>
+<td><code>0x6330d8c3178a418788df01a47479c0ce7ccf450b</code></td>
+<td align="right">32</td>
+<td align="right">32</td>
+<td align="right">100.0%</td>
+<td align="right">34.4%</td>
+<td align="right">-38.3%</td>
+<td align="right">-91.7% &#x2F; +91.0%</td>
+<td align="right">34.4%</td>
+<td align="right">-38.3%</td>
+</tr>
+<tr>
+<td>MSTR</td>
+<td><code>0xec262a75e413fafd0df80480274532c79d42da09</code></td>
+<td align="right">30</td>
+<td align="right">30</td>
+<td align="right">100.0%</td>
+<td align="right">56.7%</td>
+<td align="right">+27.1%</td>
+<td align="right">-88.2% &#x2F; +188.8%</td>
+<td align="right">56.7%</td>
+<td align="right">+27.1%</td>
+</tr>
+<tr>
+<td>AMD</td>
+<td><code>0x86923f96303d656e4aa86d9d42d1e57ad2023fdc</code></td>
+<td align="right">30</td>
+<td align="right">30</td>
+<td align="right">100.0%</td>
+<td align="right">46.7%</td>
+<td align="right">-10.4%</td>
+<td align="right">-91.2% &#x2F; +138.4%</td>
+<td align="right">46.7%</td>
+<td align="right">-18.4%</td>
+</tr>
+<tr>
+<td>AMC †</td>
+<td><code>0x05a3d1cd21d0c88145e82600e62e7e496e0f222b</code></td>
+<td align="right">28</td>
+<td align="right">28</td>
+<td align="right">100.0%</td>
+<td align="right">28.6%</td>
+<td align="right">-62.1%</td>
+<td align="right">-92.2% &#x2F; +121.2%</td>
+<td align="right">28.6%</td>
+<td align="right">-62.1%</td>
+</tr>
+<tr>
+<td>COST †</td>
+<td><code>0x4ea005168d7f09a7a0ba9d1def21a479950e44c2</code></td>
+<td align="right">22</td>
+<td align="right">22</td>
+<td align="right">100.0%</td>
+<td align="right">40.9%</td>
+<td align="right">-14.2%</td>
+<td align="right">-94.0% &#x2F; +195.7%</td>
+<td align="right">40.9%</td>
+<td align="right">-14.2%</td>
+</tr>
+<tr>
+<td>BABA †</td>
+<td><code>0xad25ac6c84d497db898fa1e8387bf6af3532a1c4</code></td>
+<td align="right">19</td>
+<td align="right">19</td>
+<td align="right">100.0%</td>
+<td align="right">31.6%</td>
+<td align="right">-35.2%</td>
+<td align="right">-91.2% &#x2F; +88.9%</td>
+<td align="right">31.6%</td>
+<td align="right">-35.2%</td>
+</tr>
+<tr>
+<td>CRCL †</td>
+<td><code>0xdf0992e440dd0be65bd8439b609d6d4366bf1cb5</code></td>
+<td align="right">17</td>
+<td align="right">17</td>
+<td align="right">100.0%</td>
+<td align="right">52.9%</td>
+<td align="right">+7.2%</td>
+<td align="right">-92.6% &#x2F; +168.4%</td>
+<td align="right">52.9%</td>
+<td align="right">+7.2%</td>
+</tr>
+<tr>
+<td>IBM †</td>
+<td><code>0x980dcf6766fa79f5cf0c4aadb3ab477ff15a9619</code></td>
+<td align="right">17</td>
+<td align="right">17</td>
+<td align="right">100.0%</td>
+<td align="right">29.4%</td>
+<td align="right">-61.5%</td>
+<td align="right">-89.9% &#x2F; +301.4%</td>
+<td align="right">29.4%</td>
+<td align="right">-61.5%</td>
+</tr>
+<tr>
+<td>SNAP †</td>
+<td><code>0xf6589f11bc40b669e584073f428b05562f568733</code></td>
+<td align="right">15</td>
+<td align="right">15</td>
+<td align="right">100.0%</td>
+<td align="right">26.7%</td>
+<td align="right">-57.2%</td>
+<td align="right">-94.3% &#x2F; +163.0%</td>
+<td align="right">26.7%</td>
+<td align="right">-57.1%</td>
+</tr>
+<tr>
+<td>UPS †</td>
+<td><code>0xf23250dac154d05bb671cb0d0ebef3c635c79ce2</code></td>
+<td align="right">15</td>
+<td align="right">15</td>
+<td align="right">100.0%</td>
+<td align="right">46.7%</td>
+<td align="right">-1.1%</td>
+<td align="right">-74.6% &#x2F; +298.1%</td>
+<td align="right">40.0%</td>
+<td align="right">-1.1%</td>
+</tr>
+<tr>
+<td>LLY †</td>
+<td><code>0x8005d266423c7ea827372c9c864491e5786600ea</code></td>
+<td align="right">14</td>
+<td align="right">14</td>
+<td align="right">100.0%</td>
+<td align="right">28.6%</td>
+<td align="right">-63.2%</td>
+<td align="right">-95.0% &#x2F; +61.0%</td>
+<td align="right">28.6%</td>
+<td align="right">-64.3%</td>
+</tr>
+<tr>
+<td>MU †</td>
+<td><code>0xff080c8ce2e5feadaca0da81314ae59d232d4afd</code></td>
+<td align="right">13</td>
+<td align="right">13</td>
+<td align="right">100.0%</td>
+<td align="right">23.1%</td>
+<td align="right">-28.7%</td>
+<td align="right">-74.0% &#x2F; +49.1%</td>
+<td align="right">23.1%</td>
+<td align="right">-28.7%</td>
+</tr>
+<tr>
+<td>NFLX †</td>
+<td><code>0xe0444ef8bf4ed74f74fd73686e2ddf4c1c5591e8</code></td>
+<td align="right">13</td>
+<td align="right">13</td>
+<td align="right">100.0%</td>
+<td align="right">53.8%</td>
+<td align="right">+6.4%</td>
+<td align="right">-88.8% &#x2F; +298.6%</td>
+<td align="right">53.8%</td>
+<td align="right">+6.4%</td>
+</tr>
+<tr>
+<td>TAO †</td>
+<td><code>0xf3081494b87e8d5fb7960f066e931d1d0e6e3d67</code></td>
+<td align="right">13</td>
+<td align="right">13</td>
+<td align="right">100.0%</td>
+<td align="right">38.5%</td>
+<td align="right">-33.6%</td>
+<td align="right">-92.7% &#x2F; +621.0%</td>
+<td align="right">38.5%</td>
+<td align="right">-33.6%</td>
+</tr>
+<tr>
+<td>USO †</td>
+<td><code>0xa30fa36db767ad9ed3f7a60fc79526fb4d56d344</code></td>
+<td align="right">11</td>
+<td align="right">11</td>
+<td align="right">100.0%</td>
+<td align="right">18.2%</td>
+<td align="right">-48.1%</td>
+<td align="right">-82.5% &#x2F; +55.3%</td>
+<td align="right">18.2%</td>
+<td align="right">-48.1%</td>
+</tr>
+<tr>
+<td>BULL †</td>
+<td><code>0xcef9027c7d6985b85f0ba431125073529a947a68</code></td>
+<td align="right">11</td>
+<td align="right">11</td>
+<td align="right">100.0%</td>
+<td align="right">45.5%</td>
+<td align="right">-16.6%</td>
+<td align="right">-87.2% &#x2F; +50.7%</td>
+<td align="right">45.5%</td>
+<td align="right">-16.6%</td>
+</tr>
+<tr>
+<td>FIG †</td>
+<td><code>0x41f4267525a8aff329540ef24fd83d9044758b33</code></td>
+<td align="right">10</td>
+<td align="right">10</td>
+<td align="right">100.0%</td>
+<td align="right">30.0%</td>
+<td align="right">-45.7%</td>
+<td align="right">-94.7% &#x2F; +34.0%</td>
+<td align="right">30.0%</td>
+<td align="right">-43.7%</td>
+</tr>
+<tr>
+<td>PFE †</td>
+<td><code>0x7066a64c24e4206cd62e83bf198c1e7eb361f51e</code></td>
+<td align="right">10</td>
+<td align="right">10</td>
+<td align="right">100.0%</td>
+<td align="right">30.0%</td>
+<td align="right">-57.0%</td>
+<td align="right">-94.9% &#x2F; +52.5%</td>
+<td align="right">30.0%</td>
+<td align="right">-57.0%</td>
+</tr>
+<tr>
+<td>TSM †</td>
+<td><code>0x58ffe4a942d3885baa22d7520691f611ef09e7aa</code></td>
+<td align="right">9</td>
+<td align="right">9</td>
+<td align="right">100.0%</td>
+<td align="right">22.2%</td>
+<td align="right">-27.1%</td>
+<td align="right">-94.4% &#x2F; +88.1%</td>
+<td align="right">22.2%</td>
+<td align="right">-27.1%</td>
+</tr>
+<tr>
+<td>SLV †</td>
+<td><code>0x411efb0e7f985935daec3d4c3ebaea0d0ad7d89f</code></td>
+<td align="right">9</td>
+<td align="right">9</td>
+<td align="right">100.0%</td>
+<td align="right">44.4%</td>
+<td align="right">-1.6%</td>
+<td align="right">-94.0% &#x2F; +144.8%</td>
+<td align="right">44.4%</td>
+<td align="right">-1.6%</td>
+</tr>
+<tr>
+<td>SNDK †</td>
+<td><code>0xb90a19ff0af67f7779aff50a882a9cff42446400</code></td>
+<td align="right">8</td>
+<td align="right">8</td>
+<td align="right">100.0%</td>
+<td align="right">62.5%</td>
+<td align="right">+28.7%</td>
+<td align="right">-71.3% &#x2F; +208.5%</td>
+<td align="right">62.5%</td>
+<td align="right">+28.7%</td>
+</tr>
+<tr>
+<td>SKHY †</td>
+<td><code>0x84cab63bc87912e71ad199ff14a0ba45de68fef8</code></td>
+<td align="right">8</td>
+<td align="right">8</td>
+<td align="right">100.0%</td>
+<td align="right">25.0%</td>
+<td align="right">-60.8%</td>
+<td align="right">-93.7% &#x2F; +135.3%</td>
+<td align="right">25.0%</td>
+<td align="right">-60.8%</td>
+</tr>
+<tr>
+<td>BB †</td>
+<td><code>0x48e39e56acdba37b09020c0b734a613c9a2f100a</code></td>
+<td align="right">7</td>
+<td align="right">7</td>
+<td align="right">100.0%</td>
+<td align="right">57.1%</td>
+<td align="right">+30.1%</td>
+<td align="right">-94.1% &#x2F; +126.0%</td>
+<td align="right">57.1%</td>
+<td align="right">+30.1%</td>
+</tr>
+<tr>
+<td>MRVL †</td>
+<td><code>0x62fd0668e10d8b72339be2dcf7643001688ff13b</code></td>
+<td align="right">7</td>
+<td align="right">6</td>
+<td align="right">85.7%</td>
+<td align="right">0.0%</td>
+<td align="right">-70.3%</td>
+<td align="right">-90.2% &#x2F; -51.2%</td>
+<td align="right">0.0%</td>
+<td align="right">-70.3%</td>
+</tr>
+<tr>
+<td>INDA †</td>
+<td><code>0xacef2e09adb47ad6abebad9ff06689e60615c2b6</code></td>
+<td align="right">7</td>
+<td align="right">7</td>
+<td align="right">100.0%</td>
+<td align="right">14.3%</td>
+<td align="right">-60.5%</td>
+<td align="right">-88.3% &#x2F; +29.8%</td>
+<td align="right">14.3%</td>
+<td align="right">-60.5%</td>
+</tr>
+<tr>
+<td>JNJ †</td>
+<td><code>0x03dfbbe0ac4e7bcdafd08ed41a400326b77d8c80</code></td>
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">100.0%</td>
+<td align="right">66.7%</td>
+<td align="right">+42.0%</td>
+<td align="right">-94.2% &#x2F; +745.5%</td>
+<td align="right">66.7%</td>
+<td align="right">+42.6%</td>
+</tr>
+<tr>
+<td>SHOP †</td>
+<td><code>0xf53f66751b1eff985311b693531e3290f600c410</code></td>
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">100.0%</td>
+<td align="right">50.0%</td>
+<td align="right">-14.6%</td>
+<td align="right">-88.1% &#x2F; +224.0%</td>
+<td align="right">50.0%</td>
+<td align="right">-14.6%</td>
+</tr>
+<tr>
+<td>F †</td>
+<td><code>0x25c288e6d899b9bc30160965ad9644c67e73be0c</code></td>
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">100.0%</td>
+<td align="right">50.0%</td>
+<td align="right">+0.8%</td>
+<td align="right">-78.5% &#x2F; +268.9%</td>
+<td align="right">50.0%</td>
+<td align="right">+0.8%</td>
+</tr>
+<tr>
+<td>RIVN †</td>
+<td><code>0xb1bf26c1d20ff267a4f93550d1e0d06ac40a114b</code></td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">100.0%</td>
+<td align="right">20.0%</td>
+<td align="right">-63.6%</td>
+<td align="right">-87.9% &#x2F; +22.2%</td>
+<td align="right">20.0%</td>
+<td align="right">-63.6%</td>
+</tr>
+<tr>
+<td>NU †</td>
+<td><code>0x408c14038a04f7bd235329e26d2bf569ee20e250</code></td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">100.0%</td>
+<td align="right">0.0%</td>
+<td align="right">-69.6%</td>
+<td align="right">-94.5% &#x2F; -26.7%</td>
+<td align="right">0.0%</td>
+<td align="right">-69.6%</td>
+</tr>
+<tr>
+<td>BE †</td>
+<td><code>0x822cc93ffd030293e9842c30bbd678f530701867</code></td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">100.0%</td>
+<td align="right">0.0%</td>
+<td align="right">-51.5%</td>
+<td align="right">-88.6% &#x2F; -6.5%</td>
+<td align="right">0.0%</td>
+<td align="right">-51.5%</td>
+</tr>
+<tr>
+<td>QUBT †</td>
+<td><code>0x59818904ab4ce163b3ce4ffb64f2d6ca02c434b4</code></td>
+<td align="right">4</td>
+<td align="right">4</td>
+<td align="right">100.0%</td>
+<td align="right">25.0%</td>
+<td align="right">-65.2%</td>
+<td align="right">-90.0% &#x2F; +44.0%</td>
+<td align="right">25.0%</td>
+<td align="right">-65.2%</td>
+</tr>
+<tr>
+<td>INTC †</td>
+<td><code>0xc72b96e0e48ecd4dc75e1e45396e26300bc39681</code></td>
+<td align="right">4</td>
+<td align="right">4</td>
+<td align="right">100.0%</td>
+<td align="right">25.0%</td>
+<td align="right">-19.4%</td>
+<td align="right">-58.7% &#x2F; +269.5%</td>
+<td align="right">25.0%</td>
+<td align="right">-19.4%</td>
+</tr>
+<tr>
+<td>NET †</td>
+<td><code>0x116f00968269b7bfbad4109ce591d6e74c0601d4</code></td>
+<td align="right">4</td>
+<td align="right">4</td>
+<td align="right">100.0%</td>
+<td align="right">50.0%</td>
+<td align="right">-13.5%</td>
+<td align="right">-49.6% &#x2F; +20.0%</td>
+<td align="right">50.0%</td>
+<td align="right">-13.5%</td>
+</tr>
+<tr>
+<td>WYFI †</td>
+<td><code>0x9e7abd3c9139d14e4c86dce0e455aab7a0c2fb3e</code></td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">100.0%</td>
+<td align="right">33.3%</td>
+<td align="right">-63.2%</td>
+<td align="right">-90.4% &#x2F; +14.6%</td>
+<td align="right">33.3%</td>
+<td align="right">-63.2%</td>
+</tr>
+<tr>
+<td>DELL †</td>
+<td><code>0x941ae714ec6d8130c7b75d67160ca08f1e7d11dd</code></td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">100.0%</td>
+<td align="right">33.3%</td>
+<td align="right">-3.8%</td>
+<td align="right">-93.4% &#x2F; +56.5%</td>
+<td align="right">33.3%</td>
+<td align="right">-3.8%</td>
+</tr>
+<tr>
+<td>MRNA †</td>
+<td><code>0x43b07d15ce533bec5476d70c22a78a1b2b662155</code></td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">100.0%</td>
+<td align="right">0.0%</td>
+<td align="right">-87.5%</td>
+<td align="right">-91.5% &#x2F; -40.8%</td>
+<td align="right">0.0%</td>
+<td align="right">-87.5%</td>
+</tr>
+<tr>
+<td>SNOW †</td>
+<td><code>0xba0cab75495255d0cb58e22b648bfed4ecd1f47e</code></td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">100.0%</td>
+<td align="right">0.0%</td>
+<td align="right">-40.3%</td>
+<td align="right">-91.2% &#x2F; -24.1%</td>
+<td align="right">0.0%</td>
+<td align="right">-40.3%</td>
+</tr>
+<tr>
+<td>SHROOM †</td>
+<td><code>0xab093def657f15df31b33922a95e047add645b29</code></td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">100.0%</td>
+<td align="right">66.7%</td>
+<td align="right">+57.0%</td>
+<td align="right">-91.2% &#x2F; +132.5%</td>
+<td align="right">66.7%</td>
+<td align="right">+57.0%</td>
+</tr>
+<tr>
+<td>RKLB †</td>
+<td><code>0x3b14c39e89d60d627b42a1a4ca45b5bb45fc12e2</code></td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">100.0%</td>
+<td align="right">50.0%</td>
+<td align="right">-29.5%</td>
+<td align="right">-88.3% &#x2F; +29.4%</td>
+<td align="right">50.0%</td>
+<td align="right">-29.5%</td>
+</tr>
+<tr>
+<td>ORBIO †</td>
+<td><code>0xaa07a0e9209e16ac99708c3ec70159c6ef3128a3</code></td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">100.0%</td>
+<td align="right">100.0%</td>
+<td align="right">+5.5%</td>
+<td align="right">+2.5% &#x2F; +8.5%</td>
+<td align="right">100.0%</td>
+<td align="right">+5.5%</td>
+</tr>
+<tr>
+<td>EWY †</td>
+<td><code>0x7f0abef0c07280f82c6a08ead09ded6bae2c13fc</code></td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">100.0%</td>
+<td align="right">100.0%</td>
+<td align="right">+80.2%</td>
+<td align="right">+80.2% &#x2F; +80.2%</td>
+<td align="right">100.0%</td>
+<td align="right">+80.2%</td>
+</tr>
+<tr>
+<td>LMT †</td>
+<td><code>0x329fcaceb9ad6f9580dd5f643fed0646900d043c</code></td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">100.0%</td>
+<td align="right">100.0%</td>
+<td align="right">+10.9%</td>
+<td align="right">+10.9% &#x2F; +10.9%</td>
+<td align="right">100.0%</td>
+<td align="right">+10.9%</td>
+</tr>
+</tbody></table>
+<p>† 毕业数小于 30。没有可建模池的组保留在分母与清单中，胜率记为未知，而不是 0%。</p>
+<p><strong>与原 ETH 报告核对：</strong> 本批 ETH 池毕业时均注入约 4.2 ETH，因此主仓位 1&#x2F;84≈0.05 ETH。新报告 ETH 组 B0、5 分钟胜率 **40.0%**、中位收益 **-15.1%**（未扣 Gas）；原报告对应净胜率 **39.7%**、净中位收益 **-15.3%**（扣估计 Gas）。差异来自 Gas 口径，不是把 USDG 等资产混入 ETH 组。</p>
+<p>在可建模池至少 30 个的配对资产中，主情景胜率较高的三组为 MSTR 56.7% (n&#x3D;30)、AMD 46.7% (n&#x3D;30)、cbBTC 43.8% (n&#x3D;64)；较低的三组为 SGOV 24.6% (n&#x3D;65)、USDG 23.3% (n&#x3D;1544)、DJT 20.4% (n&#x3D;167)。这是描述性排序，配对资产风险、样本差异和多组比较都可能影响名次。</p>
+<img src="2.png" width="100%">
+
+
+<h3 id="主要配对资产随持有时间的变化"><a href="#主要配对资产随持有时间的变化" class="headerlink" title="主要配对资产随持有时间的变化"></a>主要配对资产随持有时间的变化</h3><p>下表只展示毕业数最多的 10 种配对资产；仓位固定为毕业注入量的 1&#x2F;84，B0 入场。括号内为该组可建模池数。所有配对资产与 18 种情景的完整交叉表在 <a href="results/summary.csv">summary.csv</a>。</p>
+<table>
+<thead>
+<tr>
+<th>配对资产</th>
+<th align="right">1 分钟胜率 &#x2F; 中位收益</th>
+<th align="right">5 分钟胜率 &#x2F; 中位收益</th>
+<th align="right">30 分钟胜率 &#x2F; 中位收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ETH</td>
+<td align="right">43.4% &#x2F; -6.4% (n&#x3D;3681)</td>
+<td align="right">40.0% &#x2F; -15.1% (n&#x3D;3681)</td>
+<td align="right">24.0% &#x2F; -67.9% (n&#x3D;3681)</td>
+</tr>
+<tr>
+<td>USDG</td>
+<td align="right">32.1% &#x2F; -27.9% (n&#x3D;1544)</td>
+<td align="right">23.3% &#x2F; -64.8% (n&#x3D;1544)</td>
+<td align="right">11.5% &#x2F; -89.0% (n&#x3D;1544)</td>
+</tr>
+<tr>
+<td>NVDA</td>
+<td align="right">35.7% &#x2F; -16.8% (n&#x3D;462)</td>
+<td align="right">34.0% &#x2F; -37.0% (n&#x3D;462)</td>
+<td align="right">21.9% &#x2F; -83.0% (n&#x3D;462)</td>
+</tr>
+<tr>
+<td>SPY</td>
+<td align="right">38.5% &#x2F; -12.3% (n&#x3D;265)</td>
+<td align="right">36.6% &#x2F; -34.6% (n&#x3D;265)</td>
+<td align="right">20.8% &#x2F; -80.2% (n&#x3D;265)</td>
+</tr>
+<tr>
+<td>SPCX</td>
+<td align="right">36.8% &#x2F; -18.2% (n&#x3D;266)</td>
+<td align="right">29.7% &#x2F; -53.4% (n&#x3D;266)</td>
+<td align="right">19.9% &#x2F; -84.8% (n&#x3D;266)</td>
+</tr>
+<tr>
+<td>GME</td>
+<td align="right">37.4% &#x2F; -20.4% (n&#x3D;211)</td>
+<td align="right">29.4% &#x2F; -49.9% (n&#x3D;211)</td>
+<td align="right">17.5% &#x2F; -86.7% (n&#x3D;211)</td>
+</tr>
+<tr>
+<td>DJT</td>
+<td align="right">31.1% &#x2F; -35.7% (n&#x3D;167)</td>
+<td align="right">20.4% &#x2F; -79.7% (n&#x3D;167)</td>
+<td align="right">13.2% &#x2F; -89.6% (n&#x3D;167)</td>
+</tr>
+<tr>
+<td>GOOGL</td>
+<td align="right">47.6% &#x2F; -2.3% (n&#x3D;145)</td>
+<td align="right">37.2% &#x2F; -35.0% (n&#x3D;145)</td>
+<td align="right">26.2% &#x2F; -77.9% (n&#x3D;145)</td>
+</tr>
+<tr>
+<td>QQQ</td>
+<td align="right">38.0% &#x2F; -15.6% (n&#x3D;142)</td>
+<td align="right">38.0% &#x2F; -40.5% (n&#x3D;142)</td>
+<td align="right">21.1% &#x2F; -83.8% (n&#x3D;142)</td>
+</tr>
+<tr>
+<td>RDDT</td>
+<td align="right">41.4% &#x2F; -13.1% (n&#x3D;111)</td>
+<td align="right">31.5% &#x2F; -40.7% (n&#x3D;111)</td>
+<td align="right">18.0% &#x2F; -87.2% (n&#x3D;111)</td>
+</tr>
+</tbody></table>
+<h3 id="模型排除及质量检查"><a href="#模型排除及质量检查" class="headerlink" title="模型排除及质量检查"></a>模型排除及质量检查</h3><ul>
+<li><code>extra_liquidity_changes</code>：273 个。</li>
+<li>可建模池覆盖率：96.8%；高交易活跃度池可能更容易出现额外流动性修改，排除未必随机。</li>
+<li>对每个可建模池，将历史 swap 输入量从建池状态逐笔重放，要求计算价格与链上 swap 事件价格的最大相对误差不超过 <strong>1e-06</strong>；有额外区间流动性的池不使用单一区间模型。</li>
+<li>容差敏感性：初始的 <code>1e-8</code> 阈值曾额外排除 30 个 cbBTC 池，其重放相对误差为 <code>1.3e-8</code> 至 <code>1.9e-7</code>。本报告采用 <code>1e-6</code>，这些池纳入后 cbBTC 组覆盖 64&#x2F;65；原先只看 34 个池得到的胜率为 50.0%，修正后见上表。</li>
+</ul>
+<h2 id="全部配对资产：18-组可比情景"><a href="#全部配对资产：18-组可比情景" class="headerlink" title="全部配对资产：18 组可比情景"></a>全部配对资产：18 组可比情景</h2><p>统一仓位按毕业时注入该池的<strong>配对资产数量</strong>取 1&#x2F;420、1&#x2F;84、1&#x2F;42。ETH 池通常注入约 4.2 ETH，对应约 0.01、0.05、0.1 ETH；其他池使用同样的池深比例，而非假设它们能直接用 ETH 买入。表中收益均以各自配对资产计价，已扣 Pons hook 费和创建者税，未扣 Gas。</p>
+<table>
+<thead>
+<tr>
+<th>入场</th>
+<th align="right">仓位 &#x2F; 注入配对资产</th>
+<th align="right">持有</th>
+<th align="right">池数</th>
+<th align="right">胜率</th>
+<th align="right">中位收益</th>
+<th align="right">平均收益</th>
+<th align="right">P10 &#x2F; P90</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B0</td>
+<td align="right">1&#x2F;420</td>
+<td align="right">1 分钟</td>
+<td align="right">8,309</td>
+<td align="right">40.5%</td>
+<td align="right">-10.8%</td>
+<td align="right">+2.7%</td>
+<td align="right">-82.8% &#x2F; +69.0%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">1&#x2F;420</td>
+<td align="right">5 分钟</td>
+<td align="right">8,309</td>
+<td align="right">35.3%</td>
+<td align="right">-29.4%</td>
+<td align="right">+3.5%</td>
+<td align="right">-92.8% &#x2F; +105.8%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">1&#x2F;420</td>
+<td align="right">30 分钟</td>
+<td align="right">8,309</td>
+<td align="right">20.7%</td>
+<td align="right">-81.6%</td>
+<td align="right">-11.7%</td>
+<td align="right">-94.7% &#x2F; +99.3%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">1&#x2F;84</td>
+<td align="right">1 分钟</td>
+<td align="right">8,309</td>
+<td align="right">39.5%</td>
+<td align="right">-11.9%</td>
+<td align="right">+0.9%</td>
+<td align="right">-83.0% &#x2F; +65.8%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">1&#x2F;84</td>
+<td align="right">5 分钟</td>
+<td align="right">8,309</td>
+<td align="right">34.3%</td>
+<td align="right">-30.5%</td>
+<td align="right">+1.2%</td>
+<td align="right">-92.9% &#x2F; +101.4%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">1&#x2F;84</td>
+<td align="right">30 分钟</td>
+<td align="right">8,309</td>
+<td align="right">20.4%</td>
+<td align="right">-81.8%</td>
+<td align="right">-14.2%</td>
+<td align="right">-94.8% &#x2F; +94.9%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">1&#x2F;42</td>
+<td align="right">1 分钟</td>
+<td align="right">8,309</td>
+<td align="right">38.2%</td>
+<td align="right">-13.1%</td>
+<td align="right">-1.2%</td>
+<td align="right">-83.3% &#x2F; +62.4%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">1&#x2F;42</td>
+<td align="right">5 分钟</td>
+<td align="right">8,309</td>
+<td align="right">33.3%</td>
+<td align="right">-31.7%</td>
+<td align="right">-1.6%</td>
+<td align="right">-93.0% &#x2F; +96.4%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">1&#x2F;42</td>
+<td align="right">30 分钟</td>
+<td align="right">8,309</td>
+<td align="right">20.1%</td>
+<td align="right">-82.1%</td>
+<td align="right">-17.2%</td>
+<td align="right">-94.8% &#x2F; +89.7%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">1&#x2F;420</td>
+<td align="right">1 分钟</td>
+<td align="right">8,309</td>
+<td align="right">39.6%</td>
+<td align="right">-11.5%</td>
+<td align="right">+1.7%</td>
+<td align="right">-83.0% &#x2F; +67.1%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">1&#x2F;420</td>
+<td align="right">5 分钟</td>
+<td align="right">8,309</td>
+<td align="right">34.7%</td>
+<td align="right">-29.8%</td>
+<td align="right">+2.5%</td>
+<td align="right">-92.8% &#x2F; +105.1%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">1&#x2F;420</td>
+<td align="right">30 分钟</td>
+<td align="right">8,309</td>
+<td align="right">20.5%</td>
+<td align="right">-81.6%</td>
+<td align="right">-12.6%</td>
+<td align="right">-94.8% &#x2F; +95.8%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">1&#x2F;84</td>
+<td align="right">1 分钟</td>
+<td align="right">8,309</td>
+<td align="right">38.5%</td>
+<td align="right">-12.4%</td>
+<td align="right">-0.0%</td>
+<td align="right">-83.2% &#x2F; +64.4%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">1&#x2F;84</td>
+<td align="right">5 分钟</td>
+<td align="right">8,309</td>
+<td align="right">33.7%</td>
+<td align="right">-30.9%</td>
+<td align="right">+0.2%</td>
+<td align="right">-92.9% &#x2F; +100.5%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">1&#x2F;84</td>
+<td align="right">30 分钟</td>
+<td align="right">8,309</td>
+<td align="right">20.2%</td>
+<td align="right">-81.9%</td>
+<td align="right">-15.1%</td>
+<td align="right">-94.8% &#x2F; +91.9%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">1&#x2F;42</td>
+<td align="right">1 分钟</td>
+<td align="right">8,309</td>
+<td align="right">37.3%</td>
+<td align="right">-13.7%</td>
+<td align="right">-2.1%</td>
+<td align="right">-83.5% &#x2F; +60.9%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">1&#x2F;42</td>
+<td align="right">5 分钟</td>
+<td align="right">8,309</td>
+<td align="right">32.7%</td>
+<td align="right">-32.1%</td>
+<td align="right">-2.6%</td>
+<td align="right">-93.0% &#x2F; +95.5%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">1&#x2F;42</td>
+<td align="right">30 分钟</td>
+<td align="right">8,309</td>
+<td align="right">19.9%</td>
+<td align="right">-82.1%</td>
+<td align="right">-18.0%</td>
+<td align="right">-94.9% &#x2F; +86.7%</td>
+</tr>
+</tbody></table>
+<img width="1870" height="1020" alt="all_quote_cdf" src="https://gist.github.com/user-attachments/assets/792cca75-38eb-4e66-8fb4-f1ee27eed708" />
+
+
+<p>分布图横轴只画到 +300%，原始表和 CSV 保留全部更高的极端值。横轴为配对资产计价收益率，纵轴为不高于该收益率的池占比；0% 线上的纵轴是亏损与持平的占比。</p>
+<h2 id="时间切片与结构差异"><a href="#时间切片与结构差异" class="headerlink" title="时间切片与结构差异"></a>时间切片与结构差异</h2><p>按毕业时间所在 UTC 周聚合主情景；首尾两周不是完整自然周，不能把不同周的表现直接解释为市场趋势。</p>
+<table>
+<thead>
+<tr>
+<th>UTC 周起始</th>
+<th align="right">可建模币数</th>
+<th align="right">胜率</th>
+<th align="right">中位收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2026-08-17</td>
+<td align="right">39</td>
+<td align="right">30.8%</td>
+<td align="right">-29.9%</td>
+</tr>
+<tr>
+<td>2026-08-24</td>
+<td align="right">909</td>
+<td align="right">40.6%</td>
+<td align="right">-14.0%</td>
+</tr>
+<tr>
+<td>2026-08-31</td>
+<td align="right">3,745</td>
+<td align="right">30.7%</td>
+<td align="right">-43.5%</td>
+</tr>
+<tr>
+<td>2026-09-07</td>
+<td align="right">2,570</td>
+<td align="right">36.3%</td>
+<td align="right">-25.8%</td>
+</tr>
+<tr>
+<td>2026-09-14</td>
+<td align="right">1,046</td>
+<td align="right">36.8%</td>
+<td align="right">-19.3%</td>
+</tr>
+</tbody></table>
+<p>费率核对：可建模池的 Pons hook 费率分布为 <code>&#123;100: 8309&#125;</code>（单位 bps）；<strong>3,986&#x2F;8,309</strong> 个币另设非零创建者税。买卖两侧都按各币费率扣费。</p>
+<p>创建者税分组只作描述：税率可能与代币类型、热度和配对资产相关，组间差异不能直接归因于税。</p>
+<table>
+<thead>
+<tr>
+<th>创建者税</th>
+<th align="right">可建模币数</th>
+<th align="right">胜率</th>
+<th align="right">中位收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0 bps</td>
+<td align="right">4,323</td>
+<td align="right">30.7%</td>
+<td align="right">-49.7%</td>
+</tr>
+<tr>
+<td>1–199 bps</td>
+<td align="right">1,934</td>
+<td align="right">36.9%</td>
+<td align="right">-21.7%</td>
+</tr>
+<tr>
+<td>≥200 bps</td>
+<td align="right">2,052</td>
+<td align="right">39.4%</td>
+<td align="right">-14.0%</td>
+</tr>
+</tbody></table>
+<p>同一毕业币的 B0 与 B1 配对比较（主仓位、5 分钟）：<strong>7,157&#x2F;8,309</strong> 个币两者结果相同，通常因为毕业区块结束前没有改变池价格的独立交易。其余 1,152 个币中，B0 较好 <strong>956</strong> 个、B1 较好 <strong>196</strong> 个；这些有差异的币，B0−B1 收益率差中位数为 **+1.9%**。这仍是拿到对应排序后的条件差异，不包含竞价和可得性。</p>
+<h2 id="方法与解释边界"><a href="#方法与解释边界" class="headerlink" title="方法与解释边界"></a>方法与解释边界</h2><ol>
+<li>从当前 Pons V2 factory 的 <code>PoolGraduated</code> 日志构造冻结的 30 天毕业样本，并读取目标币对应的 <code>pairToken</code>；原生 ETH 用零地址表示，ERC-20 用合约地址分组。符号和 decimals 是查询时的 <code>symbol()</code>&#x2F;<code>decimals()</code> 元数据，可能变化；地址才是分组主键。</li>
+<li>B0 假定毕业交易完成后，同一区块下一笔独立交易由我们买入；B1 假定下一区块第一笔买入。交易不能插入毕业交易内部。按 V4 的币位和整数舍入模拟精确输入买单，再以历史交易的输入量及顺序重放，1&#x2F;5&#x2F;30 分钟后全卖。</li>
+<li>买入得到的目标币与卖出得到的配对资产分别扣 Pons hook 费及固定创建者税；将卖出配对资产与买入配对资产比较，得到该配对资产计价的费后收益率。没有外部换汇，跨币种汇总是<strong>每个毕业币等权的百分比汇总</strong>，不是把不同币种数量直接相加。</li>
+<li>Gas、抢排序的竞价成本、失败交易、ERC-20 授权成本、资产换入换出成本和配对资产本身对 ETH&#x2F;美元的涨跌不在跨资产 ROI 中；若需要可执行的 ETH 或美元 PnL，需要另外建模每笔交易时点的汇率、路径和排序成功率。</li>
+<li>固定交易量重放假设其他交易者仍按真实历史顺序、输入原数量。我们的插单可能改变其行为或产生 MEV，链上历史无法观测这种反应。因此胜率不是实盘预测胜率。</li>
+<li>池的特殊流动性修改、非零池费或超出 <code>1e-6</code> 重放价格容差时排除，不把未知结果当作亏损或 0% 收益。小样本配对资产的胜率波动很大，排序仅用于观察，不代表可直接交易。</li>
+</ol>
+<h2 id="数据与复现"><a href="#数据与复现" class="headerlink" title="数据与复现"></a>数据与复现</h2><ul>
+<li><a href="results/tokens_primary.csv">每个毕业币的主情景结果及排除原因</a>：8,582 行，一币一行。</li>
+<li><a href="results/trades.csv">全部可建模币的 18 组情景结果</a>：含配对地址、买入原始数量、收费、B0&#x2F;B1 和两种价格路径。</li>
+<li><a href="results/summary.csv">每个配对资产和全样本的情景统计</a>；<a href="results/metadata.json">覆盖与排除明细</a>；<a href="results/audit.json">数据一致性核查</a>；<a href="results/quote_assets.json">配对资产元数据</a>。</li>
+<li><a href="all_pairs.py">回测程序</a>；原始事件来自 Robinhood Chain RPC。RPC 地址只从环境变量读取，没有写进报告或缓存。</li>
+<li>机制依据：<a href="https://docs.ponsfamily.com/v2">Pons V2 官方文档</a>与<a href="https://github.com/ponsdotdev/pons-labs/tree/162310fbd1217717e2f5e4cde794d6a11322b469/contractsV2">Pons V2 官方合约源码</a>。</li>
+<li><a href="../pons_v2_graduation/REPORT.md">原版 ETH 专项报告</a>保持独立，其固定 0.01&#x2F;0.05&#x2F;0.1 ETH 且扣估计 Gas 的结果不要与本报告的池深比例、未扣 Gas 结果直接并列。</li>
+</ul>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Y7C0CVX9PK"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y7C0CVX9PK');</script></html>

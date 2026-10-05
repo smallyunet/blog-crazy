@@ -1,6 +1,7 @@
 # Navigation bar without starting with a slash
 menu:
   博客: ''
+  AI 文章库: ai/
   # 微博: 'https://t.smallyu.net'
   关于: about
 

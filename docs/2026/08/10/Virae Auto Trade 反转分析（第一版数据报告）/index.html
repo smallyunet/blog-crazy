@@ -1,0 +1,1206 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>Virae Auto Trade 反转分析（第一版数据报告）</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://crazy.smallyu.net/2026/08/10/Virae Auto Trade 反转分析（第一版数据报告）/"><meta property="og:title" content="Virae Auto Trade 反转分析（第一版数据报告）"><meta property="og:type" content="article"><meta property="og:url" content="https://crazy.smallyu.net/2026/08/10/Virae Auto Trade 反转分析（第一版数据报告）/"><meta property="og:site_name" content="smallyu的博客（疯狂版）"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客（疯狂版）" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>Virae Auto Trade 反转分析（第一版数据报告）</h1><div class="time">2026-08-10</div><div class="title-margin"></div><div class="ai-content"><p>生成时间：2026-08-10（Asia&#x2F;Shanghai）</p>
+<p>模拟数据快照：截至 2026-08-10 04:15 UTC 左右</p>
+<p>AWS 原始日志最长可用窗口：2026-03-04 10:08:13 UTC 至 2026-08-10 04:30:00 UTC（查询时点）</p>
+<p>实盘订单快照：2026-08-10 04:43 UTC，ops Orders 接口全29页，<code>showAllBdUsers=true</code></p>
+<h2 id="Executive-Summary"><a href="#Executive-Summary" class="headerlink" title="Executive Summary"></a>Executive Summary</h2><ul>
+<li><strong>当前数据不支持“买得越接近结算越安全”这一普遍规律。</strong> BTC 1h 的全参数矩阵中，T-300s 的反转率为 1.74%，T-120s、T-90s、T-60s 分别升至 9.52%、8.57%、10.94%；BTC 15m 的 T-90s、T-60s、T-30s 则都在约 3.1%–3.4%，没有呈现同样的单调关系。</li>
+<li><strong>价格和时机必须联合统计。</strong> 在固定 <code>distance gate=off</code>、<code>max spread=0.01</code> 的 BTC 15m 基线矩阵中，T-60s、允许价格 0.80–0.98 的反转率为 5.88%（3&#x2F;51），而 T-90s、允许价格 0.85–0.99 的样本为 0&#x2F;146。这里的价格是配置允许范围，并不是逐笔真实成交价，因此只能作为参数筛选证据。</li>
+<li><strong>distance gate 对 BTC&#x2F;ETH 15m 有明显筛选作用，但代价是大幅降低成交覆盖。</strong> BTC 15m 从关闭 gate 的 3.64% 降至 0.1% gate 的 0.47%；ETH 15m 从 3.58% 降至 1.25%。更高阈值虽然观察到零反转，但样本快速缩小，不能直接解读为零风险。</li>
+<li><strong>已关联到结算结果的实盘 BUY 反转率为5.37%（75&#x2F;1,396，95% CI 4.31%–6.68%）。</strong> 资金加权反转暴露占5.69%。这1,396笔覆盖全部1,564笔明确归因且确认成交 BUY 的89.26%；缺口主要是早期未建立 task attribution 的 BTC 15m 历史订单，因此该结果可信但不是100%全量。</li>
+<li><strong>实盘成交价越高，反转率显著下降。</strong> 实际成交价 <code>&lt;0.85</code> 为18.18%，<code>0.85–0.90</code> 为13.76%，<code>0.90–0.95</code> 为7.51%，<code>0.95–0.98</code> 为2.84%，<code>0.98–1.00</code> 仅0.19%（1&#x2F;517）。这是当前实盘数据中最稳定、最有行动价值的规律。</li>
+<li><strong>没有观察到“周末更容易反转”。</strong> UTC工作日反转率5.55%（53&#x2F;955），周末4.99%（22&#x2F;441），置信区间高度重叠；当前只能判断未见周末风险上升，不能证明周末具有保护作用。</li>
+<li><strong>反转在时间上呈现成簇而非固定周期。</strong> 62个反转市场轮次的相邻间隔中位数7.50小时、均值12.33小时；39.34%的下一次反转在4小时内出现，最长空窗51小时。W32轮次反转占比升至11.33%，但同时混入新上线的1h小样本，需继续滚动验证。</li>
+</ul>
+<h2 id="1-统计口径"><a href="#1-统计口径" class="headerlink" title="1. 统计口径"></a>1. 统计口径</h2><p>本报告把“反转”定义为：</p>
+<pre><code class="text">BUY 有实际成交或模拟成交
+AND 市场已经结算
+AND 买入 token/outcome != 最终 winning token/outcome
+</code></pre>
+<p>模拟矩阵中的等价计算为：</p>
+<pre><code class="text">反转数 = settledCount - wonCount
+反转率 = 反转数 / settledCount
+</code></pre>
+<p>需要注意：矩阵中的一个观测单位是“配置 × 市场轮次”。同一个市场轮次会被多个配置重复评估，因此全矩阵的观测并不独立，不能把 27,768 个配置结果解释成 27,768 个不同市场。</p>
+<h2 id="2-四个方向策略的总体结果"><a href="#2-四个方向策略的总体结果" class="headerlink" title="2. 四个方向策略的总体结果"></a>2. 四个方向策略的总体结果</h2><p>下表使用公开 simulation matrix 的 30D 窗口。1h 策略实际上只从 2026-07-31 开始覆盖，目前不足完整30天。</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th align="right">配置数</th>
+<th align="right">已结算配置结果</th>
+<th align="right">反转数</th>
+<th align="right">反转率</th>
+<th align="right">矩阵 after-fee PnL 合计*</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BTC 15m</td>
+<td align="right">400</td>
+<td align="right">27,768</td>
+<td align="right">874</td>
+<td align="right">3.15%</td>
+<td align="right">-$7,514.98</td>
+</tr>
+<tr>
+<td>ETH 15m</td>
+<td align="right">400</td>
+<td align="right">23,719</td>
+<td align="right">688</td>
+<td align="right">2.90%</td>
+<td align="right">+$4,011.99</td>
+</tr>
+<tr>
+<td>BTC 1h</td>
+<td align="right">640</td>
+<td align="right">3,126</td>
+<td align="right">160</td>
+<td align="right">5.12%</td>
+<td align="right">-$5,036.62</td>
+</tr>
+<tr>
+<td>ETH 1h</td>
+<td align="right">640</td>
+<td align="right">2,390</td>
+<td align="right">82</td>
+<td align="right">3.43%</td>
+<td align="right">-$1,298.80</td>
+</tr>
+</tbody></table>
+<p>* 每个配置都按展示用 $100 notional 投影，同一轮会在多个配置重复计算；这是参数宇宙的合计，不是一个可实际部署的组合收益。</p>
+<p><strong>直接含义：</strong> 高胜率不等于盈利。BTC 15m 全矩阵胜率约96.85%，但尾部反转损失和费用仍使大量参数组合整体亏损。后续策略选择应同时看反转率、买价隐含概率和 after-fee PnL。</p>
+<h2 id="3-买入时机与反转率"><a href="#3-买入时机与反转率" class="headerlink" title="3. 买入时机与反转率"></a>3. 买入时机与反转率</h2><p>以下汇总使用全部价格带、spread 与 distance gate 配置，因此适合观察总体时机差异，但仍存在同一市场轮次被多配置重复计算的问题。</p>
+<table>
+<thead>
+<tr>
+<th>T-minus</th>
+<th align="right">BTC 15m</th>
+<th align="right">ETH 15m</th>
+<th align="right">BTC 1h</th>
+<th align="right">ETH 1h</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T-300s</td>
+<td align="right">—</td>
+<td align="right">—</td>
+<td align="right">1.74% (20&#x2F;1,152)</td>
+<td align="right">4.21% (46&#x2F;1,092)</td>
+</tr>
+<tr>
+<td>T-180s</td>
+<td align="right">—</td>
+<td align="right">—</td>
+<td align="right">4.60% (32&#x2F;696)</td>
+<td align="right">4.24% (24&#x2F;566)</td>
+</tr>
+<tr>
+<td>T-120s</td>
+<td align="right">—</td>
+<td align="right">—</td>
+<td align="right">9.52% (44&#x2F;462)</td>
+<td align="right">3.14% (12&#x2F;382)</td>
+</tr>
+<tr>
+<td>T-90s</td>
+<td align="right">3.40% (408&#x2F;11,993)</td>
+<td align="right">3.24% (374&#x2F;11,538)</td>
+<td align="right">8.57% (30&#x2F;350)</td>
+<td align="right">0.00% (0&#x2F;160)</td>
+</tr>
+<tr>
+<td>T-60s</td>
+<td align="right">3.14% (264&#x2F;8,415)</td>
+<td align="right">2.77% (192&#x2F;6,935)</td>
+<td align="right">10.94% (28&#x2F;256)</td>
+<td align="right">0.00% (0&#x2F;106)</td>
+</tr>
+<tr>
+<td>T-30s</td>
+<td align="right">3.19% (146&#x2F;4,573)</td>
+<td align="right">2.37% (72&#x2F;3,041)</td>
+<td align="right">4.88% (4&#x2F;82)</td>
+<td align="right">0.00% (0&#x2F;48)</td>
+</tr>
+<tr>
+<td>T-16s</td>
+<td align="right">1.78% (42&#x2F;2,358)</td>
+<td align="right">2.61% (50&#x2F;1,917)</td>
+<td align="right">2.50% (2&#x2F;80)</td>
+<td align="right">0.00% (0&#x2F;22)</td>
+</tr>
+<tr>
+<td>T-5s</td>
+<td align="right">3.26% (14&#x2F;429)</td>
+<td align="right">0.00% (0&#x2F;288)</td>
+<td align="right">0.00% (0&#x2F;48)</td>
+<td align="right">0.00% (0&#x2F;14)</td>
+</tr>
+</tbody></table>
+<h3 id="3-1-可读出的规律"><a href="#3-1-可读出的规律" class="headerlink" title="3.1 可读出的规律"></a>3.1 可读出的规律</h3><ol>
+<li><strong>BTC 1h 的高风险区集中在 T-60s 至 T-120s。</strong> 这一段既比 T-300s 反转率高，也产生更差的矩阵 PnL。</li>
+<li><strong>BTC 15m 的 T-90s、T-60s、T-30s 差异很小。</strong> 单独调整买入时机，可能不足以降低反转，需要同时结合价格、distance 和 spread。</li>
+<li><strong>ETH 15m 在全矩阵中 T-30s 低于 T-90s，但差距不大。</strong> 目前不能据此认为越晚越安全。</li>
+<li><strong>1h 后半段的零反转大多来自小样本。</strong> ETH 1h T-5s 只有14个配置结果，不能与 T-300s 的1,092个结果等量比较。</li>
+</ol>
+<h2 id="4-固定风控后，价格带-×-时机的联合结果"><a href="#4-固定风控后，价格带-×-时机的联合结果" class="headerlink" title="4. 固定风控后，价格带 × 时机的联合结果"></a>4. 固定风控后，价格带 × 时机的联合结果</h2><p>为减少参数混杂，本节只保留：</p>
+<ul>
+<li><code>distance gate = off</code></li>
+<li><code>max spread = 0.01</code></li>
+<li>$100 展示 notional</li>
+</ul>
+<p>价格列表示配置允许的 entry price 范围，不代表实际成交都均匀分布在该范围内。</p>
+<h3 id="4-1-BTC-15m"><a href="#4-1-BTC-15m" class="headerlink" title="4.1 BTC 15m"></a>4.1 BTC 15m</h3><table>
+<thead>
+<tr>
+<th>时机</th>
+<th align="right">0.80–0.98</th>
+<th align="right">0.80–0.99</th>
+<th align="right">0.85–0.98</th>
+<th align="right">0.85–0.99</th>
+<th align="right">0.90–0.98</th>
+<th align="right">0.90–0.99</th>
+<th align="right">0.95–0.98</th>
+<th align="right">0.95–0.99</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T-90s</td>
+<td align="right">2.13% (2&#x2F;94)</td>
+<td align="right">1.27% (2&#x2F;157)</td>
+<td align="right">0.00% (0&#x2F;80)</td>
+<td align="right">0.00% (0&#x2F;146)</td>
+<td align="right">0.00% (0&#x2F;75)</td>
+<td align="right">0.00% (0&#x2F;141)</td>
+<td align="right">0.00% (0&#x2F;22)</td>
+<td align="right">0.00% (0&#x2F;88)</td>
+</tr>
+<tr>
+<td>T-60s</td>
+<td align="right">5.88% (3&#x2F;51)</td>
+<td align="right">2.80% (3&#x2F;107)</td>
+<td align="right">4.17% (2&#x2F;48)</td>
+<td align="right">1.85% (2&#x2F;108)</td>
+<td align="right">4.55% (2&#x2F;44)</td>
+<td align="right">1.92% (2&#x2F;104)</td>
+<td align="right">0.00% (0&#x2F;13)</td>
+<td align="right">0.00% (0&#x2F;73)</td>
+</tr>
+<tr>
+<td>T-30s</td>
+<td align="right">2.38% (1&#x2F;42)</td>
+<td align="right">1.35% (1&#x2F;74)</td>
+<td align="right">2.63% (1&#x2F;38)</td>
+<td align="right">1.41% (1&#x2F;71)</td>
+<td align="right">2.86% (1&#x2F;35)</td>
+<td align="right">1.47% (1&#x2F;68)</td>
+<td align="right">11.11% (1&#x2F;9)</td>
+<td align="right">2.38% (1&#x2F;42)</td>
+</tr>
+<tr>
+<td>T-16s</td>
+<td align="right">0.00% (0&#x2F;9)</td>
+<td align="right">0.00% (0&#x2F;18)</td>
+<td align="right">0.00% (0&#x2F;8)</td>
+<td align="right">0.00% (0&#x2F;18)</td>
+<td align="right">0.00% (0&#x2F;8)</td>
+<td align="right">0.00% (0&#x2F;18)</td>
+<td align="right">0.00% (0&#x2F;1)</td>
+<td align="right">0.00% (0&#x2F;11)</td>
+</tr>
+<tr>
+<td>T-5s</td>
+<td align="right">50.00% (1&#x2F;2)</td>
+<td align="right">25.00% (1&#x2F;4)</td>
+<td align="right">50.00% (1&#x2F;2)</td>
+<td align="right">25.00% (1&#x2F;4)</td>
+<td align="right">50.00% (1&#x2F;2)</td>
+<td align="right">25.00% (1&#x2F;4)</td>
+<td align="right">—</td>
+<td align="right">0.00% (0&#x2F;2)</td>
+</tr>
+</tbody></table>
+<p><strong>结论：</strong> 当前最有价值的信号是 T-90s 且价格下限至少0.85的配置没有观察到反转，但样本仍只有75–146轮；T-5s 的百分比非常高，但只有2–4轮，不能作为稳定规律。</p>
+<h3 id="4-2-ETH-15m"><a href="#4-2-ETH-15m" class="headerlink" title="4.2 ETH 15m"></a>4.2 ETH 15m</h3><table>
+<thead>
+<tr>
+<th>时机</th>
+<th align="right">0.80–0.98</th>
+<th align="right">0.80–0.99</th>
+<th align="right">0.85–0.98</th>
+<th align="right">0.85–0.99</th>
+<th align="right">0.90–0.98</th>
+<th align="right">0.90–0.99</th>
+<th align="right">0.95–0.98</th>
+<th align="right">0.95–0.99</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T-90s</td>
+<td align="right">5.63% (4&#x2F;71)</td>
+<td align="right">4.50% (5&#x2F;111)</td>
+<td align="right">1.64% (1&#x2F;61)</td>
+<td align="right">1.98% (2&#x2F;101)</td>
+<td align="right">1.67% (1&#x2F;60)</td>
+<td align="right">2.00% (2&#x2F;100)</td>
+<td align="right">6.67% (1&#x2F;15)</td>
+<td align="right">3.64% (2&#x2F;55)</td>
+</tr>
+<tr>
+<td>T-60s</td>
+<td align="right">4.00% (2&#x2F;50)</td>
+<td align="right">4.00% (3&#x2F;75)</td>
+<td align="right">0.00% (0&#x2F;40)</td>
+<td align="right">1.52% (1&#x2F;66)</td>
+<td align="right">0.00% (0&#x2F;38)</td>
+<td align="right">1.56% (1&#x2F;64)</td>
+<td align="right">0.00% (0&#x2F;8)</td>
+<td align="right">2.94% (1&#x2F;34)</td>
+</tr>
+<tr>
+<td>T-30s</td>
+<td align="right">9.09% (2&#x2F;22)</td>
+<td align="right">7.14% (2&#x2F;28)</td>
+<td align="right">5.88% (1&#x2F;17)</td>
+<td align="right">4.35% (1&#x2F;23)</td>
+<td align="right">6.25% (1&#x2F;16)</td>
+<td align="right">4.55% (1&#x2F;22)</td>
+<td align="right">0.00% (0&#x2F;2)</td>
+<td align="right">0.00% (0&#x2F;8)</td>
+</tr>
+<tr>
+<td>T-16s</td>
+<td align="right">15.38% (2&#x2F;13)</td>
+<td align="right">9.52% (2&#x2F;21)</td>
+<td align="right">9.09% (1&#x2F;11)</td>
+<td align="right">5.26% (1&#x2F;19)</td>
+<td align="right">10.00% (1&#x2F;10)</td>
+<td align="right">5.56% (1&#x2F;18)</td>
+<td align="right">0.00% (0&#x2F;1)</td>
+<td align="right">0.00% (0&#x2F;9)</td>
+</tr>
+<tr>
+<td>T-5s</td>
+<td align="right">0.00% (0&#x2F;2)</td>
+<td align="right">0.00% (0&#x2F;3)</td>
+<td align="right">0.00% (0&#x2F;2)</td>
+<td align="right">0.00% (0&#x2F;3)</td>
+<td align="right">0.00% (0&#x2F;2)</td>
+<td align="right">0.00% (0&#x2F;3)</td>
+<td align="right">—</td>
+<td align="right">0.00% (0&#x2F;1)</td>
+</tr>
+</tbody></table>
+<p><strong>结论：</strong> ETH 15m 的低价格下限配置在 T-30s&#x2F;T-16s 更容易出现反转；提高价格下限到0.85或0.90后，观察值下降，但样本同步减少。0.95起步的格子样本过小，不能解读为安全区。</p>
+<h3 id="4-3-1h-策略暂时不适合做细价格格结论"><a href="#4-3-1h-策略暂时不适合做细价格格结论" class="headerlink" title="4.3 1h 策略暂时不适合做细价格格结论"></a>4.3 1h 策略暂时不适合做细价格格结论</h3><p>BTC 1h 和 ETH 1h 只有约10天覆盖。固定风控后，许多价格×时机格子的 n 小于10。例如 BTC 1h T-120s、0.80–0.98 为 1&#x2F;3，显示33.33%，但信息量远低于 BTC 15m 的百轮级格子。</p>
+<p>当前只保留两个可行动的观察：</p>
+<ul>
+<li>BTC 1h 应优先继续观察 T-300s，暂时避免根据 T-60s&#x2F;T-120s 的高胜率表象扩大资金。</li>
+<li>ETH 1h 需要至少再积累数周数据后，才能判断 T-120s&#x2F;T-180s 哪个更稳。</li>
+</ul>
+<h2 id="5-Distance-gate-的影响"><a href="#5-Distance-gate-的影响" class="headerlink" title="5. Distance gate 的影响"></a>5. Distance gate 的影响</h2><p>下表仍是30D全矩阵的配置结果汇总。</p>
+<table>
+<thead>
+<tr>
+<th>Distance gate</th>
+<th align="right">BTC 15m</th>
+<th align="right">ETH 15m</th>
+<th align="right">BTC 1h</th>
+<th align="right">ETH 1h</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Off</td>
+<td align="right">3.64% (718&#x2F;19,724)</td>
+<td align="right">3.58% (502&#x2F;14,007)</td>
+<td align="right">6.29% (106&#x2F;1,686)</td>
+<td align="right">3.50% (36&#x2F;1,030)</td>
+</tr>
+<tr>
+<td>0.05%</td>
+<td align="right">2.14% (152&#x2F;7,102)</td>
+<td align="right">2.22% (164&#x2F;7,401)</td>
+<td align="right">5.51% (54&#x2F;980)</td>
+<td align="right">3.26% (26&#x2F;798)</td>
+</tr>
+<tr>
+<td>0.10%</td>
+<td align="right">0.47% (4&#x2F;844)</td>
+<td align="right">1.25% (22&#x2F;1,765)</td>
+<td align="right">0.00% (0&#x2F;364)</td>
+<td align="right">5.21% (20&#x2F;384)</td>
+</tr>
+<tr>
+<td>0.15%</td>
+<td align="right">0.00% (0&#x2F;98)</td>
+<td align="right">0.00% (0&#x2F;437)</td>
+<td align="right">0.00% (0&#x2F;80)</td>
+<td align="right">0.00% (0&#x2F;146)</td>
+</tr>
+<tr>
+<td>0.20%</td>
+<td align="right">—</td>
+<td align="right">0.00% (0&#x2F;109)</td>
+<td align="right">0.00% (0&#x2F;16)</td>
+<td align="right">0.00% (0&#x2F;32)</td>
+</tr>
+</tbody></table>
+<p><strong>结论：</strong> distance gate 对 BTC 15m、ETH 15m、BTC 1h 有明显过滤作用；ETH 1h 在0.10%出现反向结果，说明不能把同一个阈值机械复制到所有资产&#x2F;周期。高阈值的零反转同时伴随极低成交量，应当把“反转率下降”和“机会数量下降”一起评估。</p>
+<h2 id="6-全用户实盘订单与-CloudWatch-执行事件"><a href="#6-全用户实盘订单与-CloudWatch-执行事件" class="headerlink" title="6. 全用户实盘订单与 CloudWatch 执行事件"></a>6. 全用户实盘订单与 CloudWatch 执行事件</h2><h3 id="6-1-ops-Orders-全量订单快照"><a href="#6-1-ops-Orders-全量订单快照" class="headerlink" title="6.1 ops Orders 全量订单快照"></a>6.1 ops Orders 全量订单快照</h3><p>生产 ops Orders 接口使用 <code>showAllBdUsers=true</code> 拉取了全部29页。返回5,800条订单，按 <code>domain:id</code> 检查无重复：5,427条 Trade、249条 Swap、124条 Memecoin。以下只保留 <code>sourceContext</code> 明确等于 BTC&#x2F;ETH 15m&#x2F;1h Auto Trade 的 Trade 订单。</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th align="right">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>明确归因 Auto Trade 订单</td>
+<td align="right">2,000</td>
+</tr>
+<tr>
+<td>用户数</td>
+<td align="right">10</td>
+</tr>
+<tr>
+<td>确认有执行证据</td>
+<td align="right">1,655（82.75%）</td>
+</tr>
+<tr>
+<td>Lifecycle 为 filled</td>
+<td align="right">1,624（81.20%）</td>
+</tr>
+<tr>
+<td>Lifecycle 为 canceled</td>
+<td align="right">375（18.75%）</td>
+</tr>
+<tr>
+<td>当前 open</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>缺失成交证据</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td>执行名义金额合计</td>
+<td align="right">$16,397.62</td>
+</tr>
+<tr>
+<td>订单时间范围</td>
+<td align="right">2026-07-03 11:58 — 2026-08-10 04:43 UTC</td>
+</tr>
+</tbody></table>
+<p><code>filled</code> 与“确认有执行证据”不能互换：有34条订单最终显示 canceled，但已经存在确认成交证据；另有3条 filled 订单缺失确认成交证据。这通常对应部分成交后取消、取消发生在已有成交之后，或历史成交证据不完整。实盘统计必须优先采用执行证据，不能只看最终 status。</p>
+<p>按策略拆分：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th align="right">订单</th>
+<th align="right">用户</th>
+<th align="right">BUY &#x2F; 确认成交</th>
+<th align="right">SELL &#x2F; 确认成交</th>
+<th align="right">canceled</th>
+<th align="right">执行名义金额</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BTC 15m</td>
+<td align="right">1,392</td>
+<td align="right">10</td>
+<td align="right">1,313 &#x2F; 1,077</td>
+<td align="right">79 &#x2F; 75</td>
+<td align="right">256</td>
+<td align="right">$11,042.97</td>
+</tr>
+<tr>
+<td>ETH 15m</td>
+<td align="right">557</td>
+<td align="right">7</td>
+<td align="right">544 &#x2F; 452</td>
+<td align="right">13 &#x2F; 13</td>
+<td align="right">103</td>
+<td align="right">$4,858.81</td>
+</tr>
+<tr>
+<td>BTC 1h</td>
+<td align="right">19</td>
+<td align="right">2</td>
+<td align="right">19 &#x2F; 16</td>
+<td align="right">0 &#x2F; 0</td>
+<td align="right">3</td>
+<td align="right">$198.48</td>
+</tr>
+<tr>
+<td>ETH 1h</td>
+<td align="right">32</td>
+<td align="right">3</td>
+<td align="right">29 &#x2F; 19</td>
+<td align="right">3 &#x2F; 3</td>
+<td align="right">13</td>
+<td align="right">$297.37</td>
+</tr>
+</tbody></table>
+<p>确认成交的1,564条 BUY 按实际 <code>executedPrice</code> 分桶：</p>
+<table>
+<thead>
+<tr>
+<th>实际成交价</th>
+<th align="right">BUY 成交数</th>
+<th align="right">用户数</th>
+<th align="right">执行名义金额</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt;0.85</td>
+<td align="right">165</td>
+<td align="right">7</td>
+<td align="right">$1,582.58</td>
+</tr>
+<tr>
+<td>0.85–0.90</td>
+<td align="right">114</td>
+<td align="right">7</td>
+<td align="right">$831.68</td>
+</tr>
+<tr>
+<td>0.90–0.95</td>
+<td align="right">270</td>
+<td align="right">8</td>
+<td align="right">$2,497.90</td>
+</tr>
+<tr>
+<td>0.95–0.98</td>
+<td align="right">318</td>
+<td align="right">9</td>
+<td align="right">$3,160.83</td>
+</tr>
+<tr>
+<td>0.98–1.00</td>
+<td align="right">697</td>
+<td align="right">9</td>
+<td align="right">$7,831.64</td>
+</tr>
+</tbody></table>
+<p>用户分布高度集中：订单最多的匿名用户有867单，占明确归因订单的43.35%；前三名合计1,525单，占76.25%。因此后续反转率除了逐笔口径，还必须同时报告“按用户等权”和“按成交金额加权”，避免一个高频用户主导结论。</p>
+<p>当前接口仍有一个重要覆盖边界：后端对 Auto Trade 的正式判定是 <code>executionOrigin=&#39;AUTO_TRADE&#39; OR sourceContext IN (...)</code>，但 ops Orders 响应没有暴露 <code>executionOrigin</code>、<code>attributionType</code>、<code>attributionId/taskId</code>。因此2,000条是“全部明确带四类 sourceContext 的订单”，不能证明不存在 <code>sourceContext</code> 缺失但 <code>executionOrigin</code> 正确的历史 Auto Trade 订单。</p>
+<h3 id="6-2-实盘反转率"><a href="#6-2-实盘反转率" class="headerlink" title="6.2 实盘反转率"></a>6.2 实盘反转率</h3><p>通过全用户 task 列表和 <code>/api/ops/auto-trade/tasks/:taskId/orders</code>，取得116个 LIVE task 的1,840条 task-attributed 订单。反转统计只保留：</p>
+<pre><code class="text">side = BUY
+AND executedSize &gt; 0
+AND settlement.winningTokenId IS NOT NULL
+</code></pre>
+<p>同一 <code>user + task + market round + token</code> 的追单&#x2F;部分成交按成交量合并，以 BUY token 是否等于 <code>winningTokenId</code> 判断反转。SELL 不参与“买入方向是否反转”的分母；后续是否止损退出也不改变这项方向反转标签。</p>
+<p>数据质量漏斗：</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th align="right">数量</th>
+<th align="right">覆盖率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>明确归因且确认成交的 BUY</td>
+<td align="right">1,564</td>
+<td align="right">100.00%</td>
+</tr>
+<tr>
+<td>有 task attribution 的正成交 BUY</td>
+<td align="right">1,430</td>
+<td align="right">91.43%</td>
+</tr>
+<tr>
+<td>已关联 winning token</td>
+<td align="right">1,396</td>
+<td align="right">89.26%（占全部确认 BUY） &#x2F; 97.62%（占 task-attributed BUY）</td>
+</tr>
+<tr>
+<td>实际反转</td>
+<td align="right">75</td>
+<td align="right">5.37%（占已结算样本）</td>
+</tr>
+</tbody></table>
+<p>总体结果：</p>
+<table>
+<thead>
+<tr>
+<th>口径</th>
+<th align="right">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>逐笔暴露反转率</td>
+<td align="right">5.37%（75&#x2F;1,396）</td>
+</tr>
+<tr>
+<td>95% Wilson 置信区间</td>
+<td align="right">4.31%–6.68%</td>
+</tr>
+<tr>
+<td>BUY 成交名义金额</td>
+<td align="right">$15,149.97</td>
+</tr>
+<tr>
+<td>反转 BUY 名义金额</td>
+<td align="right">$861.38</td>
+</tr>
+<tr>
+<td>资金加权反转暴露占比</td>
+<td align="right">5.69%</td>
+</tr>
+</tbody></table>
+<p>按策略：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th align="right">已结算 BUY</th>
+<th align="right">反转</th>
+<th align="right">反转率</th>
+<th align="right">95% CI</th>
+<th align="right">资金加权反转占比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BTC 15m</td>
+<td align="right">909</td>
+<td align="right">56</td>
+<td align="right">6.16%</td>
+<td align="right">4.77%–7.92%</td>
+<td align="right">6.47%</td>
+</tr>
+<tr>
+<td>ETH 15m</td>
+<td align="right">452</td>
+<td align="right">13</td>
+<td align="right">2.88%</td>
+<td align="right">1.69%–4.86%</td>
+<td align="right">1.54%</td>
+</tr>
+<tr>
+<td>BTC 1h</td>
+<td align="right">16</td>
+<td align="right">2</td>
+<td align="right">12.50%</td>
+<td align="right">3.50%–36.02%</td>
+<td align="right">12.66%</td>
+</tr>
+<tr>
+<td>ETH 1h</td>
+<td align="right">19</td>
+<td align="right">4</td>
+<td align="right">21.05%</td>
+<td align="right">8.51%–43.33%</td>
+<td align="right">45.98%</td>
+</tr>
+</tbody></table>
+<p>1h 样本只有16和19笔，区间很宽，只能作为风险提示。15m 数据较稳定，BTC 15m 的观察反转率约为 ETH 15m 的2.14倍。</p>
+<p>按实际成交价：</p>
+<table>
+<thead>
+<tr>
+<th>实际成交价</th>
+<th align="right">已结算 BUY</th>
+<th align="right">反转</th>
+<th align="right">反转率</th>
+<th align="right">95% CI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt;0.85</td>
+<td align="right">165</td>
+<td align="right">30</td>
+<td align="right">18.18%</td>
+<td align="right">13.04%–24.77%</td>
+</tr>
+<tr>
+<td>0.85–0.90</td>
+<td align="right">109</td>
+<td align="right">15</td>
+<td align="right">13.76%</td>
+<td align="right">8.52%–21.47%</td>
+</tr>
+<tr>
+<td>0.90–0.95</td>
+<td align="right">253</td>
+<td align="right">19</td>
+<td align="right">7.51%</td>
+<td align="right">4.86%–11.43%</td>
+</tr>
+<tr>
+<td>0.95–0.98</td>
+<td align="right">352</td>
+<td align="right">10</td>
+<td align="right">2.84%</td>
+<td align="right">1.55%–5.15%</td>
+</tr>
+<tr>
+<td>0.98–1.00</td>
+<td align="right">517</td>
+<td align="right">1</td>
+<td align="right">0.19%</td>
+<td align="right">0.03%–1.09%</td>
+</tr>
+</tbody></table>
+<p>按买入时机：task order API 没有返回 <code>firstFillMatchedAt</code>，因此以下 TTE 使用订单 <code>createdAt</code> 相对市场结束时间计算，是下单时机而非严格首次成交时机，可信度低于价格结果。</p>
+<table>
+<thead>
+<tr>
+<th>下单距结束</th>
+<th align="right">已结算 BUY</th>
+<th align="right">反转</th>
+<th align="right">反转率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>≤5s</td>
+<td align="right">17</td>
+<td align="right">0</td>
+<td align="right">0.00%</td>
+</tr>
+<tr>
+<td>6–16s</td>
+<td align="right">150</td>
+<td align="right">6</td>
+<td align="right">4.00%</td>
+</tr>
+<tr>
+<td>17–30s</td>
+<td align="right">173</td>
+<td align="right">8</td>
+<td align="right">4.62%</td>
+</tr>
+<tr>
+<td>31–60s</td>
+<td align="right">260</td>
+<td align="right">20</td>
+<td align="right">7.69%</td>
+</tr>
+<tr>
+<td>61–90s</td>
+<td align="right">204</td>
+<td align="right">9</td>
+<td align="right">4.41%</td>
+</tr>
+<tr>
+<td>91–120s</td>
+<td align="right">560</td>
+<td align="right">26</td>
+<td align="right">4.64%</td>
+</tr>
+<tr>
+<td>121–180s</td>
+<td align="right">16</td>
+<td align="right">4</td>
+<td align="right">25.00%</td>
+</tr>
+<tr>
+<td>181–300s</td>
+<td align="right">16</td>
+<td align="right">2</td>
+<td align="right">12.50%</td>
+</tr>
+</tbody></table>
+<p>价格 × 时机联合结果：</p>
+<table>
+<thead>
+<tr>
+<th>实际成交价</th>
+<th align="right">≤30s</th>
+<th align="right">31–60s</th>
+<th align="right">61–90s</th>
+<th align="right">91–120s</th>
+<th align="right">&gt;120s</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt;0.85</td>
+<td align="right">20.69% (6&#x2F;29)</td>
+<td align="right">19.74% (15&#x2F;76)</td>
+<td align="right">10.53% (2&#x2F;19)</td>
+<td align="right">20.00% (6&#x2F;30)</td>
+<td align="right">9.09% (1&#x2F;11)</td>
+</tr>
+<tr>
+<td>0.85–0.90</td>
+<td align="right">8.70% (2&#x2F;23)</td>
+<td align="right">16.67% (3&#x2F;18)</td>
+<td align="right">6.25% (1&#x2F;16)</td>
+<td align="right">14.89% (7&#x2F;47)</td>
+<td align="right">40.00% (2&#x2F;5)</td>
+</tr>
+<tr>
+<td>0.90–0.95</td>
+<td align="right">7.69% (4&#x2F;52)</td>
+<td align="right">3.92% (2&#x2F;51)</td>
+<td align="right">7.55% (4&#x2F;53)</td>
+<td align="right">8.70% (8&#x2F;92)</td>
+<td align="right">20.00% (1&#x2F;5)</td>
+</tr>
+<tr>
+<td>0.95–0.98</td>
+<td align="right">1.08% (1&#x2F;93)</td>
+<td align="right">0.00% (0&#x2F;49)</td>
+<td align="right">5.13% (2&#x2F;39)</td>
+<td align="right">3.07% (5&#x2F;163)</td>
+<td align="right">25.00% (2&#x2F;8)</td>
+</tr>
+<tr>
+<td>0.98–1.00</td>
+<td align="right">0.70% (1&#x2F;143)</td>
+<td align="right">0.00% (0&#x2F;66)</td>
+<td align="right">0.00% (0&#x2F;77)</td>
+<td align="right">0.00% (0&#x2F;228)</td>
+<td align="right">0.00% (0&#x2F;3)</td>
+</tr>
+</tbody></table>
+<p>联合表显示价格信号比时机更稳定：低于0.90的多个时间格都维持较高反转率，而0.98以上在各主要时间格均接近零。<code>&gt;120s</code> 的高百分比来自1h小样本，不能与15m直接比较。</p>
+<h3 id="6-3-CloudWatch-最长可用窗口"><a href="#6-3-CloudWatch-最长可用窗口" class="headerlink" title="6.3 CloudWatch 最长可用窗口"></a>6.3 CloudWatch 最长可用窗口</h3><p><code>/ecs/polybot</code> 当前没有设置 CloudWatch retention 天数。查询时能够读取的最早事件为 2026-03-04 10:08:13 UTC，最新事件为 2026-08-10 04:30:00 UTC，跨度约159天；全窗口约有1,485万条原始日志。</p>
+<p>但是，原始日志覆盖期不等于 Auto Trade 结构化事件覆盖期。可用于稳定筛选的 <code>decision_persisted</code> 执行事件最早只出现在 2026-07-09；更早的日志不能因为没有匹配到该事件，就推断当时没有交易。</p>
+<p>全量窗口内识别到的执行事件：</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>信号类型</th>
+<th align="right">数量</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LIVE</td>
+<td><code>LIVE_ORDER_SUBMITTED</code></td>
+<td align="right">1,624</td>
+<td>已提交实盘订单，不保证全部成交</td>
+</tr>
+<tr>
+<td>PAPER</td>
+<td><code>PAPER_ORDER_FILLED</code></td>
+<td align="right">50</td>
+<td>Paper 模型已完成虚拟成交</td>
+</tr>
+</tbody></table>
+<p>按策略和结构化事件实际覆盖期拆分：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th align="right">LIVE 提交</th>
+<th>LIVE 首次—末次（UTC）</th>
+<th align="right">PAPER 成交</th>
+<th>PAPER 首次—末次（UTC）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BTC 15m</td>
+<td align="right">1,061</td>
+<td>2026-07-09 11:43 — 2026-08-09 23:13</td>
+<td align="right">7</td>
+<td>2026-08-07 04:13 — 2026-08-09 16:13</td>
+</tr>
+<tr>
+<td>ETH 15m</td>
+<td align="right">522</td>
+<td>2026-07-10 11:28 — 2026-08-10 04:29</td>
+<td align="right">21</td>
+<td>2026-08-05 11:44 — 2026-08-10 04:29</td>
+</tr>
+<tr>
+<td>BTC 1h</td>
+<td align="right">17</td>
+<td>2026-08-04 07:55 — 2026-08-10 02:55</td>
+<td align="right">16</td>
+<td>2026-08-05 17:55 — 2026-08-07 04:55</td>
+</tr>
+<tr>
+<td>ETH 1h</td>
+<td align="right">24</td>
+<td>2026-08-05 02:57 — 2026-08-08 15:57</td>
+<td align="right">6</td>
+<td>2026-08-05 13:58 — 2026-08-06 00:58</td>
+</tr>
+</tbody></table>
+<p>CloudWatch 的1,624次 <code>LIVE_ORDER_SUBMITTED</code> 与订单表的2,000条订单不是同一个统计单位：日志是决策提交事件，订单表还包含追单、部分成交后取消、SELL&#x2F;退出等订单生命周期记录。实盘反转分析应以订单读模型中的确认 BUY 成交为起点，而不是以日志提交数为分母。Paper 的50次成交也必须继续关联最终结算结果，才能形成反转率。</p>
+<h2 id="7-周末与反转频率"><a href="#7-周末与反转频率" class="headerlink" title="7. 周末与反转频率"></a>7. 周末与反转频率</h2><h3 id="7-1-多久遇到一次反转"><a href="#7-1-多久遇到一次反转" class="headerlink" title="7.1 多久遇到一次反转"></a>7.1 多久遇到一次反转</h3><p>“多久一次”有两个不同答案：</p>
+<table>
+<thead>
+<tr>
+<th>观察口径</th>
+<th align="right">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户&#x2F;task BUY 暴露</td>
+<td align="right">平均每18.61个已结算 BUY 暴露发生1次反转（75&#x2F;1,396）</td>
+</tr>
+<tr>
+<td>市场轮次</td>
+<td align="right">平均每18.26个有成交市场轮次出现1个反转轮次（62&#x2F;1,132）</td>
+</tr>
+<tr>
+<td>日历时间</td>
+<td align="right">约32天内62个反转市场轮次，约1.94个&#x2F;天</td>
+</tr>
+<tr>
+<td>唯一反转时间点</td>
+<td align="right">60个；其中2个时间点 BTC 15m 与 ETH 15m 同时反转</td>
+</tr>
+</tbody></table>
+<p>62个反转市场轮次的相邻间隔：</p>
+<table>
+<thead>
+<tr>
+<th>间隔指标</th>
+<th align="right">小时</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P25</td>
+<td align="right">2.00</td>
+</tr>
+<tr>
+<td>中位数</td>
+<td align="right">7.50</td>
+</tr>
+<tr>
+<td>均值</td>
+<td align="right">12.33</td>
+</tr>
+<tr>
+<td>P75</td>
+<td align="right">17.50</td>
+</tr>
+<tr>
+<td>P90</td>
+<td align="right">33.50</td>
+</tr>
+<tr>
+<td>最长</td>
+<td align="right">51.00</td>
+</tr>
+</tbody></table>
+<p>两个资产在同一时间反转会产生0小时间隔。若把同时发生的反转合并成一个平台时间点，则中位间隔为7.75小时、均值12.75小时，结论基本不变。</p>
+<p>间隔分布并不均匀：</p>
+<table>
+<thead>
+<tr>
+<th>到下一反转轮次的间隔</th>
+<th align="right">次数</th>
+<th align="right">占61个间隔</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>≤1h</td>
+<td align="right">10</td>
+<td align="right">16.39%</td>
+</tr>
+<tr>
+<td>1–4h</td>
+<td align="right">14</td>
+<td align="right">22.95%</td>
+</tr>
+<tr>
+<td>4–8h</td>
+<td align="right">9</td>
+<td align="right">14.75%</td>
+</tr>
+<tr>
+<td>8–12h</td>
+<td align="right">6</td>
+<td align="right">9.84%</td>
+</tr>
+<tr>
+<td>12–24h</td>
+<td align="right">10</td>
+<td align="right">16.39%</td>
+</tr>
+<tr>
+<td>24–48h</td>
+<td align="right">11</td>
+<td align="right">18.03%</td>
+</tr>
+<tr>
+<td>&gt;48h</td>
+<td align="right">1</td>
+<td align="right">1.64%</td>
+</tr>
+</tbody></table>
+<p>因此，39.34%的下一次反转会在4小时内出现，54.10%在8小时内，63.93%在12小时内，80.33%在24小时内；但也存在最长51小时的无反转空窗。反转呈现“短时间成簇 + 偶尔较长空窗”，不能用固定12小时周期理解。</p>
+<p>按UTC日历日统计的33天（首尾为不完整日）中：6天没有反转、9天有1个、18天有2个以上；日中位数2个、最高7个。任意滚动24小时内最多出现8个反转市场轮次。</p>
+<p>62个反转轮次中有10个同时影响了两个以上 task；单一市场最多形成3个反转 BUY 暴露、影响2名用户和3个 task。说明反转有时会形成跨用户的共同市场冲击，但大多数轮次仍只对应一个反转暴露。</p>
+<h3 id="7-2-按策略的发生频率"><a href="#7-2-按策略的发生频率" class="headerlink" title="7.2 按策略的发生频率"></a>7.2 按策略的发生频率</h3><table>
+<thead>
+<tr>
+<th>策略</th>
+<th align="right">有成交市场轮次</th>
+<th align="right">反转轮次</th>
+<th align="right">轮次反转占比</th>
+<th align="right">相邻反转中位间隔</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BTC 15m</td>
+<td align="right">683</td>
+<td align="right">46</td>
+<td align="right">6.73%</td>
+<td align="right">13.00h</td>
+</tr>
+<tr>
+<td>ETH 15m</td>
+<td align="right">420</td>
+<td align="right">11</td>
+<td align="right">2.62%</td>
+<td align="right">46.38h</td>
+</tr>
+<tr>
+<td>BTC 1h</td>
+<td align="right">16</td>
+<td align="right">2</td>
+<td align="right">12.50%</td>
+<td align="right">90.00h</td>
+</tr>
+<tr>
+<td>ETH 1h</td>
+<td align="right">13</td>
+<td align="right">3</td>
+<td align="right">23.08%</td>
+<td align="right">16.50h</td>
+</tr>
+</tbody></table>
+<p>15m 的频率结论更可信：BTC 15m 平均约每14.85个有成交轮次遇到一个反转市场，ETH 15m 约每38.18个轮次一次。1h 只有13–16个轮次，不适合把间隔外推成稳定周期。</p>
+<h3 id="7-3-星期与UTC时段"><a href="#7-3-星期与UTC时段" class="headerlink" title="7.3 星期与UTC时段"></a>7.3 星期与UTC时段</h3><p>按 BUY 下单时间的 UTC 星期划分：</p>
+<table>
+<thead>
+<tr>
+<th>日期类型</th>
+<th align="right">已结算 BUY</th>
+<th align="right">反转</th>
+<th align="right">反转率</th>
+<th align="right">95% CI</th>
+<th align="right">资金加权反转占比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工作日</td>
+<td align="right">955</td>
+<td align="right">53</td>
+<td align="right">5.55%</td>
+<td align="right">4.27%–7.19%</td>
+<td align="right">6.25%</td>
+</tr>
+<tr>
+<td>周末</td>
+<td align="right">441</td>
+<td align="right">22</td>
+<td align="right">4.99%</td>
+<td align="right">3.32%–7.44%</td>
+<td align="right">4.29%</td>
+</tr>
+</tbody></table>
+<p>周末比工作日低0.56个百分点，但置信区间高度重叠，而且用户、策略、价格与上线阶段的构成并未控制。当前结论是“没有观察到周末反转率更高”，不是“周末更安全”。</p>
+<p>按市场轮次的星期分布：</p>
+<table>
+<thead>
+<tr>
+<th>UTC星期</th>
+<th align="right">有成交轮次</th>
+<th align="right">反转轮次</th>
+<th align="right">轮次反转占比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>周一</td>
+<td align="right">115</td>
+<td align="right">7</td>
+<td align="right">6.09%</td>
+</tr>
+<tr>
+<td>周二</td>
+<td align="right">106</td>
+<td align="right">10</td>
+<td align="right">9.43%</td>
+</tr>
+<tr>
+<td>周三</td>
+<td align="right">151</td>
+<td align="right">6</td>
+<td align="right">3.97%</td>
+</tr>
+<tr>
+<td>周四</td>
+<td align="right">179</td>
+<td align="right">10</td>
+<td align="right">5.59%</td>
+</tr>
+<tr>
+<td>周五</td>
+<td align="right">216</td>
+<td align="right">10</td>
+<td align="right">4.63%</td>
+</tr>
+<tr>
+<td>周六</td>
+<td align="right">222</td>
+<td align="right">11</td>
+<td align="right">4.95%</td>
+</tr>
+<tr>
+<td>周日</td>
+<td align="right">143</td>
+<td align="right">8</td>
+<td align="right">5.59%</td>
+</tr>
+</tbody></table>
+<p>周二最高、周三最低，但每个星期只被观察约4–5次，且策略和成交价构成不同，目前不足以认定星期规律。</p>
+<p>按市场结束时间的UTC四小时段：</p>
+<table>
+<thead>
+<tr>
+<th>UTC时段</th>
+<th align="right">有成交轮次</th>
+<th align="right">反转轮次</th>
+<th align="right">轮次反转占比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>00:00–03:59</td>
+<td align="right">210</td>
+<td align="right">9</td>
+<td align="right">4.29%</td>
+</tr>
+<tr>
+<td>04:00–07:59</td>
+<td align="right">231</td>
+<td align="right">12</td>
+<td align="right">5.19%</td>
+</tr>
+<tr>
+<td>08:00–11:59</td>
+<td align="right">229</td>
+<td align="right">7</td>
+<td align="right">3.06%</td>
+</tr>
+<tr>
+<td>12:00–15:59</td>
+<td align="right">209</td>
+<td align="right">17</td>
+<td align="right">8.13%</td>
+</tr>
+<tr>
+<td>16:00–19:59</td>
+<td align="right">146</td>
+<td align="right">6</td>
+<td align="right">4.11%</td>
+</tr>
+<tr>
+<td>20:00–23:59</td>
+<td align="right">107</td>
+<td align="right">11</td>
+<td align="right">10.28%</td>
+</tr>
+</tbody></table>
+<p>20:00–23:59和12:00–15:59 UTC 观察值较高，但主要由 BTC 15m 驱动：BTC 15m 在这两个时段分别为13.43%和10.32%，ETH 15m 没有出现相同形态。12:00–15:59的 BTC 15m 低价成交占比也更高，说明时段效应至少部分可能是价格和策略构成造成的。当前应把它作为待验证风险时段，而不是独立交易规则。</p>
+<h3 id="7-4-随时间是否在变"><a href="#7-4-随时间是否在变" class="headerlink" title="7.4 随时间是否在变"></a>7.4 随时间是否在变</h3><p>按ISO周的市场轮次反转占比：</p>
+<table>
+<thead>
+<tr>
+<th>ISO周</th>
+<th align="right">有成交轮次</th>
+<th align="right">反转轮次</th>
+<th align="right">轮次反转占比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2026-W28*</td>
+<td align="right">238</td>
+<td align="right">7</td>
+<td align="right">2.94%</td>
+</tr>
+<tr>
+<td>2026-W29</td>
+<td align="right">386</td>
+<td align="right">19</td>
+<td align="right">4.92%</td>
+</tr>
+<tr>
+<td>2026-W30</td>
+<td align="right">204</td>
+<td align="right">10</td>
+<td align="right">4.90%</td>
+</tr>
+<tr>
+<td>2026-W31</td>
+<td align="right">149</td>
+<td align="right">9</td>
+<td align="right">6.04%</td>
+</tr>
+<tr>
+<td>2026-W32</td>
+<td align="right">150</td>
+<td align="right">17</td>
+<td align="right">11.33%</td>
+</tr>
+<tr>
+<td>2026-W33*</td>
+<td align="right">5</td>
+<td align="right">0</td>
+<td align="right">0.00%</td>
+</tr>
+</tbody></table>
+<p>* W28和W33是不完整周。</p>
+<p>W32 出现明显抬升，但同时也是1h策略进入样本的第一周；17个反转轮次中5个来自1h，ETH 15m 也从此前低基数升至5&#x2F;45。它可能表示近期市场状态变化，也可能是策略、用户和成交价组合变化，尚不能称为持续恶化趋势。建议用滚动7天&#x2F;30天同口径持续监控。</p>
+<p>公开 simulation overview 曲线仍最多只返回约120个小时桶，不能用于完整周末复核；本节周末结果来自实盘 task order 与 settlement 关联。</p>
+<p>要进一步做控制变量后的时间规律分析，需要逐笔结果至少包含：</p>
+<pre><code class="text">strategyDefinitionId
+executionMode
+configVersion / simulationConfigId
+taskId
+roundKey
+selectedTokenId / selectedOutcome
+actualEntryPrice
+firstFillAt 或 sampledAt
+secondsToEnd
+winningTokenId / winningOutcome
+settledAt
+</code></pre>
+<h2 id="8-下一步建议"><a href="#8-下一步建议" class="headerlink" title="8. 下一步建议"></a>8. 下一步建议</h2><ol>
+<li><strong>实盘风控优先使用实际成交价分层。</strong> <code>&lt;0.90</code> 的反转率为13.76%–18.18%，应作为高风险区；<code>0.98–1.00</code> 当前为0.19%，但仍需结合手续费、滑点和缺失的早期 BTC 15m 样本评估净收益。1h 样本过小，不据此扩大资金。</li>
+<li><strong>补一份平台级只读逐笔导出。</strong> 不需要做页面，只需一个内部 aggregate&#x2F;export 接口或定时生成 JSON&#x2F;CSV，覆盖 LIVE、PAPER、SIMULATION，并直接返回 <code>executionOrigin</code>、task attribution、<code>firstFillMatchedAt</code> 与 settlement。</li>
+<li><strong>实盘主口径必须按真实成交聚合。</strong> 同一 task-round 的 chase&#x2F;partial fills 合并，以成交量加权价和首次成交时间统计，排除零成交与取消单。</li>
+<li><strong>报告至少每周刷新一次。</strong> 输出价格×TTE二维表、周末效应、滚动30&#x2F;90天反转率、样本量和实际资金加权损失。</li>
+</ol>
+<h2 id="9-仍待回答的问题"><a href="#9-仍待回答的问题" class="headerlink" title="9. 仍待回答的问题"></a>9. 仍待回答的问题</h2><ul>
+<li>2,000条明确归因订单之外，有多少 <code>executionOrigin=AUTO_TRADE</code> 但缺失 <code>sourceContext</code> 的历史订单？</li>
+<li>早期缺少 task attribution 的134条确认 BUY，补齐后是否会显著改变5.37%的实盘反转率？</li>
+<li>Paper 50笔成交中有多少已经结算，实际反转率是多少？</li>
+<li>同一轮被多少用户&#x2F;任务重复交易，平台资金暴露是否集中在少数反转轮次？</li>
+<li>控制价格、TTE、资产和distance后，周末变量是否仍显著？</li>
+<li>实际成交价相对 simulation best ask 的滑点是否抵消模拟优势？</li>
+</ul>
+<h2 id="10-数据限制与来源"><a href="#10-数据限制与来源" class="headerlink" title="10. 数据限制与来源"></a>10. 数据限制与来源</h2><h3 id="数据限制"><a href="#数据限制" class="headerlink" title="数据限制"></a>数据限制</h3><ul>
+<li>当前本地环境没有可用的 <code>VIRAE_API_KEY</code>，因此没有调用用户级 Virae API；平台订单统计来自生产只读 ops Orders 接口。</li>
+<li>本报告未访问生产数据库。</li>
+<li>已通过生产只读 ops Orders 接口分页读取全平台订单，并进一步通过全用户 LIVE task order 接口关联 task attribution 与 settlement；未展示用户身份信息。一般 Orders 响应本身不含这些字段，反转率来自两类接口的组合。</li>
+<li>CloudWatch 日志组当前未设置 retention，但“无过期策略”不等于无限历史；本次查询能够确认的最早事件是 2026-03-04，且结构化 Auto Trade 执行事件只从 2026-07-09 起出现。</li>
+<li>Simulation matrix 是配置结果矩阵，同一市场轮次在多个配置中重复，不能把矩阵总数当独立样本。</li>
+<li>1h 策略仅约10天覆盖，远未达到稳定分析周末或月度规律的样本量。</li>
+<li>第4节模拟矩阵的价格维度是配置允许范围；第6节实盘价格表使用逐笔 <code>executedPrice</code> 经 task-round 合并后的成交量加权价。</li>
+</ul>
+<h3 id="数据来源"><a href="#数据来源" class="headerlink" title="数据来源"></a>数据来源</h3><ul>
+<li>Virae 公开 Auto Trade simulation summary API：BTC&#x2F;ETH 15m、BTC&#x2F;ETH 1h，30D，after-fee，$100展示 notional。</li>
+<li>AWS CloudWatch Logs：<code>eu-west-1 /ecs/polybot</code>，查询时最长可用窗口 2026-03-04 10:08:13 UTC 至 2026-08-10 04:30:00 UTC；约1,485万条原始日志，结构化执行事件查询命中1,674条。</li>
+<li>Virae&#x2F;Polybot ops Orders API：<code>/api/ops/orders</code>，<code>showAllBdUsers=true</code>，29页、5,800条订单；分析中仅使用聚合结果并按 <code>domain:id</code> 去重。</li>
+<li>Virae&#x2F;Polybot ops Auto Trade task orders API：116个 LIVE task、1,840条 task-attributed 订单；关联 <code>settlement.winningTokenId</code> 后得到1,396个已结算 BUY 暴露。</li>
+<li>后端数据契约与模型：<ul>
+<li><code>polybot/prisma/models/strategies.prisma</code></li>
+<li><code>polybot/src/services/auto-trade/taskOrderHistory.ts</code></li>
+<li><code>polybot/src/services/auto-trade/paper/service.ts</code></li>
+<li><code>polybot-dashboard/src/lib/types/btc15mAutoTrade.ts</code></li>
+</ul>
+</li>
+</ul>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Y7C0CVX9PK"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y7C0CVX9PK');</script></html>

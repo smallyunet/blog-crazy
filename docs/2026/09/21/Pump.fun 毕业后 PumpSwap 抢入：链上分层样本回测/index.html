@@ -1,0 +1,427 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>Pump.fun 毕业后 PumpSwap 抢入：链上分层样本回测</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://crazy.smallyu.net/2026/09/21/Pump.fun 毕业后 PumpSwap 抢入：链上分层样本回测/"><meta property="og:title" content="Pump.fun 毕业后 PumpSwap 抢入：链上分层样本回测"><meta property="og:type" content="article"><meta property="og:url" content="https://crazy.smallyu.net/2026/09/21/Pump.fun 毕业后 PumpSwap 抢入：链上分层样本回测/"><meta property="og:site_name" content="smallyu的博客（疯狂版）"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客（疯狂版）" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>Pump.fun 毕业后 PumpSwap 抢入：链上分层样本回测</h1><div class="time">2026-09-21</div><div class="title-margin"></div><div class="ai-content"><p><strong>链上观察期：</strong> 2026-08-21T00:00:00+00:00 至 2026-09-20T00:00:00+00:00。每日预先选定 15 分钟，合计 450 分钟，占 30 天时间的 1.04%。这是时间分层样本，不是 30 天毕业全量。</p>
+<h2 id="核心发现"><a href="#核心发现" class="headerlink" title="核心发现"></a>核心发现</h2><p>在抽样窗口中，迁移权限地址相关交易 <strong>476</strong> 笔，确认的 Pump→PumpSwap 毕业迁移 <strong>365</strong> 个，成功建模 <strong>81</strong> 个；建模失败 <strong>0</strong> 个。完整主情景的分析币数 <strong>80</strong>，场景行 <strong>1192</strong>。</p>
+<p><strong>主情景：</strong> B0 假设建池交易后同一 slot 中最先买入；SOL 池投入 0.05 SOL，其余池投入初始配对资产储备的 1&#x2F;84；5 分钟后全部卖出。按每次买卖各计 1.25% 的<strong>示意费率</strong>，不含网络费与竞价成本，SOL 子样本胜率 <strong>55.9%</strong> 、中位收益 <strong>+77.4%</strong> （n&#x3D;59）；USDC 子样本胜率 <strong>35.3%</strong> 、中位收益 <strong>-83.1%</strong> （n&#x3D;17）。</p>
+<p>以 80 个可报价结果按每日 SOL 抽样比例加权、非 SOL 全取，对窗口内 365 个毕业事件作描述性推估，**描述性加权胜率 52.9%、加权中位收益 +58.0%**；完全不计交易费时对应为 52.9% 和 +62.1%。这只推回所选 30 个短窗口，不是全月估计。</p>
+<p><strong>这些是给定成交位置后的报价回放，不是可实现利润率。</strong> 每个池的后续储备按真实交易观察，但没有证明你的买单能抢在其他人之前，只把自己的仓位储备变化加到退出快照，没有重算中间其他人的交易。统一费率没有重建每笔历史的链上 FeeConfig，因此不能把它叫作精确净收益。</p>
+<h2 id="样本与配对资产"><a href="#样本与配对资产" class="headerlink" title="样本与配对资产"></a>样本与配对资产</h2><img src="1.png" width="100%">
+
+<p>每个目标代币按迁移后的官方池去重，配对资产按 mint 地址归类。不同报价资产的 ROI 均在自身报价资产中计算，合计胜率可描述币的结果分布，无法合计成一笔 SOL 或美元利润。SOL 池按每天最多 2 个抽样，非 SOL 池全取；不能直接把 81 个建模币的简单胜率当作窗口内 365 个毕业币的胜率。</p>
+<table>
+<thead>
+<tr>
+<th>配对资产</th>
+<th align="right">窗口内毕业数</th>
+<th align="right">主情景有效池</th>
+<th align="right">B0 5分钟胜率</th>
+<th align="right">中位收益</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SOL <code>So11111111111111111111111111111111111111112</code></td>
+<td align="right">344</td>
+<td align="right">59</td>
+<td align="right">55.9%</td>
+<td align="right">+77.4%</td>
+<td></td>
+</tr>
+<tr>
+<td>USDC <code>EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v</code></td>
+<td align="right">17</td>
+<td align="right">17</td>
+<td align="right">35.3%</td>
+<td align="right">-83.1%</td>
+<td>n&lt;30，仅描述</td>
+</tr>
+<tr>
+<td>LinkhB3a… <code>LinkhB3afbBKb2EQQu7s7umdZceV3wcvAUJhQAfQ23L</code></td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">100.0%</td>
+<td align="right">+198.3%</td>
+<td>n&lt;30，仅描述</td>
+</tr>
+<tr>
+<td>3NZ9JMVB… <code>3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh</code></td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">100.0%</td>
+<td align="right">+448.1%</td>
+<td>n&lt;30，仅描述</td>
+</tr>
+<tr>
+<td>Xsv9hRk1… <code>Xsv9hRk1z5ystj9MhnA7Lq4vjSsLwzL2nxrwmwtD3re</code></td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">100.0%</td>
+<td align="right">+27.8%</td>
+<td>n&lt;30，仅描述</td>
+</tr>
+<tr>
+<td>1NJMqVM4… <code>1NJMqVM4PadjuzYmeB7zV7q7DV8oB3ExaQCd9x6KsLz</code></td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">100.0%</td>
+<td align="right">+14.7%</td>
+<td>n&lt;30，仅描述</td>
+</tr>
+</tbody></table>
+<p><code>窗口内毕业数</code> 是完整枚举；胜率分母是已回放的池。未抽中的 SOL 池不计为亏损。解析及模型错误在 audit.json 单列。</p>
+<h2 id="SOL-池的关键分组：Mayhem-与入场排序"><a href="#SOL-池的关键分组：Mayhem-与入场排序" class="headerlink" title="SOL 池的关键分组：Mayhem 与入场排序"></a>SOL 池的关键分组：Mayhem 与入场排序</h2><p>在已建模的 60 个 SOL 池中，18 个为 Mayhem 模式。两类池的实际 SOL 储备与虚拟报价储备相差很大，不应合并推断一种可执行策略。下表仍是 0.05 SOL、5 分钟、每边 1.25% 示意费率。</p>
+<table>
+<thead>
+<tr>
+<th>池类型</th>
+<th>入场</th>
+<th align="right">n</th>
+<th align="right">胜率</th>
+<th align="right">中位收益</th>
+<th align="right">P10 &#x2F; P90</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通&#x2F;boost</td>
+<td>B0</td>
+<td align="right">42</td>
+<td align="right">76.2%</td>
+<td align="right">+1105.4%</td>
+<td align="right">-73.0% &#x2F; +16892.3%</td>
+</tr>
+<tr>
+<td>普通&#x2F;boost</td>
+<td>B1</td>
+<td align="right">42</td>
+<td align="right">59.5%</td>
+<td align="right">+1.3%</td>
+<td align="right">-73.5% &#x2F; +44.5%</td>
+</tr>
+<tr>
+<td>Mayhem</td>
+<td>B0</td>
+<td align="right">17</td>
+<td align="right">5.9%</td>
+<td align="right">-92.5%</td>
+<td align="right">-96.2% &#x2F; -65.7%</td>
+</tr>
+<tr>
+<td>Mayhem</td>
+<td>B1</td>
+<td align="right">17</td>
+<td align="right">5.9%</td>
+<td align="right">-92.5%</td>
+<td align="right">-96.2% &#x2F; -65.7%</td>
+</tr>
+</tbody></table>
+<p><strong>同 slot 的价格竞争：</strong> 35&#x2F;60 个 SOL 池在迁移 slot 结束前价格已变化，其中 24 个涨幅超过 10 倍；B1&#x2F;B0 入场现货价倍数的中位数 1.01、P90 158.8。因此 B0 的高收益高度依赖抢到很早的交易顺序。Jito bundle 内的连续交易也不能由外部交易任意插入。</p>
+<p><strong>额外 SOL 成本敏感性：</strong>假设以下金额是每次买入和卖出合计新增的网络费、优先费与 tip，直接从 0.05 SOL 投入的收益中扣除；这是情景假设，并非当时实际竞价成本。</p>
+<table>
+<thead>
+<tr>
+<th align="right">往返额外成本</th>
+<th align="right">B0 全 SOL 胜率 &#x2F; 中位收益</th>
+<th align="right">B1 全 SOL 胜率 &#x2F; 中位收益</th>
+<th align="right">B1 普通&#x2F;boost 胜率 &#x2F; 中位收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0.0000 SOL</td>
+<td align="right">55.9% &#x2F; +77.4%</td>
+<td align="right">44.1% &#x2F; -14.2%</td>
+<td align="right">59.5% &#x2F; +1.3%</td>
+</tr>
+<tr>
+<td align="right">0.0001 SOL</td>
+<td align="right">55.9% &#x2F; +77.2%</td>
+<td align="right">44.1% &#x2F; -14.4%</td>
+<td align="right">59.5% &#x2F; +1.1%</td>
+</tr>
+<tr>
+<td align="right">0.0010 SOL</td>
+<td align="right">55.9% &#x2F; +75.4%</td>
+<td align="right">33.9% &#x2F; -16.2%</td>
+<td align="right">45.2% &#x2F; -0.7%</td>
+</tr>
+<tr>
+<td align="right">0.0050 SOL</td>
+<td align="right">55.9% &#x2F; +67.4%</td>
+<td align="right">16.9% &#x2F; -24.2%</td>
+<td align="right">21.4% &#x2F; -8.7%</td>
+</tr>
+</tbody></table>
+<p>额外成本只是报价资产中的 SOL 扣减；失败交易、未入场和滑点变化仍未纳入。</p>
+<h2 id="场景对照（SOL-官方池）"><a href="#场景对照（SOL-官方池）" class="headerlink" title="场景对照（SOL 官方池）"></a>场景对照（SOL 官方池）</h2><p>表中均为 <strong>每次买卖各按 1.25% 示意费率，不含 SOL 基础费、优先费、Jito tip 和账户租金</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>入场</th>
+<th align="right">投入</th>
+<th align="right">持有</th>
+<th align="right">n</th>
+<th align="right">胜率</th>
+<th align="right">中位收益</th>
+<th align="right">平均收益</th>
+<th align="right">P10 &#x2F; P90</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B0</td>
+<td align="right">0.01 SOL</td>
+<td align="right">1 分钟</td>
+<td align="right">60</td>
+<td align="right">63.3%</td>
+<td align="right">+53.1%</td>
+<td align="right">+15636.3%</td>
+<td align="right">-91.3% &#x2F; +15589.2%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">0.01 SOL</td>
+<td align="right">5 分钟</td>
+<td align="right">60</td>
+<td align="right">56.7%</td>
+<td align="right">+84.8%</td>
+<td align="right">+15755.3%</td>
+<td align="right">-95.8% &#x2F; +15032.4%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">0.01 SOL</td>
+<td align="right">30 分钟</td>
+<td align="right">59</td>
+<td align="right">33.9%</td>
+<td align="right">-91.0%</td>
+<td align="right">+15550.3%</td>
+<td align="right">-97.3% &#x2F; +14523.8%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">0.05 SOL</td>
+<td align="right">1 分钟</td>
+<td align="right">59</td>
+<td align="right">62.7%</td>
+<td align="right">+45.6%</td>
+<td align="right">+15885.9%</td>
+<td align="right">-88.1% &#x2F; +15593.7%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">0.05 SOL</td>
+<td align="right">5 分钟</td>
+<td align="right">59</td>
+<td align="right">55.9%</td>
+<td align="right">+77.4%</td>
+<td align="right">+15993.0%</td>
+<td align="right">-93.6% &#x2F; +15159.2%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">0.05 SOL</td>
+<td align="right">30 分钟</td>
+<td align="right">59</td>
+<td align="right">33.9%</td>
+<td align="right">-90.7%</td>
+<td align="right">+15543.2%</td>
+<td align="right">-95.8% &#x2F; +14517.5%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">0.10 SOL</td>
+<td align="right">1 分钟</td>
+<td align="right">59</td>
+<td align="right">62.7%</td>
+<td align="right">+39.3%</td>
+<td align="right">+15876.4%</td>
+<td align="right">-85.7% &#x2F; +15585.3%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">0.10 SOL</td>
+<td align="right">5 分钟</td>
+<td align="right">59</td>
+<td align="right">55.9%</td>
+<td align="right">+77.4%</td>
+<td align="right">+15984.0%</td>
+<td align="right">-91.8% &#x2F; +15151.1%</td>
+</tr>
+<tr>
+<td>B0</td>
+<td align="right">0.10 SOL</td>
+<td align="right">30 分钟</td>
+<td align="right">59</td>
+<td align="right">33.9%</td>
+<td align="right">-90.7%</td>
+<td align="right">+15534.2%</td>
+<td align="right">-95.7% &#x2F; +14509.7%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">0.01 SOL</td>
+<td align="right">1 分钟</td>
+<td align="right">60</td>
+<td align="right">28.3%</td>
+<td align="right">-2.1%</td>
+<td align="right">-9.4%</td>
+<td align="right">-91.3% &#x2F; +26.9%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">0.01 SOL</td>
+<td align="right">5 分钟</td>
+<td align="right">60</td>
+<td align="right">45.0%</td>
+<td align="right">-12.1%</td>
+<td align="right">-2.2%</td>
+<td align="right">-96.0% &#x2F; +47.3%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">0.01 SOL</td>
+<td align="right">30 分钟</td>
+<td align="right">59</td>
+<td align="right">30.5%</td>
+<td align="right">-91.5%</td>
+<td align="right">-51.5%</td>
+<td align="right">-99.6% &#x2F; +13.9%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">0.05 SOL</td>
+<td align="right">1 分钟</td>
+<td align="right">59</td>
+<td align="right">27.1%</td>
+<td align="right">-2.1%</td>
+<td align="right">-17.8%</td>
+<td align="right">-88.2% &#x2F; +25.2%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">0.05 SOL</td>
+<td align="right">5 分钟</td>
+<td align="right">59</td>
+<td align="right">44.1%</td>
+<td align="right">-14.2%</td>
+<td align="right">-24.2%</td>
+<td align="right">-94.3% &#x2F; +30.3%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">0.05 SOL</td>
+<td align="right">30 分钟</td>
+<td align="right">59</td>
+<td align="right">30.5%</td>
+<td align="right">-90.7%</td>
+<td align="right">-51.6%</td>
+<td align="right">-99.6% &#x2F; +13.6%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">0.10 SOL</td>
+<td align="right">1 分钟</td>
+<td align="right">59</td>
+<td align="right">27.1%</td>
+<td align="right">-2.1%</td>
+<td align="right">-18.3%</td>
+<td align="right">-88.2% &#x2F; +25.2%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">0.10 SOL</td>
+<td align="right">5 分钟</td>
+<td align="right">59</td>
+<td align="right">44.1%</td>
+<td align="right">-14.2%</td>
+<td align="right">-24.3%</td>
+<td align="right">-93.2% &#x2F; +30.3%</td>
+</tr>
+<tr>
+<td>B1</td>
+<td align="right">0.10 SOL</td>
+<td align="right">30 分钟</td>
+<td align="right">59</td>
+<td align="right">30.5%</td>
+<td align="right">-90.6%</td>
+<td align="right">-51.8%</td>
+<td align="right">-99.6% &#x2F; +13.6%</td>
+</tr>
+</tbody></table>
+<img src="2.png" width="100%">
+
+<p>分布图横轴在 +300% 截断；完整极端值保留在表格和 CSV。均值受少数极端获利池强烈影响，不宜作为预期单笔回报。</p>
+<h3 id="非-SOL-配对主情景"><a href="#非-SOL-配对主情景" class="headerlink" title="非 SOL 配对主情景"></a>非 SOL 配对主情景</h3><p>非 SOL 池按初始报价储备的 1&#x2F;84 投入，下面的收益以对应报价资产计价。合计时每个毕业池等权，没有把不同资产金额直接相加。</p>
+<table>
+<thead>
+<tr>
+<th>入场 &#x2F; 持有</th>
+<th align="right">样本数</th>
+<th align="right">胜率</th>
+<th align="right">中位收益</th>
+<th align="right">平均收益</th>
+<th align="right">P10 &#x2F; P90</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B0 &#x2F; 1 分钟</td>
+<td align="right">21</td>
+<td align="right">47.6%</td>
+<td align="right">-77.3%</td>
+<td align="right">+614.0%</td>
+<td align="right">-94.7% &#x2F; +2657.7%</td>
+</tr>
+<tr>
+<td>B0 &#x2F; 5 分钟</td>
+<td align="right">21</td>
+<td align="right">47.6%</td>
+<td align="right">-50.5%</td>
+<td align="right">+672.5%</td>
+<td align="right">-95.8% &#x2F; +2818.3%</td>
+</tr>
+<tr>
+<td>B0 &#x2F; 30 分钟</td>
+<td align="right">21</td>
+<td align="right">38.1%</td>
+<td align="right">-82.6%</td>
+<td align="right">+691.3%</td>
+<td align="right">-97.7% &#x2F; +2842.0%</td>
+</tr>
+<tr>
+<td>B1 &#x2F; 1 分钟</td>
+<td align="right">21</td>
+<td align="right">19.0%</td>
+<td align="right">-77.3%</td>
+<td align="right">-31.0%</td>
+<td align="right">-94.7% &#x2F; +15.8%</td>
+</tr>
+<tr>
+<td>B1 &#x2F; 5 分钟</td>
+<td align="right">21</td>
+<td align="right">47.6%</td>
+<td align="right">-50.5%</td>
+<td align="right">-10.8%</td>
+<td align="right">-95.8% &#x2F; +27.8%</td>
+</tr>
+<tr>
+<td>B1 &#x2F; 30 分钟</td>
+<td align="right">21</td>
+<td align="right">38.1%</td>
+<td align="right">-82.6%</td>
+<td align="right">-2.4%</td>
+<td align="right">-97.7% &#x2F; +8.4%</td>
+</tr>
+</tbody></table>
+<h2 id="计算方法和边界"><a href="#计算方法和边界" class="headerlink" title="计算方法和边界"></a>计算方法和边界</h2><ol>
+<li>用官方 <code>migrate</code> &#x2F; <code>migrate_v2</code> 指令及其后池内两种 token vault 的余额识别毕业和初始储备。只有 <code>complete=true</code>、还未形成可交易池的状态不计入。</li>
+<li>B0 在迁移交易完成后的储备上假设紧接着成交；B1 在迁移 slot 结束时的储备上假设进入下一实际产出 slot。真实排序取决于投递渠道、竞争和费用。</li>
+<li>每个退出点取毕业时间后 60／300／1800 秒前最近一笔该池交易的期末储备。相同区块时间戳内以链上交易顺序作入口边界，分钟退出时间只能达到区块时间秒级精度。</li>
+<li>买入和卖出基于两次储备快照作常数乘积报价；quote 储备使用vault 余额加 Pool.virtual_quote_reserves。该字段从查询时的池账户读取，假定在持有区间不变。抽查 10 个有可解码历史 swap 事件的池，事件值均与当前池账户相同；未逐池逐交易核验全部 81 个池。若历史曾改动它，逐笔报价会偏差。包含本次仓位的 AMM价格冲击；退出快照带入自己的买入储备变化，但中间沿用历史链上交易造成的储备差额，未重新执行每一笔历史交易。</li>
+<li>示意费率对两次交易各按 125 bps；真实 PumpSwap 官方池费率会随市值、报价币种、池配置及时间变化。抽查 10 个历史 swap 事件，LP、协议和创建者费率合计介于 30 与 125 bps；其他费用&#x2F;激励字段也可能影响最终到账。尤其非 SOL 配对不应把示意结果当作可执行净收益。</li>
+<li>当前没有估计同 slot 抢到位置的概率，也没有计入失败交易损失、优先费、Jito tip、基础费用、第三方交易界面费用，以及动态 ATA&#x2F;WSOL 账户成本。</li>
+<li>1 个已建模 SOL 池在 0.05 SOL 主情景无法按这种反事实储备变动报价，因此 60 个 SOL 池只有 59 个进入主情景胜率分母；该池不按零收益填充。</li>
+<li>高波动池的价格和退出深度随你自己的交易而变，连续亏损和大额持仓会使资金曲线显著不同于逐币等权胜率；均值受少量暴涨币影响较大。</li>
+</ol>
+<h2 id="审计与复现"><a href="#审计与复现" class="headerlink" title="审计与复现"></a>审计与复现</h2><p>数据：<a href="results/trades.csv">逐场景 CSV</a>、<a href="results/pools.json">池和关键签名</a>、<a href="results/audit.json">窗口与错误审计</a>、<a href="results/summary.csv">分组统计 CSV</a>、<a href="results/virtual_event_check.json">历史虚拟储备与费用抽查</a>。程序：<a href="backtest.py">抓取与模拟</a>、<a href="report.py">报告生成</a>、<a href="verify_virtual.py">事件抽查</a>。</p>
+<p>研究口径依据：<a href="https://github.com/pump-fun/pump-public-docs/blob/main/docs/PUMP_PROGRAM_README.md">Pump 程序文档</a>、<a href="https://github.com/pump-fun/pump-public-docs/blob/main/docs/PUMP_SWAP_README.md">PumpSwap 程序文档</a>、<a href="https://pump.fun/docs/fees">Pump 费用</a>、<a href="https://solana.com/docs/core/fees/fee-structure">Solana 交易费用</a>、<a href="https://docs.jito.wtf/lowlatencytxnsend/">Jito Bundle</a>。</p>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Y7C0CVX9PK"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y7C0CVX9PK');</script></html>

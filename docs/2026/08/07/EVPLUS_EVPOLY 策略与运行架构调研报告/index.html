@@ -1,0 +1,466 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>EVPLUS / EVPOLY 策略与运行架构调研报告</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://crazy.smallyu.net/2026/08/07/EVPLUS_EVPOLY 策略与运行架构调研报告/"><meta property="og:title" content="EVPLUS / EVPOLY 策略与运行架构调研报告"><meta property="og:type" content="article"><meta property="og:url" content="https://crazy.smallyu.net/2026/08/07/EVPLUS_EVPOLY 策略与运行架构调研报告/"><meta property="og:site_name" content="smallyu的博客（疯狂版）"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客（疯狂版）" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>EVPLUS / EVPOLY 策略与运行架构调研报告</h1><div class="time">2026-08-07</div><div class="title-margin"></div><div class="ai-content"><blockquote>
+<p>调研日期：2026-08-07（Asia&#x2F;Shanghai）<br>调研对象：EVPLUS 托管版 Starter Bot、公开 EVPOLY v2.6.2 源码<br>性质：产品与技术调研，不构成投资建议</p>
+</blockquote>
+<h2 id="1-结论摘要"><a href="#1-结论摘要" class="headerlink" title="1. 结论摘要"></a>1. 结论摘要</h2><p>EVPLUS 是 EVPOLY Rust 交易引擎的托管产品形态。当前账户实际开启了两类方向性策略：</p>
+<ul>
+<li><strong>Premarket &#x2F; Pre-M</strong>：在加密货币 5m、15m、1h、4h 涨跌盘开盘前，对 UP 和 DOWN 两边布置多档限价买单。</li>
+<li><strong>EVSnipe + Pre-hit</strong>：监控 Binance 现货价格，在价格接近或触及 Polymarket hit-price 市场的 strike 时快速买入对应结果。</li>
+</ul>
+<p>当前关闭的策略是：</p>
+<ul>
+<li><strong>MM 2.0</strong>：围绕 Polymarket 流动性奖励市场做双边顶层做市。</li>
+<li><strong>COMBO&#x2F;&#x2F;</strong> ：体育 Combo 市场的 RFQ（Request for Quote）策略。</li>
+</ul>
+<p>本次日志中真正触发下单的是 <code>premarket_v1</code>。没有发现 EVSnipe、MM 2.0 或 COMBO&#x2F;&#x2F; 的实际成交证据。日志显示：</p>
+<ul>
+<li><code>Total Trades Executed: 0</code></li>
+<li><code>Open exposure: $0.00</code></li>
+<li>账户余额约 <code>9.365227 pUSD</code></li>
+<li>已有活动订单占用约 <code>5.0061 pUSD</code></li>
+<li>后续多个约 <code>$5</code> 的 Premarket 订单因 <code>not enough balance / allowance</code> 被交易所拒绝</li>
+</ul>
+<p>最重要的风险不是策略方向本身，而是<strong>配置规模与本金严重不匹配</strong>。Premarket 的 <code>$5 Base Size</code> 不能简单理解为“这一轮最多只用 5 美元”：公开源码规定每一个 ladder rung（阶梯档位）最低都是 <code>$5</code>，单个市场最多有六档、两边合计十二个候选订单。即使风险调度器和余额约束阻止全部订单生效，当前 <code>$9.37</code> 本金也只能支持大约一个 <code>$5</code> 活动订单，无法完整运行该策略设计。</p>
+<h2 id="2-证据等级与边界"><a href="#2-证据等级与边界" class="headerlink" title="2. 证据等级与边界"></a>2. 证据等级与边界</h2><p>本报告把证据分为三类：</p>
+<ol>
+<li><strong>已确认：托管页面</strong>——来自登录后的 EVPLUS Dashboard、策略设置页和实时日志。</li>
+<li><strong>已确认：公开源码</strong>——来自 <a href="https://github.com/Degenapetrader/EVPOLY"><code>Degenapetrader/EVPOLY</code></a> 当前 <code>main</code>，检出的提交为 <a href="https://github.com/Degenapetrader/EVPOLY/commit/10eb5b50fa143461b99e9d1c561a9935eb49dbc3"><code>10eb5b50</code></a>，版本 <code>2.6.2</code>，提交日期 2026-07-22。</li>
+<li><strong>技术推断</strong>——托管版与公开版名称、日志模块和行为高度一致，但无法证明 EVPLUS 生产环境正好运行上述公开提交。托管版可能包含更新或私有模块。</li>
+</ol>
+<p>特别说明：</p>
+<ul>
+<li><code>COMBO//</code> 的产品配置可以从网页确认，但其业务实现没有出现在公开 EVPOLY 主程序中。</li>
+<li>托管页面部分数值与公开版默认值不同，说明存在账户覆盖值、托管版覆盖值或版本差异。</li>
+<li>本报告没有访问 EVPLUS 服务器、数据库、私有仓库或管理接口。</li>
+</ul>
+<h2 id="3-当前账户与策略总览"><a href="#3-当前账户与策略总览" class="headerlink" title="3. 当前账户与策略总览"></a>3. 当前账户与策略总览</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th align="right">当前状态</th>
+<th>当前页面配置</th>
+<th>本次日志是否验证</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bot</td>
+<td align="right">Running</td>
+<td>约 102.37 credits；0.5 credits&#x2F;小时</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Bankroll</td>
+<td align="right">可用但很小</td>
+<td>约 $9.37 pUSD</td>
+<td>是</td>
+</tr>
+<tr>
+<td>Pre-M</td>
+<td align="right">On</td>
+<td>Base Size $5</td>
+<td>是，<code>premarket_v1</code> 正在尝试挂单</td>
+</tr>
+<tr>
+<td>EVSnipe</td>
+<td align="right">On</td>
+<td>$5 &#x2F; hit</td>
+<td>未发现触发或成交</td>
+</tr>
+<tr>
+<td>Pre-hit</td>
+<td align="right">On</td>
+<td>Ratio 0.30；Pre-trigger 1 bps</td>
+<td>未发现触发或成交</td>
+</tr>
+<tr>
+<td>MM 2.0</td>
+<td align="right">Off</td>
+<td>Depth Ratio；Max Share Ratio 0.20</td>
+<td>未运行</td>
+</tr>
+<tr>
+<td>COMBO&#x2F;&#x2F;</td>
+<td align="right">Off</td>
+<td>固定 $11 &#x2F; RFQ</td>
+<td>未运行</td>
+</tr>
+<tr>
+<td>已成交交易</td>
+<td align="right">0</td>
+<td>无仓位、无已实现 PnL</td>
+<td>是</td>
+</tr>
+</tbody></table>
+<p><code>credits</code> 是机器人运行时长额度，不是交易本金；<code>pUSD bankroll</code> 才是订单可使用的抵押资金。</p>
+<h2 id="4-Premarket-x2F-Pre-M"><a href="#4-Premarket-x2F-Pre-M" class="headerlink" title="4. Premarket &#x2F; Pre-M"></a>4. Premarket &#x2F; Pre-M</h2><h3 id="4-1-策略原理"><a href="#4-1-策略原理" class="headerlink" title="4.1 策略原理"></a>4.1 策略原理</h3><p>Premarket 在每个短周期 UP&#x2F;DOWN 市场开盘前约四分钟生成订单意图，在两边分别放置阶梯买单。其目标不是预测一个单一方向，而是利用新市场开盘前后可能出现的薄流动性、瞬时价格跳动和错误报价，以较低价格获得结果份额。</p>
+<p>公开源码的默认时间点为：</p>
+<ul>
+<li>5m 市场：分钟数 <code>%5 == 1</code></li>
+<li>15m 市场：分钟数 <code>%15 == 11</code></li>
+<li>1h 市场：每小时第 56 分钟</li>
+<li>4h 市场：开盘前对应小时的第 56 分钟</li>
+</ul>
+<p>公开源码确认它同时对 <code>UP</code> 和 <code>DOWN</code> 建立候选 BUY ladder。实际收益结构是非线性的：低价成交后若该结果最终胜出，每份接近按 <code>$1</code> 结算；若结果失败，成交本金可能大部分或全部损失。</p>
+<h3 id="4-2-公开版默认阶梯"><a href="#4-2-公开版默认阶梯" class="headerlink" title="4.2 公开版默认阶梯"></a>4.2 公开版默认阶梯</h3><table>
+<thead>
+<tr>
+<th>周期</th>
+<th>Normal 基础价格</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5m</td>
+<td>0.31、0.26、0.22、0.16、0.09、0.03</td>
+</tr>
+<tr>
+<td>15m &#x2F; 1h &#x2F; 4h</td>
+<td>0.40、0.30、0.24、0.18、0.12、0.06</td>
+</tr>
+</tbody></table>
+<p>六档预算权重为 <code>23% / 23% / 17% / 14% / 12% / 11%</code>。模式包括：</p>
+<ul>
+<li><code>Normal</code>：原始阶梯价格</li>
+<li><code>Safe</code>：整体降低买价，降低成交率但改善赔率</li>
+<li><code>Aggressive</code>：整体提高买价，提高成交率但牺牲赔率</li>
+</ul>
+<p>公开版默认 <code>Safe Bias = -10%</code>、<code>Aggressive Bias = +10%</code>。</p>
+<h3 id="4-3-当前-Web-配置"><a href="#4-3-当前-Web-配置" class="headerlink" title="4.3 当前 Web 配置"></a>4.3 当前 Web 配置</h3><p>当前托管页面显示：</p>
+<ul>
+<li>Enabled：On</li>
+<li>Base Size：<code>$5</code></li>
+<li>Symbols：BTC、ETH、SOL、XRP</li>
+<li>5m Ladder：Safe</li>
+<li>Safe Bias：<code>-20%</code></li>
+<li>Aggressive Bias：<code>+10%</code></li>
+<li>当前 5m 选中档位：<code>0.25 / 0.21 / 0.18 / 0.13 / 0.08 / 0.03</code></li>
+<li>Symbol multiplier：BTC <code>1.0</code>、ETH <code>0.8</code>、SOL <code>0.5</code>、XRP <code>0.5</code></li>
+<li>Timeframe multiplier：5m <code>0.75</code>、15m <code>1.0</code>、1h&#x2F;4h <code>1.25</code></li>
+<li>开盘后撤单：5m <code>20s</code>、15m <code>40s</code>、1h <code>60s</code>、4h <code>180s</code></li>
+</ul>
+<p>理论 side budget 公式为：</p>
+<pre><code class="text">base_size × symbol_multiplier × timeframe_multiplier
+</code></pre>
+<p>但是公开源码还有一个更强的执行约束：<strong>每个 rung 最低 $5</strong>。因此当 Base Size 很小时，最低订单门槛会覆盖权重和 multiplier 计算，使 <code>$5 Base Size</code> 不能充当总风险上限。</p>
+<h3 id="4-4-日志验证"><a href="#4-4-日志验证" class="headerlink" title="4.4 日志验证"></a>4.4 日志验证</h3><p>日志中出现的 5m 档位包括：</p>
+<ul>
+<li><code>$0.25 × 20 = $5</code></li>
+<li><code>$0.21 × 23.81 ≈ $5</code></li>
+<li><code>$0.18 × 27.78 ≈ $5</code></li>
+<li><code>$0.13 × 38.47 ≈ $5</code></li>
+<li><code>$0.08 × 62.5 = $5</code></li>
+<li><code>$0.03 × 166.67 ≈ $5</code></li>
+</ul>
+<p>这些价格与 Normal 5m 阶梯应用 <code>-20% Safe Bias</code>、向上按 1 美分对齐后的结果完全一致，证明 Web 设置确实进入了运行时。</p>
+<p>日志同时对 <code>SOL Up</code> 与 <code>SOL Down</code> 尝试多个档位，验证了“双边盘前阶梯”的策略结构。</p>
+<h3 id="4-5-退出逻辑"><a href="#4-5-退出逻辑" class="headerlink" title="4.5 退出逻辑"></a>4.5 退出逻辑</h3><p>日志对 5m 订单明确写出：</p>
+<pre><code class="text">When filled, no sell orders will be placed
+Hold-to-resolution policy applied
+</code></pre>
+<p>因此当前 5m 路径倾向于成交后持有到结算。公开源码另有 Premarket TP worker，但只适用于 15m&#x2F;1h&#x2F;4h：开盘五分钟后开始工作，目标卖价规则为 <code>max(2 × entry, top_ask, 0.60)</code>，再按 tick 对齐。</p>
+<h3 id="4-6-当前主要风险"><a href="#4-6-当前主要风险" class="headerlink" title="4.6 当前主要风险"></a>4.6 当前主要风险</h3><p>如果六档、两边全部成功提交，单一市场的最低名义挂单额可达到：</p>
+<pre><code class="text">6 档 × 2 边 × $5 = $60
+</code></pre>
+<p>这不是必然成交额，因为还存在余额、arbiter、并发、去重和撤单控制；但它表明 <code>$9.37</code> 本金不足以完整表达一次 Premarket ladder。当前日志已经证明只有一个约 <code>$5</code> 活动订单后，其他订单就被余额校验拒绝。</p>
+<h2 id="5-EVSnipe-与-Pre-hit"><a href="#5-EVSnipe-与-Pre-hit" class="headerlink" title="5. EVSnipe 与 Pre-hit"></a>5. EVSnipe 与 Pre-hit</h2><h3 id="5-1-EVSnipe-原理"><a href="#5-1-EVSnipe-原理" class="headerlink" title="5.1 EVSnipe 原理"></a>5.1 EVSnipe 原理</h3><p>EVSnipe 面向带有明确价格目标的加密货币 hit-price 市场，例如“BTC 是否会在到期前触及某个价格”。公开源码的流程是：</p>
+<ol>
+<li>本地扫描 Polymarket Gamma 市场并建立 watchlist。</li>
+<li>用 Binance 实时成交数据跟踪现货价格。</li>
+<li>当价格触及 strike 时，把规则映射到对应 Polymarket outcome token。</li>
+<li>立即提交 FAK BUY。</li>
+<li>通过 condition&#x2F;leg 去重，防止同一信号重复执行。</li>
+</ol>
+<p>FAK（Fill-and-Kill）允许立即成交可成交部分，并取消剩余部分，因此它比普通挂单更偏向低延迟抢成交。源码中的最大买价保护固定为 <code>0.99</code>，这意味着策略在确认“已经命中”的场景下可以接受很高价格；仍然存在数据延迟、错误映射、流动性和结算定义风险。</p>
+<h3 id="5-2-当前-Web-配置"><a href="#5-2-当前-Web-配置" class="headerlink" title="5.2 当前 Web 配置"></a>5.2 当前 Web 配置</h3><ul>
+<li>Enabled：On</li>
+<li>Size Per Hit Signal：<code>$5</code></li>
+<li>Symbols：BTC、ETH、SOL、XRP、DOGE、BNB、HYPE</li>
+<li>Strike Window：<code>20%</code></li>
+<li>Max Days To Expiry：<code>30</code></li>
+<li>Web 页面显示 Max Exposure：<code>$100,000</code></li>
+</ul>
+<p>公开源码 v2.6.2 的默认值是：</p>
+<ul>
+<li>Size：<code>$5</code></li>
+<li>Strike Window：固定 <code>20%</code></li>
+<li>Max Days To Expiry：<code>30</code></li>
+<li>Strategy Cap：<code>$10,000</code></li>
+<li>Worker count：<code>4</code></li>
+<li>Max inflight tasks：<code>16</code></li>
+</ul>
+<p>Web 的 <code>$100,000</code> 与公开版 <code>$10,000</code> 默认 cap 不一致。无论哪个值，对当前 <code>$9.37</code> 账户都没有实际保护意义；有效限制最终来自钱包余额和共享 arbiter。</p>
+<h3 id="5-3-Pre-hit-原理"><a href="#5-3-Pre-hit-原理" class="headerlink" title="5.3 Pre-hit 原理"></a>5.3 Pre-hit 原理</h3><p>Pre-hit 是 EVSnipe 的提前入场 leg，而不是独立市场策略。它在现货价格尚未真正越过 strike、但进入极窄触发带时先建立部分仓位；真正 hit 后再执行 confirm leg。</p>
+<p>当前配置：</p>
+<ul>
+<li>Pre-hit：On</li>
+<li>Pre-hit Ratio：<code>0.30</code></li>
+<li>Pre-trigger：<code>1 bps</code></li>
+</ul>
+<p>对于一个 <code>$5</code> hit signal，概念上的预算拆分为：</p>
+<ul>
+<li>Pre-hit leg：约 <code>$1.50</code></li>
+<li>Confirm leg：约 <code>$3.50</code></li>
+</ul>
+<p><code>1 bps = 0.01%</code>。公开源码还规定，当距离市场 cutoff 不足四小时时，不允许再触发 Pre-hit；确认命中已进入 inflight 或 completed 后，也会阻止同一 condition 的后续 Pre-hit。</p>
+<h3 id="5-4-本次运行证据"><a href="#5-4-本次运行证据" class="headerlink" title="5.4 本次运行证据"></a>5.4 本次运行证据</h3><p>当前日志没有出现 <code>evsnipe_v1</code> request、FAK EVSnipe 成交或 Pre-hit&#x2F;confirm leg 记录。因此只能确认配置已开启，不能确认它已实际交易，更不能据此评估胜率或收益。</p>
+<h2 id="6-MM-2-0"><a href="#6-MM-2-0" class="headerlink" title="6. MM 2.0"></a>6. MM 2.0</h2><h3 id="6-1-策略原理"><a href="#6-1-策略原理" class="headerlink" title="6.1 策略原理"></a>6.1 策略原理</h3><p>MM 2.0 的公开策略 ID 是 <code>mm_sport_v1</code>。它在有 Polymarket 流动性奖励的二元市场上，为两个 outcome 的 top-of-book 放置 BUY maker 报价，目标收益来自：</p>
+<ul>
+<li>bid&#x2F;ask spread</li>
+<li>流动性奖励</li>
+<li>maker rebate（若适用）</li>
+</ul>
+<p>它不是无风险套利。任一侧成交都会形成方向性库存；行情单边移动、比赛临近开始或奖励下降时，库存退出可能产生亏损。公开源码因此包含奖励门槛、top bid 门槛、FIFO 队列占比、实况比赛保护、库存清理和最大退出亏损等控制。</p>
+<h3 id="6-2-当前-Web-配置"><a href="#6-2-当前-Web-配置" class="headerlink" title="6.2 当前 Web 配置"></a>6.2 当前 Web 配置</h3><p>当前策略关闭，页面显示的配置包括：</p>
+<ul>
+<li>Enabled：Off</li>
+<li>Route：提供 Sport &#x2F; Non-S &#x2F; Dual；页面描述以 Sports 为默认路径</li>
+<li>Quote Sizing：Depth Ratio</li>
+<li>Max Share Ratio：<code>0.20</code></li>
+<li>Min Top Depth：<code>$1,100</code></li>
+<li>Min Entry Top Bid：<code>$0.05</code></li>
+<li>Active Hours：Off（界面保留 13:00–04:00 UTC 窗口）</li>
+<li>Min Reward &#x2F; Day：<code>$5</code></li>
+<li>Pause After Fill：<code>3600s</code></li>
+<li>Inventory Exit Starts：到期前 <code>1h</code></li>
+<li>Non-S Fresh Entry Stop：结束前 <code>48h</code></li>
+<li>Quote Expiry：<code>185–300s</code></li>
+<li>FIFO Max Share Ratio：<code>0.50</code></li>
+<li>Sport Max Quote Shares：<code>1000</code></li>
+<li>Non-S Max Quote Shares：<code>200</code></li>
+<li>Inventory Exit：Auto</li>
+<li>Max Exit Loss：<code>10 cents/share</code></li>
+</ul>
+<p><code>Depth Ratio = 0.20</code> 表示根据可见 top-of-book 深度和可用 buying power 计算报价规模，目标不超过设定的深度份额。它不代表只用本金的 20%。</p>
+<h3 id="6-3-公开版默认值与差异"><a href="#6-3-公开版默认值与差异" class="headerlink" title="6.3 公开版默认值与差异"></a>6.3 公开版默认值与差异</h3><p>公开 v2.6.2 默认：</p>
+<ul>
+<li>策略 Off</li>
+<li>Route：Sports</li>
+<li>Quote mode：Depth Ratio</li>
+<li>Max Share Ratio：<code>0.20</code></li>
+<li>Min Reward &#x2F; Day：<code>$5</code></li>
+<li>Match Only：true</li>
+<li>Min Entry Top Bid：<code>$0.05</code></li>
+<li>Sponsored Rewards：允许</li>
+<li>Depth Ratio collateral cap：可用 pUSD 的 <code>90%</code></li>
+<li>Quote expiry：源码文档默认 <code>65–185s</code></li>
+<li>Inventory max loss：<code>10 cents/share</code></li>
+</ul>
+<p>Web 当前 <code>185–300s</code> 与公开版默认 <code>65–185s</code> 不同，应视为托管版覆盖值或版本差异。</p>
+<h3 id="6-4-当前适用性"><a href="#6-4-当前适用性" class="headerlink" title="6.4 当前适用性"></a>6.4 当前适用性</h3><p>当前关闭 MM 2.0 是合理的风险隔离状态。公开仓库的策略组合指南明确建议：MM 2.0 不应在没有重新审查 sizing 与 inventory risk 的情况下，与高频方向性策略同时重仓运行。以 <code>$9.37</code> 本金同时运行做市和 Premarket&#x2F;EVSnipe，会产生明显的资金竞争和库存退出问题。</p>
+<h2 id="7-COMBO-x2F-x2F"><a href="#7-COMBO-x2F-x2F" class="headerlink" title="7. COMBO&#x2F;&#x2F;"></a>7. COMBO&#x2F;&#x2F;</h2><h3 id="7-1-策略原理"><a href="#7-1-策略原理" class="headerlink" title="7.1 策略原理"></a>7.1 策略原理</h3><p>COMBO&#x2F;&#x2F; 是体育组合市场的 RFQ sidecar。机器人选择符合条件的体育 Combo，向市场请求报价，并只在报价相对于刷新后的 fair odds 足够有利时确认交易。</p>
+<p>Combo 的多个 leg 必须共同成立才能获胜，赔率通常较高，但一个 leg 失败即可使整组失败。<code>Quote/Fair Odds</code> 过滤器衡量市场报价相对于内部公平赔率是否具有足够价值。</p>
+<h3 id="7-2-当前-Web-配置"><a href="#7-2-当前-Web-配置" class="headerlink" title="7.2 当前 Web 配置"></a>7.2 当前 Web 配置</h3><ul>
+<li>Enabled：Off</li>
+<li>Event Window：Today</li>
+<li>Today 定义：Bot 启动一小时后至 18:00 UTC 开始的赛事</li>
+<li>Minimum Size：<code>$11</code></li>
+<li>Maximum Size：<code>$11</code></li>
+<li>因最小值等于最大值，每个 RFQ 实际固定 <code>$11</code></li>
+<li>Max Trades per Day：<code>10,000</code>，相当于未设置实用安全上限</li>
+<li>Market Types：All（Moneyline、Totals、Spreads）</li>
+<li>Sports：All</li>
+<li>Fair Odds：<code>1.5x–5x</code></li>
+<li>Minimum Quote&#x2F;Fair Odds：<code>85%</code></li>
+</ul>
+<p>当前 bankroll 只有约 <code>$9.37</code>，低于单笔 <code>$11</code>，即使打开也无法正常完成一笔配置规模的交易。</p>
+<h3 id="7-3-源码边界"><a href="#7-3-源码边界" class="headerlink" title="7.3 源码边界"></a>7.3 源码边界</h3><p>公开 EVPOLY 主程序没有 COMBO&#x2F;&#x2F; 业务实现。仓库中只有 CLOB SDK 自带的通用 RFQ 类型和示例，不能证明托管版 Combo 的筛选、定价或确认逻辑。该策略应视为 EVPLUS 平台专有 sidecar，以上原理以 Web 页面文案为准。</p>
+<h2 id="8-当前日志的技术审计"><a href="#8-当前日志的技术审计" class="headerlink" title="8. 当前日志的技术审计"></a>8. 当前日志的技术审计</h2><h3 id="8-1-已确认的订单状态"><a href="#8-1-已确认的订单状态" class="headerlink" title="8.1 已确认的订单状态"></a>8.1 已确认的订单状态</h3><p>交易所返回示例：</p>
+<pre><code class="text">balance: 9365227
+sum of active orders: 5006100
+sum of matched orders: 0
+order amount (inc. fees): 5005100
+</code></pre>
+<p>换算后约为：</p>
+<ul>
+<li>钱包余额：<code>$9.365227</code></li>
+<li>已有活动订单占用：<code>$5.006100</code></li>
+<li>新订单需要：<code>$5.005100</code></li>
+<li>两者合计超过余额，因此返回 HTTP 400</li>
+</ul>
+<p>这不是签名失败、网络超时或 API key 失效，而是明确的余额&#x2F;allowance不足。日志还写明：</p>
+<pre><code class="text">local order signer error did not qualify for fallback
+fallback signer skipped for non-fallback post error
+</code></pre>
+<p>也就是说本地签名与 builder attribution 路径已经走到交易所；由于错误属于永久性业务拒绝，系统正确地没有切换 fallback signer 重试。</p>
+<h3 id="8-2-Pending-Trades-的含义"><a href="#8-2-Pending-Trades-的含义" class="headerlink" title="8.2 Pending Trades 的含义"></a>8.2 <code>Pending Trades</code> 的含义</h3><p>Dashboard 同时出现：</p>
+<ul>
+<li><code>Pending Trades: 7</code></li>
+<li><code>Total Trades Executed: 0</code></li>
+<li><code>Open exposure: $0.00</code></li>
+</ul>
+<p>因此 <code>Pending</code> 不能解释为七笔已成交仓位。它混合反映内部 tracking&#x2F;候选 ladder&#x2F;未成交订单状态。判断真实风险时，应优先看：</p>
+<ol>
+<li>Polymarket Open Orders</li>
+<li>active-order reserved balance</li>
+<li>matched fills</li>
+<li>positions &#x2F; exposure</li>
+</ol>
+<p>本次可以确认至少存在一个活动挂单，但没有 matched order 或持仓。</p>
+<h3 id="8-3-当前有效策略画像"><a href="#8-3-当前有效策略画像" class="headerlink" title="8.3 当前有效策略画像"></a>8.3 当前有效策略画像</h3><p>从日志看，当前机器人并非同时执行所有已开启策略，而是频繁刷新四种资产的 5m&#x2F;15m UP&#x2F;DOWN 盘口，并在新周期前批量提交 Safe ladder。当前风险几乎全部来自 Premarket 的订单占用；EVSnipe 只是待命状态。</p>
+<h2 id="9-源码与部署方式"><a href="#9-源码与部署方式" class="headerlink" title="9. 源码与部署方式"></a>9. 源码与部署方式</h2><h3 id="9-1-公开自托管版"><a href="#9-1-公开自托管版" class="headerlink" title="9.1 公开自托管版"></a>9.1 公开自托管版</h3><p>公开仓库是 Rust 项目：</p>
+<ul>
+<li>crate：<code>polymarket-arbitrage-bot</code></li>
+<li>version：<code>2.6.2</code></li>
+<li>Rust edition：2021</li>
+<li>Polymarket CLOB V2 SDK：<code>0.6.0-canary.1</code></li>
+<li>异步运行时：Tokio</li>
+<li>HTTP &#x2F; WebSocket：Reqwest、tokio-tungstenite</li>
+<li>本地持久化：SQLite <code>tracking.db</code></li>
+<li>事件与历史：<code>events.jsonl</code>、<code>history.toml</code></li>
+<li>本地管理 API：Axum <code>manual_bot</code></li>
+</ul>
+<p>官方 README 推荐部署在 Vultr VPS，规格为 2 vCPU &#x2F; 4GB RAM、Amsterdam。标准流程是：</p>
+<pre><code class="bash">cargo build --release --bin polymarket-arbitrage-bot
+./ev start live
+</code></pre>
+<p><code>./ev</code> 负责 <code>.env</code> 加载、release build 检查、tmux session、wallet-sync worker、磁盘清理与自动重启。它不是 Docker&#x2F;Kubernetes-first 的部署方式。</p>
+<p>公开仓库采用 PolyForm Noncommercial 1.0.0，是<strong>源码可见、非商业许可</strong>，不是宽松开源许可证。个人研究和非商业使用被允许；将其作为商业 SaaS 需要另行授权。</p>
+<h3 id="9-2-EVPLUS-托管版"><a href="#9-2-EVPLUS-托管版" class="headerlink" title="9.2 EVPLUS 托管版"></a>9.2 EVPLUS 托管版</h3><p>从公开 HTTP 响应和页面资源可以确认：</p>
+<ul>
+<li>前端为 React&#x2F;Vite 单页应用，静态资源由 Vercel 提供。</li>
+<li>登录使用 Clerk 自定义域名 <code>clerk.evplus.ai</code>。</li>
+<li>产品 API 地址是 <code>https://api-web.evplus.ai</code>，由 Cloudflare 代理；根路径返回 <code>EVPOLY Platform backend is running.</code>。</li>
+<li><code>alpha.evplus.ai</code> &#x2F; <code>alpha2.evplus.ai</code> 用于部分远程发现或 alpha 服务，前面同样有 Cloudflare。</li>
+<li>官方 FAQ 明确说明关闭浏览器后 Bot 仍会在 EVPLUS 基础设施上运行。</li>
+<li>Bot Setup 页面说明 managed signer key 使用 AWS KMS 加密，并允许用户导出私钥。</li>
+<li>实际订单日志显示使用本地 CLOB SDK 签名和 EVPOLY builder attribution。</li>
+</ul>
+<p>无法从公开信息确认：</p>
+<ul>
+<li>Bot worker 具体运行在 AWS、Vultr 还是其他计算平台</li>
+<li>是否使用容器、ECS、Kubernetes 或纯 VPS&#x2F;tmux</li>
+<li>Web API 如何调度每个用户的 Rust worker</li>
+<li>生产版本对应的精确 Git commit</li>
+<li>KMS key policy、数据库类型、备份与灾备方案</li>
+</ul>
+<p>合理但未证实的架构推断是：Vercel 前端通过 Clerk token 调用 <code>api-web.evplus.ai</code>；后端管理用户、credits、bot 配置和生命周期；独立 Rust worker 使用用户钱包签名材料连接 Polymarket CLOB，并把日志、订单和钱包快照回传给平台。此推断与页面及日志一致，但不是官方架构声明。</p>
+<h2 id="10-Web-托管版与公开源码的差异"><a href="#10-Web-托管版与公开源码的差异" class="headerlink" title="10. Web 托管版与公开源码的差异"></a>10. Web 托管版与公开源码的差异</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th align="right">当前 Web</th>
+<th align="right">公开 v2.6.2 默认</th>
+<th>判断</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Premarket Base Size</td>
+<td align="right">$5</td>
+<td align="right">$10</td>
+<td>托管账户覆盖</td>
+</tr>
+<tr>
+<td>5m Ladder</td>
+<td align="right">Safe，-20%</td>
+<td align="right">Normal；Safe 默认 -10%</td>
+<td>托管账户覆盖</td>
+</tr>
+<tr>
+<td>Premarket symbols</td>
+<td align="right">BTC&#x2F;ETH&#x2F;SOL&#x2F;XRP</td>
+<td align="right">相同</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>EVSnipe size</td>
+<td align="right">$5</td>
+<td align="right">$5</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>EVSnipe symbols</td>
+<td align="right">7 个</td>
+<td align="right">相同 7 个</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>EVSnipe cap</td>
+<td align="right">$100,000</td>
+<td align="right">$10,000</td>
+<td>明显差异</td>
+</tr>
+<tr>
+<td>EVSnipe strike window</td>
+<td align="right">20%</td>
+<td align="right">固定 20%</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>MM 2.0</td>
+<td align="right">Off</td>
+<td align="right">Off</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>MM max share ratio</td>
+<td align="right">0.20</td>
+<td align="right">0.20</td>
+<td>一致</td>
+</tr>
+<tr>
+<td>MM quote expiry</td>
+<td align="right">185–300s</td>
+<td align="right">65–185s</td>
+<td>托管覆盖或版本差异</td>
+</tr>
+<tr>
+<td>COMBO&#x2F;&#x2F;</td>
+<td align="right">Web 专有</td>
+<td align="right">主程序无实现</td>
+<td>平台专有模块</td>
+</tr>
+</tbody></table>
+<p>公开源码可以解释核心策略和日志，但不能被当作托管生产环境的逐字镜像。</p>
+<h2 id="11-针对当前账户的建议"><a href="#11-针对当前账户的建议" class="headerlink" title="11. 针对当前账户的建议"></a>11. 针对当前账户的建议</h2><h3 id="P0：先处理资金与订单规模不匹配"><a href="#P0：先处理资金与订单规模不匹配" class="headerlink" title="P0：先处理资金与订单规模不匹配"></a>P0：先处理资金与订单规模不匹配</h3><p>在继续运行前，应先确认 Polymarket Open Orders 中那一笔约 <code>$5</code> 的活动订单是否仍然存在。当前 <code>$9.37</code> 无法支撑 Premarket 的多档双边设计，持续运行只会产生大量永久性余额拒绝。</p>
+<p>可选方向只有两类：</p>
+<ul>
+<li>暂停 Premarket，保留资金并观察；或</li>
+<li>重新设计可接受的总暴露，再决定是否提供足够本金。</li>
+</ul>
+<p>不建议仅因为错误而机械增加资金。应先把“单市场、单周期、所有 rung 的最大总订单额”算清楚。</p>
+<h3 id="P1：不要把-Base-Size-当作总风险上限"><a href="#P1：不要把-Base-Size-当作总风险上限" class="headerlink" title="P1：不要把 Base Size 当作总风险上限"></a>P1：不要把 Base Size 当作总风险上限</h3><p>公开源码的 <code>$5/rung</code> 最低门槛会使小 Base Size 失去直观意义。建议 EVPLUS 产品侧同时展示：</p>
+<ul>
+<li>per-rung minimum</li>
+<li>estimated max orders per market</li>
+<li>estimated max reserved collateral</li>
+<li>current available buying power</li>
+</ul>
+<p>在现有 UI 下，仅看到 <code>$5</code> 很容易误以为一次最多投入 <code>$5</code>。</p>
+<h3 id="P1：降低无效的策略-cap"><a href="#P1：降低无效的策略-cap" class="headerlink" title="P1：降低无效的策略 cap"></a>P1：降低无效的策略 cap</h3><p>EVSnipe Web cap <code>$100,000</code> 与当前账户规模完全脱节。即使钱包余额暂时形成硬限制，也应把策略 cap 设置为与账户权益和可承受损失一致的数值，避免未来充值后突然放大风险。</p>
+<h3 id="P1：保持-MM-2-0-与-COMBO-x2F-x2F-关闭"><a href="#P1：保持-MM-2-0-与-COMBO-x2F-x2F-关闭" class="headerlink" title="P1：保持 MM 2.0 与 COMBO&#x2F;&#x2F; 关闭"></a>P1：保持 MM 2.0 与 COMBO&#x2F;&#x2F; 关闭</h3><ul>
+<li>MM 2.0 需要更充足的双边抵押资金和库存退出空间。</li>
+<li>COMBO&#x2F;&#x2F; 单笔最低 <code>$11</code> 已高于当前 bankroll。</li>
+<li>公开仓库也建议把方向性 stack 与 MM profile 分开运行，除非重新审查 sizing。</li>
+</ul>
+<h3 id="P2：先积累可评价样本"><a href="#P2：先积累可评价样本" class="headerlink" title="P2：先积累可评价样本"></a>P2：先积累可评价样本</h3><p>当前 <code>Executed = 0</code>，没有数据支持胜率、期望值或收益判断。至少应记录：</p>
+<ul>
+<li>每个策略的 submitted &#x2F; rejected &#x2F; filled 数量</li>
+<li>fill price 与结算结果</li>
+<li>reserved collateral 峰值</li>
+<li>策略级 realized PnL</li>
+<li>maker reward &#x2F; rebate 与方向性 PnL 分开统计</li>
+<li>因余额不足而丢失的信号数量</li>
+</ul>
+<p>在没有这些数据前，不能根据 “Running” 或 “Pending Trades” 判断策略有效。</p>
+<h2 id="12-总体评价"><a href="#12-总体评价" class="headerlink" title="12. 总体评价"></a>12. 总体评价</h2><p>从设计上看，EVPLUS 不是单一“套利机器人”，而是一个多策略执行平台：</p>
+<ul>
+<li>Premarket 寻找新盘薄流动性和低价成交机会；</li>
+<li>EVSnipe 用外部现货触发器抢 hit-price 市场；</li>
+<li>MM 2.0 用库存风险换取 spread 与 LP reward；</li>
+<li>COMBO&#x2F;&#x2F; 用公平赔率过滤体育组合 RFQ。</li>
+</ul>
+<p>四类策略的收益来源和风险完全不同，不能用同一个“每笔金额”理解。当前账户最实际的问题是：托管页面显示的配置看起来很小，但 Premarket 的 per-rung 最低金额使真实挂单需求远高于 bankroll。日志已经验证这个问题，而不是理论上的担忧。</p>
+<p>在现状下，最稳妥的结论是：<strong>Bot 已运行，但策略还没有形成有效成交样本；大多数 Premarket 订单因资金不足无法提交，因此当前运行结果不能用于评价策略盈利能力。</strong></p>
+<h2 id="13-主要参考资料"><a href="#13-主要参考资料" class="headerlink" title="13. 主要参考资料"></a>13. 主要参考资料</h2><ul>
+<li><a href="https://www.evplus.ai/">EVPLUS 官方产品页</a></li>
+<li><a href="https://github.com/Degenapetrader/EVPOLY">EVPOLY 公开仓库</a></li>
+<li><a href="https://github.com/Degenapetrader/EVPOLY/commit/10eb5b50fa143461b99e9d1c561a9935eb49dbc3">EVPOLY v2.6.2 调研提交</a></li>
+<li><a href="https://github.com/Degenapetrader/EVPOLY/blob/main/docs/premarket_v1.md">Premarket v1 Guide</a></li>
+<li><a href="https://github.com/Degenapetrader/EVPOLY/blob/main/docs/evsnipe_v1.md">EVSnipe v1 Guide</a></li>
+<li><a href="https://github.com/Degenapetrader/EVPOLY/blob/main/docs/mm_sport_v1.md">MM 2.0 Guide</a></li>
+<li><a href="https://github.com/Degenapetrader/EVPOLY/blob/main/docs/strategy_combos.md">Strategy Combo Guide</a></li>
+<li>EVPLUS 登录后的 Strategy Settings 与实时 Bot Logs（2026-08-07 采样）</li>
+</ul>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Y7C0CVX9PK"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y7C0CVX9PK');</script></html>

@@ -1,0 +1,17 @@
+block content
+  .outer
+    .ai-intro(style={maxWidth: '1080px', margin: '0 auto 20px', padding: '0 24px'})
+      != page.content
+    - var aiPosts = site.posts.filter(p => p.collection === 'ai' && (!p.hidden || !theme.post.enable_hidden)).sort('date', -1).toArray();
+    if aiPosts.length
+      ul.list-group
+        each post in aiPosts
+          li.list-group-item.title
+            if theme.list.date
+              div.date= date(post.date, 'YYYY-MM-DD')
+            a(href=url_for(post.path))= post.title
+            if theme.list.wordcount
+              div.word-count= wordcount(post.content, '') + ' ' + __('word_count')
+    else
+      .ai-intro(style={maxWidth: '1080px', margin: '0 auto', padding: '0 24px'})
+        p= __('ai_collection_empty')

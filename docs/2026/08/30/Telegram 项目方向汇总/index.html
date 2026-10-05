@@ -1,0 +1,258 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>Telegram 项目方向汇总</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://crazy.smallyu.net/2026/08/30/Telegram 项目方向汇总/"><meta property="og:title" content="Telegram 项目方向汇总"><meta property="og:type" content="article"><meta property="og:url" content="https://crazy.smallyu.net/2026/08/30/Telegram 项目方向汇总/"><meta property="og:site_name" content="smallyu的博客（疯狂版）"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客（疯狂版）" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>Telegram 项目方向汇总</h1><div class="time">2026-08-30</div><div class="title-margin"></div><div class="ai-content"><h1 id="Telegram-项目方向汇总"><a href="#Telegram-项目方向汇总" class="headerlink" title="Telegram 项目方向汇总"></a>Telegram 项目方向汇总</h1><blockquote>
+<p>整理日期：2026-08-30<br>来源：Team- Ferrari、Team Monopoly（General、竞品、DEV、Random 等近期 thread）<br>时间范围：约 2026-07-08 至 2026-08-29<br>说明：已排除日常 Bug、会议安排与纯转发；同类想法已合并。聊天中涉及的交易量、收益率和竞品数据尚未做外部核验，只代表讨论时的判断。</p>
+</blockquote>
+<h2 id="一、汇总后的项目方向"><a href="#一、汇总后的项目方向" class="headerlink" title="一、汇总后的项目方向"></a>一、汇总后的项目方向</h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>方向</th>
+<th>具体形态</th>
+<th>来源&#x2F;时间</th>
+<th>当前判断</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>预测市场跨平台套利</td>
+<td>Polymarket、Predict.fun、Kalshi 之间的价差，以及结算源、Order Book 和平台时间差</td>
+<td>两群，8&#x2F;17、8&#x2F;24–26</td>
+<td>强候选，场景明确</td>
+</tr>
+<tr>
+<td>2</td>
+<td>外部数据抢先交易 &#x2F; Event Snipe</td>
+<td>Binance 价格已经触发但预测市场尚未反映；进一步覆盖天气、推文数量等非标准数据</td>
+<td>Monopoly General，8&#x2F;26</td>
+<td>强候选，非常依赖延迟</td>
+</tr>
+<tr>
+<td>3</td>
+<td>自营量化&#x2F;套利公司</td>
+<td>自己做资金费率套利、美股套利、预测市场量化或 AI Hedge Fund；跑通后再产品化</td>
+<td>Ferrari，7&#x2F;7、8&#x2F;19、8&#x2F;26</td>
+<td>强候选，商业路径清晰</td>
+</tr>
+<tr>
+<td>4</td>
+<td>稳定币收益 + 预测交易</td>
+<td>本金做 DeFi 收益，只把利息投入 Auto Trade；或 YES+NO 配对后叠加理财收益</td>
+<td>Monopoly General，8&#x2F;18–19</td>
+<td>强候选，已有同类参照</td>
+</tr>
+<tr>
+<td>5</td>
+<td>B2B 企业风险对冲</td>
+<td>把企业经营、营销、销售等风险映射到预测市场事件；提供场景识别、事件评分和方案匹配</td>
+<td>Monopoly General，8&#x2F;11、8&#x2F;15</td>
+<td>强候选，适合避开 C 端获客</td>
+</tr>
+<tr>
+<td>6</td>
+<td>策略市场 &#x2F; Strategy GitHub</td>
+<td>用户发布、复制、fork、remix 策略；作者获得 cashback 或分成；平台提供执行</td>
+<td>Monopoly General，7&#x2F;13–14</td>
+<td>强候选，讨论最系统</td>
+</tr>
+<tr>
+<td>7</td>
+<td>自然语言到可执行策略</td>
+<td>将用户意图编译成确定性 Contract Spec，做到可验证、可回放、可控执行</td>
+<td>Monopoly General，7&#x2F;13、8&#x2F;11</td>
+<td>长期方向，技术难度高</td>
+</tr>
+<tr>
+<td>8</td>
+<td>开放策略执行 SDK &#x2F; Open Core</td>
+<td>把策略评估、回放和执行协议拆成 SDK，第三方开发策略但通过 Virae 执行</td>
+<td>Monopoly DEV，8&#x2F;16</td>
+<td>已有实施基础，可支撑策略市场</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Credits 制个人 Agent Runtime</td>
+<td>每个用户启动自己的 Bot，按运行时长或消息消耗 Credits，自行配置策略和任务；叠加交易手续费</td>
+<td>Monopoly General，8&#x2F;14、8&#x2F;21</td>
+<td>中强候选，定价方式具体</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Memecoin 信号抓取、跟单与自动买入</td>
+<td>Maestro 式 Call Channels + Scraper；监控喊单、识别 CA、防重复触发、自动买入、跨链 Copy Trading</td>
+<td>Monopoly General，7&#x2F;16–17、8&#x2F;15</td>
+<td>产品扩展；竞争红海、节点成本明显</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Robinhood &#x2F; Kalshi &#x2F; 多 Venue 交易 Bot</td>
+<td>Robinhood TG Bot、Auto Trade + Robin Bot One-stop Shop，或针对 Kalshi 高交易量市场提供工具</td>
+<td>两群，7&#x2F;13–14、8&#x2F;17</td>
+<td>产品扩展；KYC、地域和代下单合规待查</td>
+</tr>
+<tr>
+<td>12</td>
+<td>x402 的“OpenRouter”</td>
+<td>一个统一 Agent Payment API，背后聚合不同 API、支付方式和结算通道</td>
+<td>Monopoly 竞品&#x2F;General，8&#x2F;23–24</td>
+<td>强候选，但已有直接竞品</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Agentic Wallet</td>
+<td>基于 Turnkey 包装 AI 原生钱包：x402 市场浏览、支付记录、自动支付和跨链支付适配</td>
+<td>Monopoly General，8&#x2F;24</td>
+<td>中强候选，和现有能力契合</td>
+</tr>
+<tr>
+<td>14</td>
+<td>x402 付费交易数据 API</td>
+<td>把模拟盘、实盘和策略历史数据包装成 Agent 可购买的接口，发布到 x402 生态</td>
+<td>Monopoly General，8&#x2F;18</td>
+<td>中等候选，供给现成但需求未知</td>
+</tr>
+<tr>
+<td>15</td>
+<td>AI Agent 任务网络</td>
+<td>Agent 完成任务获得代币，用户将闲置 AI Token&#x2F;额度变现；类似 Bittensor 的验证与激励网络</td>
+<td>Monopoly General，8&#x2F;28</td>
+<td>大型新项目，验证和代币经济最难</td>
+</tr>
+<tr>
+<td>16</td>
+<td>AI 预测与决策可视化</td>
+<td>FutureSearch 式“预测万物”，展示新闻、数据源、推理路径和决策过程，并可连接交易执行</td>
+<td>Monopoly General，8&#x2F;11</td>
+<td>中等候选，需避免成为通用 AI 搜索壳</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Agent &#x2F; 个人 Token 化平台</td>
+<td>Virtuals 式 Agent+Token、Claper&#x2F;friend.tech 式每个用户一个 Token；可叠加 NFT 抽奖和代币补贴</td>
+<td>Monopoly General，7&#x2F;30–8&#x2F;3、8&#x2F;24</td>
+<td>观察方向，依赖叙事和运营</td>
+</tr>
+<tr>
+<td>18</td>
+<td>SLVR&#x2F;ORE 式链上挖矿游戏</td>
+<td>Fork 开源合约，在 Base&#x2F;Robinhood 等链运行 Grid Mining，通过池深、供应量、产出速度和手续费设计经济模型</td>
+<td>Monopoly General，7&#x2F;22–23</td>
+<td>已做过原型，核心是代币运营</td>
+</tr>
+<tr>
+<td>19</td>
+<td>AI 企业数据&#x2F;研究工具</td>
+<td>AlphaSense 式企业资料聚合与 AI 分析，或面向团队、机构提供预测市场研究能力</td>
+<td>Ferrari 8&#x2F;24；Monopoly 8&#x2F;11</td>
+<td>弱候选，目前更多是竞品观察</td>
+</tr>
+</tbody></table>
+<h2 id="二、可合并为六条评估主线"><a href="#二、可合并为六条评估主线" class="headerlink" title="二、可合并为六条评估主线"></a>二、可合并为六条评估主线</h2><h3 id="1-自营赚钱线"><a href="#1-自营赚钱线" class="headerlink" title="1. 自营赚钱线"></a>1. 自营赚钱线</h3><ul>
+<li>自营量化</li>
+<li>资金费率套利</li>
+<li>预测市场跨平台套利</li>
+<li>外部数据 Event Snipe</li>
+</ul>
+<h3 id="2-预测市场金融产品线"><a href="#2-预测市场金融产品线" class="headerlink" title="2. 预测市场金融产品线"></a>2. 预测市场金融产品线</h3><ul>
+<li>稳定币收益 + 预测交易</li>
+<li>企业风险对冲</li>
+<li>Kalshi &#x2F; 多平台服务</li>
+</ul>
+<h3 id="3-策略与-Agent-平台线"><a href="#3-策略与-Agent-平台线" class="headerlink" title="3. 策略与 Agent 平台线"></a>3. 策略与 Agent 平台线</h3><ul>
+<li>策略市场与 Remix</li>
+<li>自然语言策略</li>
+<li>可验证执行</li>
+<li>开放 SDK</li>
+<li>Credits Agent Runtime</li>
+</ul>
+<h3 id="4-Agent-支付基础设施线"><a href="#4-Agent-支付基础设施线" class="headerlink" title="4. Agent 支付基础设施线"></a>4. Agent 支付基础设施线</h3><ul>
+<li>x402 聚合网关</li>
+<li>Agentic Wallet</li>
+<li>跨链支付</li>
+<li>付费数据 API</li>
+</ul>
+<h3 id="5-Memecoin-x2F-Telegram-工具线"><a href="#5-Memecoin-x2F-Telegram-工具线" class="headerlink" title="5. Memecoin &#x2F; Telegram 工具线"></a>5. Memecoin &#x2F; Telegram 工具线</h3><ul>
+<li>喊单频道和 Scraper</li>
+<li>Copy Trading</li>
+<li>Robinhood Bot</li>
+<li>多链自动交易</li>
+</ul>
+<h3 id="6-Token-网络与独立新项目线"><a href="#6-Token-网络与独立新项目线" class="headerlink" title="6. Token 网络与独立新项目线"></a>6. Token 网络与独立新项目线</h3><ul>
+<li>Agent 任务网络</li>
+<li>Agent Token 化</li>
+<li>Claper</li>
+<li>链上挖矿游戏</li>
+</ul>
+<h2 id="三、建议优先横向评估的八个方向"><a href="#三、建议优先横向评估的八个方向" class="headerlink" title="三、建议优先横向评估的八个方向"></a>三、建议优先横向评估的八个方向</h2><ol>
+<li>预测市场跨平台套利</li>
+<li>自营量化&#x2F;套利公司</li>
+<li>稳定币收益 + 预测交易</li>
+<li>B2B 企业风险对冲</li>
+<li>策略市场 &#x2F; Strategy GitHub</li>
+<li>x402 聚合网关</li>
+<li>Agentic Wallet</li>
+<li>AI Agent 任务网络</li>
+</ol>
+<p>这八个方向代表了差异最大的商业模式，适合先做统一评分，再决定哪些进入验证阶段。</p>
+<h2 id="四、统一评估问题"><a href="#四、统一评估问题" class="headerlink" title="四、统一评估问题"></a>四、统一评估问题</h2><ul>
+<li>是赚自营 PNL，还是向用户出售基础设施？</li>
+<li>目标用户是 B2C 小白、专业交易者，还是 B2B&#x2F;机构？</li>
+<li>收入来自手续费、Credits、订阅、数据 API，还是自营收益？</li>
+<li>是否需要托管资金？安全、合规和责任边界是什么？</li>
+<li>核心优势来自数据、低延迟、执行能力、策略供给，还是分发关系？</li>
+<li>能否在两周左右做出不托管资金、结果可观测的验证版本？</li>
+<li>第一批用户从哪里来？是否存在可重复的获客渠道？</li>
+<li>是否进入了泛交易终端或普通跟单 Bot 这样的红海？结构性差异是什么？</li>
+</ul>
+<h2 id="五、建议评分维度"><a href="#五、建议评分维度" class="headerlink" title="五、建议评分维度"></a>五、建议评分维度</h2><p>每个方向可按 1–5 分评估：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>真实需求</td>
+<td>痛点是否明确、频繁且愿意付费</td>
+</tr>
+<tr>
+<td>团队匹配</td>
+<td>是否复用当前交易、Agent、钱包和 Telegram 能力</td>
+</tr>
+<tr>
+<td>MVP 速度</td>
+<td>两周内能否做出可验证版本</td>
+</tr>
+<tr>
+<td>数据优势</td>
+<td>是否拥有竞品难复制的数据或反馈闭环</td>
+</tr>
+<tr>
+<td>分发难度</td>
+<td>第一批用户是否可触达，获客是否可重复</td>
+</tr>
+<tr>
+<td>收入闭环</td>
+<td>从使用到现金流是否直接、可衡量</td>
+</tr>
+<tr>
+<td>技术护城河</td>
+<td>是否超越 UI、费率和简单聚合</td>
+</tr>
+<tr>
+<td>资本要求</td>
+<td>是否需要大量本金、节点或持续补贴</td>
+</tr>
+<tr>
+<td>合规风险</td>
+<td>托管、代下单、KYC、地域和收益承诺风险</td>
+</tr>
+<tr>
+<td>可扩展性</td>
+<td>市场容量、流动性和多 Venue 扩展空间</td>
+</tr>
+</tbody></table>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Y7C0CVX9PK"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-Y7C0CVX9PK');</script></html>

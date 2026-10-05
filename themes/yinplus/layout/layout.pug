@@ -49,6 +49,8 @@ html(lang=config.language)
 
     // unified typography overrides for both home and post pages
     link(rel='stylesheet', href=root+"css/typography.css" + vq)
+    if is_post() && page.collection === 'ai'
+      link(rel='stylesheet', href=root+"css/ai-content.css?v=5")
 
   body
     if is_home() || is_tag() || page.type=='home' || page.type=='tags' || page.type=="404" || page.type=='display' || page.navbar
