@@ -1,9 +1,9 @@
 # Navigation bar without starting with a slash
 menu:
-  博客: ''
+  博客: https://smallyu.net/
+  疯狂版: ''
   AI 文章库: ai/
-  # 微博: 'https://t.smallyu.net'
-  关于: about
+  # 关于: about
 
 # Recommended to enable when the page count is more than 1
 paginator: false
