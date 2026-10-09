@@ -9,7 +9,10 @@ block content
           li.list-group-item.title
             if theme.list.date
               div.date= date(post.date, 'YYYY-MM-DD')
-            a(href=url_for(post.path))= post.title
+            a(href=url_for(post.path))
+              | #{post.title}
+              if post.collection === 'ai'
+                span.ai-badge(aria-label="AI article") AI
             if theme.list.wordcount
               div.word-count= wordcount(post.content, '') + ' ' + __('word_count')
     else

@@ -2,7 +2,10 @@
 block content
   .inner
     if theme.post.title_h1
-      h1= page.title
+      h1
+        | #{page.title}
+        if page.collection === 'ai'
+          span.ai-badge(aria-label="AI article") AI
       div.time= date(page.date, 'YYYY-MM-DD')
       if theme.post.show_tags
         if page.tags.length
@@ -15,7 +18,10 @@ block content
       else 
         div.title-margin
     else
-      h2= page.title
+      h2
+        | #{page.title}
+        if page.collection === 'ai'
+          span.ai-badge(aria-label="AI article") AI
     if page.collection === 'ai'
       .ai-content
         != page.content
